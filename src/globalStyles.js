@@ -13,12 +13,19 @@ body {
 }
 `;
 
+export const PageContainer = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  padding-bottom: 55px;
+`;
+
 export const Container = styled.div`
   width: 100%;
   max-width: 1300px;
   margin-right: auto;
   margin-left: auto;
   padding: 0 50px;
+
   @media screen and (max-width: 960px) {
     padding: 0 30px;
   }
@@ -62,6 +69,43 @@ export const Row = styled.div`
   max-height: ${({ maxHeight }) => (maxHeight ? maxHeight : "auto")};
   min-height: ${({ minHeight }) => (minHeight ? minHeight : "auto")};
   flex-wrap: ${({ wrap }) => (wrap ? wrap : "")};
+`;
+
+export const Section = styled.section`
+  background-position: center;
+  background-size: cover;
+  padding-top: clamp(80px, 25vh, 120px);
+`;
+
+export const TitleContainer = styled.div`
+  display: flex;
+  color: white;
+  flex-direction: column;
+  margin-bottom: 5rem;
+
+  h1 {
+    font-size: 3rem;
+  }
+  h3 {
+    font-weight: 400;
+  }
+`;
+
+export const BodyContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+  @media screen and (max-width: 960px) {
+    flex-direction: column;
+    width: 100%;
+  }
+`;
+
+export const CardButtonContainer = styled.div`
+  display: flex;
+  margin: 30px auto 30px auto;
 `;
 
 export default GlobalStyle;

@@ -21,7 +21,7 @@ export const DashboardContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  @media screen and (max-width: 960px) {
+  @media screen and (max-width: 1210px) {
     flex-direction: column;
     width: 100%;
   }

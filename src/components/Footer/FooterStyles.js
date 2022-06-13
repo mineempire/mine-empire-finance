@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Row } from "../../globalStyles";
 
 export const FooterContainer = styled.div`
   background-color: #101522;
@@ -13,91 +12,17 @@ export const FooterWrapper = styled.div`
   margin-right: auto;
 `;
 
-export const FooterSubscription = styled.section`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 24px;
-  padding: 24px;
-  color: #fff;
-`;
-
-export const FooterSubHeading = styled.p`
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
-  margin-bottom: 24px;
-  font-size: 24px;
-`;
-
-export const FooterRow = styled(Row)`
-  flex-wrap: wrap;
-  @media screen and (max-width: 820px) {
-    > div {
-      width: 20%;
-    }
-
-    > div:first-child {
-      width: 100%;
-    }
-  }
-
-  @media screen and (max-width: 420px) {
-    flex-direction: column;
-    align-items: center;
-
-    * {
-      width: 100%;
-      text-align: center;
-    }
-  }
-`;
-
-export const FooterGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  justify-content: center;
-  align-items: center;
-`;
-
 export const FooterContainerFlex = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   bottom: 0;
-  position: fixed;
+  height: 55px;
+  margin-top: -55px;
+  position: relative;
   align-items: center;
 
   @media screen and (max-width: 1000px) {
-    flex-direction: column;
     align-items: center;
-  }
-`;
-
-export const FooterSubText = styled.p`
-  margin-bottom: 24px;
-  font-size: 20px;
-`;
-
-export const FooterLinksContainer = styled.div`
-  width: 100%;
-  max-width: 1000px;
-  display: flex;
-  justify-content: center;
-
-  @media screen and (max-width: 820px) {
-    padding-top: 32px;
-  }
-`;
-
-export const FooterLink = styled(Link)`
-  color: #fff;
-  text-decoration: none;
-  margin-bottom: 0.5rem;
-
-  &:hover {
-    color: #0467fb;
-    transition: 0.3s ease-out;
   }
 `;
 
@@ -122,21 +47,5 @@ export const FooterSocialIcon = styled.a`
   font-size: 24px;
   img {
     width: 30px;
-  }
-`;
-
-export const FooterAddress = styled.div`
-  color: white;
-  margin: 0.4rem auto 0.4rem;
-  max-width: 20rem;
-  font-weight: 500;
-  font-size: 0.875rem;
-  line-height: 2;
-  text-align: center;
-
-  @media screen and (min-width: 1000px) {
-    margin-left: 0px;
-    text-align: left;
-    margin-right: 1rem;
   }
 `;

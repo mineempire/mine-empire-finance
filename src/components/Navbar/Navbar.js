@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import { CgMenuRight } from "react-icons/cg";
 import { IconContext } from "react-icons";
@@ -14,32 +15,13 @@ import {
   ConnectWallet,
   Connected,
 } from "./NavbarStyles.js";
-import { useLocation } from "react-router-dom";
 import { Button } from "../../globalStyles.js";
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
 
-  let location = useLocation();
-
   const handleClick = () => {
     setShow(!show);
-  };
-
-  const scrollTo = (id) => {
-    const element = document.getElementById(id);
-
-    element.scrollIntoView({
-      behavior: "smooth",
-    });
-  };
-
-  const closeMobileMenu = (to, id) => {
-    if (id && location.pathname === "/") {
-      scrollTo(id);
-    }
-
-    setShow(false);
   };
 
   let connected = false;
@@ -51,34 +33,31 @@ const Navbar = () => {
           <NavLogo to="/">
             <NavIcon src="./assets/logo.png" alt="logo" />
           </NavLogo>
-          <MobileIcon onClick={handleClick}>
-            {show ? <FaTimes /> : <CgMenuRight />}
-          </MobileIcon>
           <NavMenu show={show}>
             <NavItem>
-              <NavLinks onclick={() => closeMobileMenu("", "")}>
-                Dashboard
-              </NavLinks>
+              <Link to="/">
+                <NavLinks onClick={handleClick}>Dashboard</NavLinks>
+              </Link>
             </NavItem>
             <NavItem>
-              <NavLinks onclick={() => closeMobileMenu("", "")}>
-                Cosmos
-              </NavLinks>
+              <Link to="/cosmos">
+                <NavLinks onClick={handleClick}>Cosmos</NavLinks>
+              </Link>
             </NavItem>
             <NavItem>
-              <NavLinks onclick={() => closeMobileMenu("", "")}>
-                Market
-              </NavLinks>
+              <Link to="/market">
+                <NavLinks onClick={handleClick}>Market</NavLinks>
+              </Link>
             </NavItem>
             <NavItem>
-              <NavLinks onclick={() => closeMobileMenu("", "")}>
-                Refinery
-              </NavLinks>
+              <Link to="/refinery">
+                <NavLinks onClick={handleClick}>Refinery</NavLinks>
+              </Link>
             </NavItem>
             <NavItem>
-              <NavLinks onclick={() => closeMobileMenu("", "")}>
-                Converter
-              </NavLinks>
+              <Link to="/converter">
+                <NavLinks onClick={handleClick}>Converter</NavLinks>
+              </Link>
             </NavItem>
           </NavMenu>
           <ConnectWallet>
@@ -94,6 +73,10 @@ const Navbar = () => {
               </>
             )}
           </ConnectWallet>
+
+          <MobileIcon onClick={handleClick}>
+            {show ? <FaTimes /> : <CgMenuRight />}
+          </MobileIcon>
         </NavbarContainer>
       </Nav>
     </IconContext.Provider>

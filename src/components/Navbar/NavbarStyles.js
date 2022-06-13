@@ -19,7 +19,7 @@ export const Nav = styled.nav`
 
 export const NavbarContainer = styled(Container)`
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   height: 80px;
   ${Container}
 `;
@@ -33,7 +33,11 @@ export const NavLogo = styled(Link)`
   display: flex;
   align-items: center;
   z-index: 50;
-  width: 24rem;
+  width: 14rem;
+
+  @media screen and (max-width: 960px) {
+    width: 2rem;
+  }
 `;
 
 export const NavIcon = styled.img`
@@ -45,11 +49,8 @@ export const MobileIcon = styled.div`
   display: none;
   z-index: 50;
   @media screen and (max-width: 960px) {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(-100%, 60%);
+    display: flex;
+    align-items: center;
     font-size: 1.8rem;
     cursor: pointer;
   }
@@ -71,8 +72,6 @@ export const NavMenu = styled.ul`
     top: 0;
     left: 0;
     opacity: ${({ show }) => (show ? 1 : 0)};
-    visibility: ${({ show }) => (show ? "visible" : "hidden")};
-    transform: translateY(${({ show }) => (show ? "0" : "-10px")});
     transition: opacity 0.5s ease;
     background-color: #111827;
   }
@@ -128,12 +127,13 @@ export const ConnectWallet = styled.div`
   display: flex;
   width: 22rem;
   align-items: center;
+
+  justify-content: center;
 `;
 
 export const Connected = styled.div`
   display: flex;
   color: #fff;
-  text-background: #463d3d;
   dispaly: flex;
   align-items: center;
   border-radius: 15px;
