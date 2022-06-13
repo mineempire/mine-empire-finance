@@ -13,7 +13,7 @@ import {
   CardStats,
 } from "./CosmosStyles";
 
-import { Button, CardButtonContainer, PageContainer } from "../../globalStyles";
+import { Button, CardButtonContainer } from "../../globalStyles";
 
 const CosmosBody = () => {
   return (

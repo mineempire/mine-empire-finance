@@ -3,7 +3,6 @@ import {
   Container,
   TitleContainer,
   Section,
-  PageContainer,
 } from "../../globalStyles";
 
 import { Button, CardButtonContainer } from "../../globalStyles";

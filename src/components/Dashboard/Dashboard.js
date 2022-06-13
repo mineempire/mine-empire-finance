@@ -1,4 +1,4 @@
-import { Container, Button, PageContainer } from "../../globalStyles";
+import { Container, Button } from "../../globalStyles";
 import {
   DashboardSection,
   TitleImageContainer,
