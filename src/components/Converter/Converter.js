@@ -18,7 +18,6 @@ import {
   TokenAmountText,
   Arrow,
   ArrowContainer,
-  ConvertButtonContainer,
   SwapTitleContainer,
 } from "./ConverterStyles";
 

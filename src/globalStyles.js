@@ -48,8 +48,13 @@ export const Button = styled.button`
   font-weight: 600;
   color: #fff;
   margin: 0 10px 0 10px;
+  transition: 0.3s;
+  opacity: 1;
   &:hover {
     opacity: 0.9;
+  }
+  &:active {
+    transition: 0s;
     transform: scale(0.98);
   }
 `;
