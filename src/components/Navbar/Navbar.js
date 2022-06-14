@@ -59,6 +59,11 @@ const Navbar = () => {
                 <NavLinks onClick={handleClick}>Converter</NavLinks>
               </Link>
             </NavItem>
+            <NavItem>
+              <Link to="/inventory">
+                <NavLinks onClick={handleClick}>Inventory</NavLinks>
+              </Link>
+            </NavItem>
           </NavMenu>
           <ConnectWallet>
             {connected ? (

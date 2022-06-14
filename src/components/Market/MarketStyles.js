@@ -5,12 +5,12 @@ export const NFTCard = styled.div`
   flex-wrap: wrap;
   background-color: #312525;
   border-radius: 15px;
-  width: 400px;
+  width: 320px;
   margin: 25px;
   justify-content: center;
 
   img#drill-image {
-    width: 300px;
+    width: 200px;
     padding: 15px;
   }
 `;
@@ -23,12 +23,12 @@ export const NFTCardHeader = styled.div`
   color: white;
 
   h1 {
-    margin: 1rem;
+    margin: 0.7rem;
   }
 
   img {
-    width: 85px;
-    height: 83px;
+    width: 45px;
+    height: 43px;
   }
 `;
 
@@ -44,7 +44,7 @@ export const NFTCardStats = styled.div`
     color: #949494;
     font-style: normal;
     font-weight: 600;
-    width: 175px;
+    width: 135px;
     margin: 0 0 5px 25px;
     text-align: left;
   }
@@ -53,7 +53,7 @@ export const NFTCardStats = styled.div`
     color: #fff;
     font-style: normal;
     font-weight: 600;
-    width: 175px;
+    width: 135px;
     margin: 0 25px 5px 0;
     text-align: right;
   }
@@ -63,4 +63,13 @@ export const MintAmount = styled.div`
   display: flex;
   align-items: center;
   color: white;
+`;
+
+export const MarketContainer = styled.div`
+  display: flex;
+  width: 100%;
+
+  @media screen and (max-width: 960px) {
+    justify-content: center;
+  }
 `;

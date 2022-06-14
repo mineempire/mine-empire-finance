@@ -9,6 +9,7 @@ import Cosmos from "./pages/Cosmos";
 import Market from "./pages/Market";
 import Refinery from "./pages/Refinery";
 import Converter from "./pages/Converter";
+import Inventory from "./pages/Inventory";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/market" element={<Market />} />
           <Route path="/refinery" element={<Refinery />} />
           <Route path="/converter" element={<Converter />} />
+          <Route path="/inventory" element={<Inventory />} />
         </Routes>
       </PageContainer>
       <Footer />
