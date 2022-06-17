@@ -71,7 +71,7 @@ const Navbar = () => {
             ) : (
               <>
                 <Connected>
-                  <img src="../../assets/csc-icon.png" alt="" />
+                  <img src="../../assets/energy.png" alt="" />
                   <p>30/30</p>
                   <Button>Claim</Button>
                 </Connected>
