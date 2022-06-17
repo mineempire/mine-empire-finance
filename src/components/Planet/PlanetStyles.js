@@ -36,11 +36,6 @@ export const PlanetTitle = styled.div`
   }
 `;
 
-export const PlanetDescription = styled.div`
-  display: flex;
-  width: 320px;
-`;
-
 export const DescriptionRow = styled.div`
   padding: 5px 25px;
   display: flex;
@@ -82,10 +77,6 @@ export const DescriptionContainer = styled.div`
   background-color: #312525;
   border-radius: 15px;
   margin: 15px;
-`;
-
-export const PlanetContainer = styled.div`
-  display: flex;
 `;
 
 export const PlanetBodyContainer = styled.div`
