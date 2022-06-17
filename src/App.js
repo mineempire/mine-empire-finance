@@ -10,6 +10,9 @@ import Market from "./pages/Market";
 import Refinery from "./pages/Refinery";
 import Converter from "./pages/Converter";
 import Inventory from "./pages/Inventory";
+import Gades from "./pages/Gades";
+import Oberon from "./pages/Oberon";
+import CanopsysPrime from "./pages/CanopsysPrime";
 
 function App() {
   return (
@@ -20,6 +23,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/cosmos" element={<Cosmos />} />
+          <Route path="/cosmos/gades" element={<Gades />} />
+          <Route path="/cosmos/oberon" element={<Oberon />} />
+          <Route path="/cosmos/canopsysprime" element={<CanopsysPrime />} />
           <Route path="/market" element={<Market />} />
           <Route path="/refinery" element={<Refinery />} />
           <Route path="/converter" element={<Converter />} />

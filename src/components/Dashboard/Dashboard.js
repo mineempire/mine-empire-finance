@@ -1,4 +1,4 @@
-import { Container, Button } from "../../globalStyles";
+import { Container, Button, Line } from "../../globalStyles";
 import {
   DashboardSection,
   TitleImageContainer,
@@ -43,7 +43,7 @@ const DashboardBody = () => {
               </CardFeature>
             </TokenInfoTitleContainer>
           </TokenInfoTitleContainer>
-          <img src="../../assets/svg/line360px.svg" alt=""></img>
+          <Line width="360px" />
           <CardDescription>
             <CardFeature>
               <SmallText>Price:</SmallText>
@@ -82,7 +82,7 @@ const DashboardBody = () => {
               </CardFeature>
             </TokenInfoTitleContainer>
           </TokenInfoTitleContainer>
-          <img src="../../assets/svg/line360px.svg" alt=""></img>
+          <Line width="360px" />
           <CardDescription>
             <CardFeature>
               <SmallText>Price:</SmallText>

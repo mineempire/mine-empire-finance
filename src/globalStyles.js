@@ -59,23 +59,6 @@ export const Button = styled.button`
   }
 `;
 
-export const Row = styled.div`
-  display: flex;
-  justify-content: ${({ justify }) => (justify ? justify : "")};
-  align-items: ${({ align }) => (align ? align : "")};
-  gap: ${({ gap }) => (gap ? gap : "")};
-  padding: ${({ padding }) => (padding ? padding : "")};
-  margin: ${({ margin }) => (margin ? margin : "")};
-  position: ${({ position }) => (position ? position : "")};
-  width: ${({ width }) => (width ? width : "auto")};
-  min-width: ${({ minWidth }) => (minWidth ? minWidth : "auto")};
-  max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : "auto")};
-  height: ${({ height }) => (height ? height : "auto")};
-  max-height: ${({ maxHeight }) => (maxHeight ? maxHeight : "auto")};
-  min-height: ${({ minHeight }) => (minHeight ? minHeight : "auto")};
-  flex-wrap: ${({ wrap }) => (wrap ? wrap : "")};
-`;
-
 export const Section = styled.section`
   background-position: center;
   background-size: cover;
@@ -111,6 +94,24 @@ export const BodyContainer = styled.div`
 export const CardButtonContainer = styled.div`
   display: flex;
   margin: 30px auto 30px auto;
+`;
+
+export const Line = styled.div`
+  width: ${({ width }) => (width ? width : "320px")};
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    #df4242,
+    #9929c6,
+    #feffb8,
+    #9929c6,
+    #df4242,
+    #9929c6
+  );
+`;
+
+export const Space = styled.div`
+  height: ${({ height }) => (height ? height : "10px")};
 `;
 
 export default GlobalStyle;

@@ -13,7 +13,7 @@ function Footer() {
     <FooterWrapper>
       <FooterContainerFlex>
         <FooterLogo to="/">
-          <SocialIcon src="./assets/logo.png" />
+          <SocialIcon src="../../assets/logo.png" />
         </FooterLogo>
 
         <FooterSocialIcon

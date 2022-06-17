@@ -72,7 +72,8 @@ export const NavMenu = styled.ul`
     top: 0;
     left: 0;
     opacity: ${({ show }) => (show ? 1 : 0)};
-    transition: opacity 0.5s ease;
+    visibility: ${({ show }) => (show ? "visible" : "hidden")};
+    transition: all 0.5s ease;
     background-color: #111827;
   }
 `;

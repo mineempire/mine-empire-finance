@@ -3,6 +3,7 @@ import {
   Container,
   TitleContainer,
   Section,
+  Line,
 } from "../../globalStyles";
 
 import { Button, CardButtonContainer } from "../../globalStyles";
@@ -46,7 +47,7 @@ const MarketBody = () => {
                   src="../../assets/asteroid-drill.png"
                   alt=""
                 />
-                <img src="../../assets/svg/line320px.svg" alt="" />
+                <Line width="320px" />
                 <NFTCardStats>
                   <h3 id="description">Price</h3>
                   <h3 id="stat">100 FTM</h3>

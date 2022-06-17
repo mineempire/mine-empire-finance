@@ -3,7 +3,9 @@ import {
   Container,
   TitleContainer,
   Section,
+  Line,
 } from "../../globalStyles";
+import { Link } from "react-router-dom";
 
 import {
   PlanetCard,
@@ -43,16 +45,16 @@ const CosmosBody = () => {
                 <h3>Asteroid</h3>
                 <h3>Produces Iron</h3>
               </PlanetCardTitleContainer>
-              <img src="../../assets/svg/line360px.svg" alt="" />
+              <Line width="360px" />
               <PlanetCardProductionInfo>
                 <img src="../../assets/iron60px.png" alt="" />
                 <h3 id="production">Production:</h3>
                 <h3 id="amount">1,135 / Day</h3>
               </PlanetCardProductionInfo>
               <CardStats>
-                <h3 id="description">Base APR</h3>
+                <h3 id="description">Base ROI</h3>
                 <h3 id="stat">200%</h3>
-                <h3 id="description">Max APR</h3>
+                <h3 id="description">Max ROI</h3>
                 <h3 id="stat">9,726%</h3>
                 <h3 id="description">Base CSC Equiv</h3>
                 <h3 id="stat">1.32 CSC / Day</h3>
@@ -64,7 +66,9 @@ const CosmosBody = () => {
                 <h3 id="stat">0 / 33,193</h3>
               </CardStats>
               <CardButtonContainer>
-                <Button>View</Button>
+                <Link to="gades">
+                  <Button>View</Button>
+                </Link>
               </CardButtonContainer>
             </PlanetCard>
             <PlanetCard>
@@ -76,16 +80,16 @@ const CosmosBody = () => {
                 <h3>Asteroid</h3>
                 <h3>Produces Cobalt</h3>
               </PlanetCardTitleContainer>
-              <img src="../../assets/svg/line360px.svg" alt="" />
+              <Line width="360px" />
               <PlanetCardProductionInfo>
                 <img src="../../assets/cobalt.png" alt="" />
                 <h3 id="production">Production:</h3>
                 <h3 id="amount">181 / Day</h3>
               </PlanetCardProductionInfo>
               <CardStats>
-                <h3 id="description">Base APR</h3>
+                <h3 id="description">Base ROI</h3>
                 <h3 id="stat">237%</h3>
-                <h3 id="description">Max APR</h3>
+                <h3 id="description">Max ROI</h3>
                 <h3 id="stat">11,532%</h3>
                 <h3 id="description">Base CSC Equiv</h3>
                 <h3 id="stat">1.56 CSC / Day</h3>
@@ -97,7 +101,9 @@ const CosmosBody = () => {
                 <h3 id="stat">0 / 981</h3>
               </CardStats>
               <CardButtonContainer>
-                <Button>View</Button>
+                <Link to="/cosmos/oberon">
+                  <Button>View</Button>
+                </Link>
               </CardButtonContainer>
             </PlanetCard>
             <PlanetCard>
@@ -109,16 +115,16 @@ const CosmosBody = () => {
                 <h3>Planet</h3>
                 <h3>Produces Bismuth</h3>
               </PlanetCardTitleContainer>
-              <img src="../../assets/svg/line360px.svg" alt="" />
+              <Line width="360px" />
               <PlanetCardProductionInfo>
                 <img src="../../assets/bismuth.png" alt="" />
                 <h3 id="production">Production:</h3>
                 <h3 id="amount">17 / Day</h3>
               </PlanetCardProductionInfo>
               <CardStats>
-                <h3 id="description">Base APR</h3>
+                <h3 id="description">Base ROI</h3>
                 <h3 id="stat">271%</h3>
-                <h3 id="description">Max APR</h3>
+                <h3 id="description">Max ROI</h3>
                 <h3 id="stat">13,188%</h3>
                 <h3 id="description">Base CSC Equiv</h3>
                 <h3 id="stat">1.78 CSC / Day</h3>
@@ -130,7 +136,9 @@ const CosmosBody = () => {
                 <h3 id="stat">0 / 191</h3>
               </CardStats>
               <CardButtonContainer>
-                <Button>View</Button>
+                <Link to="canopsysprime">
+                  <Button>View</Button>
+                </Link>
               </CardButtonContainer>
             </PlanetCard>
           </BodyContainer>
