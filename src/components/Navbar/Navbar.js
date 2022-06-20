@@ -67,8 +67,6 @@ const Navbar = () => {
           </NavMenu>
           <ConnectWallet>
             {connected ? (
-              <Button>Connect</Button>
-            ) : (
               <>
                 <Connected>
                   <img src="../../assets/energy.png" alt="" />
@@ -76,6 +74,8 @@ const Navbar = () => {
                   <Button>Claim</Button>
                 </Connected>
               </>
+            ) : (
+              <Button>Connect</Button>
             )}
           </ConnectWallet>
 
