@@ -16,8 +16,31 @@ import {
 } from "./CosmosStyles";
 
 import { Button, CardButtonContainer } from "../../globalStyles";
+import { useEffect, useState } from "react";
+import { isConnected, connect } from "../../Web3Client";
 
 const CosmosBody = () => {
+  const [connected, setConnected] = useState(true);
+
+  useEffect(() => {
+    async function checkConnection() {
+      const connected = await isConnected();
+      setConnected(connected);
+    }
+    checkConnection();
+    window.ethereum.on("accountsChanged", function (accounts) {
+      if (accounts && accounts.length > 0) {
+        setConnected(true);
+      } else {
+        setConnected(false);
+      }
+    });
+  }, []);
+
+  const handleConnect = async () => {
+    await connect();
+  };
+
   return (
     <>
       <Section>
@@ -66,9 +89,13 @@ const CosmosBody = () => {
                 <h3 id="stat">0 / 33,193</h3>
               </CardStats>
               <CardButtonContainer>
-                <Link to="gades">
-                  <Button>View</Button>
-                </Link>
+                {connected ? (
+                  <Link to="gades">
+                    <Button>View</Button>
+                  </Link>
+                ) : (
+                  <Button onClick={handleConnect}>Connect</Button>
+                )}
               </CardButtonContainer>
             </PlanetCard>
             <PlanetCard>
@@ -101,9 +128,13 @@ const CosmosBody = () => {
                 <h3 id="stat">0 / 981</h3>
               </CardStats>
               <CardButtonContainer>
-                <Link to="/cosmos/oberon">
-                  <Button>View</Button>
-                </Link>
+                {connected ? (
+                  <Link to="oberon">
+                    <Button>View</Button>
+                  </Link>
+                ) : (
+                  <Button onClick={handleConnect}>Connect</Button>
+                )}
               </CardButtonContainer>
             </PlanetCard>
             <PlanetCard>
@@ -136,9 +167,13 @@ const CosmosBody = () => {
                 <h3 id="stat">0 / 191</h3>
               </CardStats>
               <CardButtonContainer>
-                <Link to="canopsysprime">
-                  <Button>View</Button>
-                </Link>
+                {connected ? (
+                  <Link to="canopsysprime">
+                    <Button>View</Button>
+                  </Link>
+                ) : (
+                  <Button onClick={handleConnect}>Connect</Button>
+                )}
               </CardButtonContainer>
             </PlanetCard>
           </BodyContainer>

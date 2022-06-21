@@ -20,8 +20,31 @@ import {
   ArrowContainer,
   SwapTitleContainer,
 } from "./ConverterStyles";
+import { useEffect, useState } from "react";
+import { isConnected, connect } from "../../Web3Client";
 
 const ConverterBody = () => {
+  const [connected, setConnected] = useState(true);
+
+  useEffect(() => {
+    async function checkConnection() {
+      const connected = await isConnected();
+      setConnected(connected);
+    }
+    checkConnection();
+    window.ethereum.on("accountsChanged", function (accounts) {
+      if (accounts && accounts.length > 0) {
+        setConnected(true);
+      } else {
+        setConnected(false);
+      }
+    });
+  }, []);
+
+  const handleConnect = async () => {
+    await connect();
+  };
+
   return (
     <>
       <Section>
@@ -73,7 +96,11 @@ const ConverterBody = () => {
                     <p>Cosmic Cash: 0</p>
                   </TokenBalanceContainer>
                 </ResourceBox>
-                <Button>Convert</Button>
+                {connected ? (
+                  <Button>Convert</Button>
+                ) : (
+                  <Button onClick={handleConnect}>Connect</Button>
+                )}
               </Swap>
             </SwapContainer>
           </BodyContainer>

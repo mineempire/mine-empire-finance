@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  connect,
+  getDailyEnergyContract,
+  isConnected,
+} from "../../Web3Client.js";
 import { Link } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import { CgMenuRight } from "react-icons/cg";
@@ -16,15 +21,56 @@ import {
   Connected,
 } from "./NavbarStyles.js";
 import { Button } from "../../globalStyles.js";
+import { ethers } from "ethers";
 
 const Navbar = () => {
   const [show, setShow] = useState(false);
+  const [connected, setConnected] = useState(false);
+  const [claimableEnergy, setClaimableEnergy] = useState(0);
+
+  const dailyEnergy = getDailyEnergyContract();
 
   const handleClick = () => {
     setShow(!show);
   };
 
-  let connected = false;
+  useEffect(() => {
+    async function getDailyEnergy() {
+      const energyAvailable = await dailyEnergy.methods
+        .getAccumulatedEnergy(window.ethereum.selectedAddress)
+        .call();
+
+      setClaimableEnergy(
+        ethers.utils.formatEther(energyAvailable).substring(0, 4)
+      );
+    }
+
+    async function checkConnection() {
+      const connected = await isConnected();
+      setConnected(connected);
+    }
+
+    checkConnection();
+    getDailyEnergy();
+
+    window.ethereum.on("accountsChanged", function (accounts) {
+      if (accounts && accounts.length > 0) {
+        setConnected(true);
+      } else {
+        setConnected(false);
+      }
+    });
+  }, []);
+
+  const handleConnect = async () => {
+    await connect();
+  };
+
+  const claimEnergy = async () => {
+    await dailyEnergy.methods
+      .claimEnergy()
+      .send({ from: window.ethereum.selectedAddress });
+  };
 
   return (
     <IconContext.Provider value={{ color: "#fff" }}>
@@ -70,12 +116,12 @@ const Navbar = () => {
               <>
                 <Connected>
                   <img src="../../assets/energy.png" alt="" />
-                  <p>30/30</p>
-                  <Button>Claim</Button>
+                  <p>{claimableEnergy}/30</p>
+                  <Button onClick={claimEnergy}>Claim</Button>
                 </Connected>
               </>
             ) : (
-              <Button>Connect</Button>
+              <Button onClick={handleConnect}>Connect</Button>
             )}
           </ConnectWallet>
 
