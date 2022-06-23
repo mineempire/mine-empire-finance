@@ -17,30 +17,23 @@ import {
 
 import { Button, CardButtonContainer } from "../../globalStyles";
 import { useEffect, useState } from "react";
-import { isConnected, connect } from "../../Web3Client";
+import { isConnected } from "../../Web3Client";
+import { injected } from "../../connectors";
+import { useWeb3React } from "@web3-react/core";
 
 const CosmosBody = () => {
-  const [connected, setConnected] = useState(true);
+  const [connected, setConnected] = useState(false);
+  const { activate } = useWeb3React();
+
+  async function updateState() {
+    if (await isConnected()) {
+      setConnected(true);
+    }
+  }
 
   useEffect(() => {
-    async function checkConnection() {
-      const connected = await isConnected();
-      setConnected(connected);
-    }
-    checkConnection();
-    window.ethereum.on("accountsChanged", function (accounts) {
-      if (accounts && accounts.length > 0) {
-        setConnected(true);
-      } else {
-        setConnected(false);
-      }
-    });
-  }, []);
-
-  const handleConnect = async () => {
-    await connect();
-  };
-
+    updateState();
+  });
   return (
     <>
       <Section>
@@ -72,21 +65,21 @@ const CosmosBody = () => {
               <PlanetCardProductionInfo>
                 <img src="../../assets/iron60px.png" alt="" />
                 <h3 id="production">Production:</h3>
-                <h3 id="amount">1,135 / Day</h3>
+                <h3 id="amount">3405 / Day</h3>
               </PlanetCardProductionInfo>
               <CardStats>
-                <h3 id="description">Base ROI</h3>
-                <h3 id="stat">200%</h3>
-                <h3 id="description">Max ROI</h3>
-                <h3 id="stat">9,726%</h3>
-                <h3 id="description">Base CSC Equiv</h3>
-                <h3 id="stat">1.32 CSC / Day</h3>
-                <h3 id="description">Max CSC Equiv</h3>
-                <h3 id="stat">64.19 CSC / Day</h3>
-                <h3 id="description">Max Capacity</h3>
-                <h3 id="stat">33,193</h3>
                 <h3 id="description">Your Production</h3>
-                <h3 id="stat">0 / 33,193</h3>
+                <h3 id="stat">0 Iron / Day</h3>
+                <h3 id="description">Max Production</h3>
+                <h3 id="stat">121,558 Iron / Day</h3>
+                <h3 id="description">Your CSC Equiv</h3>
+                <h3 id="stat">0 CSC / Day</h3>
+                <h3 id="description">Max CSC Equiv</h3>
+                <h3 id="stat">8.8 CSC / Day</h3>
+                <h3 id="description">Capacity Level</h3>
+                <h3 id="stat">1</h3>
+                <h3 id="description">Your Stake</h3>
+                <h3 id="stat">0 / 10,215</h3>
               </CardStats>
               <CardButtonContainer>
                 {connected ? (
@@ -94,7 +87,7 @@ const CosmosBody = () => {
                     <Button>View</Button>
                   </Link>
                 ) : (
-                  <Button onClick={handleConnect}>Connect</Button>
+                  <Button onClick={() => activate(injected)}>Connect</Button>
                 )}
               </CardButtonContainer>
             </PlanetCard>
@@ -133,7 +126,7 @@ const CosmosBody = () => {
                     <Button>View</Button>
                   </Link>
                 ) : (
-                  <Button onClick={handleConnect}>Connect</Button>
+                  <Button onClick={() => activate(injected)}>Connect</Button>
                 )}
               </CardButtonContainer>
             </PlanetCard>
@@ -172,7 +165,7 @@ const CosmosBody = () => {
                     <Button>View</Button>
                   </Link>
                 ) : (
-                  <Button onClick={handleConnect}>Connect</Button>
+                  <Button onClick={() => activate(injected)}>Connect</Button>
                 )}
               </CardButtonContainer>
             </PlanetCard>

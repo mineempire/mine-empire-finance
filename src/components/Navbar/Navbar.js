@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
   connect,
+  connectedAddress,
   getDailyEnergyContract,
+  getEnergyContract,
   isConnected,
 } from "../../Web3Client.js";
 import { Link } from "react-router-dom";
@@ -21,55 +23,50 @@ import {
   Connected,
 } from "./NavbarStyles.js";
 import { Button } from "../../globalStyles.js";
+import { useWeb3React } from "@web3-react/core";
+import { injected } from "../../connectors";
 import { ethers } from "ethers";
 
 const Navbar = () => {
-  const [show, setShow] = useState(false);
+  // web3
   const [connected, setConnected] = useState(false);
   const [claimableEnergy, setClaimableEnergy] = useState(0);
+  let selectedAddress = "";
+  const dailyEnergyContract = getDailyEnergyContract();
 
-  const dailyEnergy = getDailyEnergyContract();
+  const { activate } = useWeb3React();
 
-  const handleClick = () => {
-    setShow(!show);
+  async function updateClaimableEnergy() {
+    const energy = await dailyEnergyContract.methods
+      .getAccumulatedEnergy(selectedAddress)
+      .call();
+    setClaimableEnergy(ethers.utils.formatEther(energy).substring(0, 4));
+  }
+
+  async function updateState() {
+    if (await isConnected()) {
+      selectedAddress = await injected.getAccount();
+      setConnected(true);
+      updateClaimableEnergy();
+    }
+  }
+
+  const handleClaimEnergy = async () => {
+    await dailyEnergyContract.methods
+      .claimEnergy()
+      .send({ from: selectedAddress });
+    await updateState();
   };
 
   useEffect(() => {
-    async function getDailyEnergy() {
-      const energyAvailable = await dailyEnergy.methods
-        .getAccumulatedEnergy(window.ethereum.selectedAddress)
-        .call();
+    updateState();
+  });
 
-      setClaimableEnergy(
-        ethers.utils.formatEther(energyAvailable).substring(0, 4)
-      );
-    }
+  // website
+  const [show, setShow] = useState(false);
 
-    async function checkConnection() {
-      const connected = await isConnected();
-      setConnected(connected);
-    }
-
-    checkConnection();
-    getDailyEnergy();
-
-    window.ethereum.on("accountsChanged", function (accounts) {
-      if (accounts && accounts.length > 0) {
-        setConnected(true);
-      } else {
-        setConnected(false);
-      }
-    });
-  }, []);
-
-  const handleConnect = async () => {
-    await connect();
-  };
-
-  const claimEnergy = async () => {
-    await dailyEnergy.methods
-      .claimEnergy()
-      .send({ from: window.ethereum.selectedAddress });
+  const handleClick = () => {
+    setShow(!show);
   };
 
   return (
@@ -117,11 +114,11 @@ const Navbar = () => {
                 <Connected>
                   <img src="../../assets/energy.png" alt="" />
                   <p>{claimableEnergy}/30</p>
-                  <Button onClick={claimEnergy}>Claim</Button>
+                  <Button onClick={handleClaimEnergy}>Claim</Button>
                 </Connected>
               </>
             ) : (
-              <Button onClick={handleConnect}>Connect</Button>
+              <Button onClick={() => activate(injected)}>Connect</Button>
             )}
           </ConnectWallet>
 

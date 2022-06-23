@@ -21,7 +21,7 @@ import {
   SwapTitleContainer,
 } from "./ConverterStyles";
 import { useEffect, useState } from "react";
-import { isConnected, connect } from "../../Web3Client";
+import { isConnected } from "../../Web3Client";
 
 const ConverterBody = () => {
   const [connected, setConnected] = useState(true);
@@ -32,18 +32,9 @@ const ConverterBody = () => {
       setConnected(connected);
     }
     checkConnection();
-    window.ethereum.on("accountsChanged", function (accounts) {
-      if (accounts && accounts.length > 0) {
-        setConnected(true);
-      } else {
-        setConnected(false);
-      }
-    });
   }, []);
 
-  const handleConnect = async () => {
-    await connect();
-  };
+  const handleConnect = async () => {};
 
   return (
     <>

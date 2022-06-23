@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Container,
   TitleContainer,
@@ -21,6 +22,16 @@ import {
 } from "../Planet/PlanetStyles";
 
 const GadesBody = () => {
+  let selectedAddress = "";
+  const [drillStaked, setDrillStaked] = useState(false);
+  const [drillSelected, setDrillSelected] = useState(true);
+  const [drillApproved, setDrillApproved] = useState(false);
+  const [drillId, setDrillId] = useState(0);
+  const [drillLevel, setDrillLevel] = useState(0);
+  const [drillMultiplier, setDrillMultiplier] = useState(0);
+
+  useEffect(() => {});
+
   return (
     <>
       <Section>
@@ -45,23 +56,41 @@ const GadesBody = () => {
                   <Space height="60px" />
                   <DescriptionRow>
                     <h3 id="description">Staked Drill</h3>
-                    <h3 id="value">#135</h3>
+                    <h3 id="value">#{drillId}</h3>
                   </DescriptionRow>
                   <DescriptionRow>
                     <h3 id="description">Drill Level</h3>
-                    <h3 id="value">1</h3>
+                    <h3 id="value">{drillLevel}</h3>
                   </DescriptionRow>
                   <DescriptionRow>
                     <h3 id="description">Drill Multiplier</h3>
-                    <h3 id="value">x0.3</h3>
+                    <h3 id="value">x{drillMultiplier}</h3>
                   </DescriptionRow>
                   <DescriptionRow>
                     <h3 id="description">Collected</h3>
                     <h3 id="value">7945/7945</h3>
                   </DescriptionRow>
                   <ButtonContainer>
-                    <Button>Collect</Button>
-                    <Button>Unstake</Button>
+                    {drillStaked ? (
+                      <>
+                        <Button>Collect</Button>
+                        <Button>Unstake</Button>
+                      </>
+                    ) : (
+                      <>
+                        {drillSelected ? (
+                          <>
+                            {drillApproved ? (
+                              <Button>Stake #123</Button>
+                            ) : (
+                              <Button>Approve #123</Button>
+                            )}
+                          </>
+                        ) : (
+                          <Button>Select Drill</Button>
+                        )}
+                      </>
+                    )}
                   </ButtonContainer>
                 </StakeContainer>
               </PlanetBody>

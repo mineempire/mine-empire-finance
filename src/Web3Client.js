@@ -1,17 +1,17 @@
 import Web3 from "web3";
-import { dailyEnergyAddress, energyAddress } from "./contracts/Addresses";
+import {
+  dailyEnergyAddress,
+  energyAddress,
+  mineEmpireDrillAddress,
+} from "./contracts/Addresses";
 import { dailyEnergyABI } from "./contracts/DailyEnergy";
 import { energyABI } from "./contracts/Energy";
+import { mineEmpireDrillABI } from "./contracts/MineEmpireDrill";
 
-export const connect = async () => {
-  await window.ethereum
-    .request({ method: "eth_requestAccounts" })
-    .then((accounts) => {
-      console.log(accounts);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+export const connectedAddress = async () => {
+  var web3 = new Web3(window.ethereum);
+  var acc = web3.eth.accounts;
+  console.log(acc);
 };
 
 export const isConnected = async () => {
@@ -31,6 +31,20 @@ export const isConnected = async () => {
   return ret;
 };
 
+export const getSelectedAddress = async () => {
+  let selectedAddress = "";
+  let addr = window.ethereum.selectedAddress;
+  let i = 0;
+  while (selectedAddress == "" && i < 10) {
+    addr = window.ethereum.selectedAddress;
+    if (addr != null) {
+      selectedAddress = addr;
+    }
+    i = i + 1;
+    await sleep(100);
+  }
+};
+
 export const getDailyEnergyContract = () => {
   var web3 = new Web3(window.ethereum);
   const dailyEnergy = new web3.eth.Contract(dailyEnergyABI, dailyEnergyAddress);
@@ -42,3 +56,16 @@ export const getEnergyContract = () => {
   const dailyEnergy = new web3.eth.Contract(energyABI, energyAddress);
   return dailyEnergy;
 };
+
+export const getMineEmpireDrillContract = () => {
+  var web3 = new Web3(window.ethereum);
+  const mineEmpireDrillContract = new web3.eth.Contract(
+    mineEmpireDrillABI,
+    mineEmpireDrillAddress
+  );
+  return mineEmpireDrillContract;
+};
+
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

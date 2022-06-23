@@ -5,10 +5,13 @@ import {
   Section,
   Line,
 } from "../../globalStyles";
-
 import { Button, CardButtonContainer } from "../../globalStyles";
 import { useEffect, useState } from "react";
-import { isConnected, connect, getEnergyContract } from "../../Web3Client";
+import {
+  isConnected,
+  getEnergyContract,
+  getMineEmpireDrillContract,
+} from "../../Web3Client";
 
 import {
   NFTCard,
@@ -19,17 +22,32 @@ import {
 } from "./MarketStyles";
 import { mineEmpireDrillAddress } from "../../contracts/Addresses";
 import { ethers } from "ethers";
+import { injected } from "../../connectors";
+import { useWeb3React } from "@web3-react/core";
 
 const MarketBody = () => {
-  const [connected, setConnected] = useState(true);
-  const [mintedQuantity, setMintedQuantity] = useState(0);
+  const [connected, setConnected] = useState(false);
+  const [alt1MintedQuantity, setAlt1MintedQuantity] = useState(0);
   const [energyApproved, setEnergyApproved] = useState(false);
+  let selectedAddress = "";
+
+  const { activate } = useWeb3React();
 
   const energyContract = getEnergyContract();
+  const mineEmpireDrillContract = getMineEmpireDrillContract();
+
+  async function updateMintedQuantities() {
+    if (selectedAddress == "") return;
+    const alt1Details = await mineEmpireDrillContract.methods
+      .alternativeMints(1)
+      .call();
+    setAlt1MintedQuantity(alt1Details.minted);
+  }
 
   async function checkEnergyApproved() {
+    if (selectedAddress == "") return;
     const approved = await energyContract.methods
-      .allowance(window.ethereum.selectedAddress, mineEmpireDrillAddress)
+      .allowance(selectedAddress, mineEmpireDrillAddress)
       .call();
     const amount = ethers.utils.formatEther(approved).substring(0, 7);
     if (+amount < 1000) {
@@ -37,39 +55,33 @@ const MarketBody = () => {
     } else {
       setEnergyApproved(true);
     }
-    console.log("checked");
   }
 
-  async function checkConnection() {
-    const connected = await isConnected();
-    setConnected(connected);
+  async function updateState() {
+    if (await isConnected()) {
+      selectedAddress = await injected.getAccount();
+      setConnected(true);
+      await checkEnergyApproved();
+    }
+
+    await updateMintedQuantities();
   }
 
   useEffect(() => {
-    checkConnection();
-    checkEnergyApproved();
+    updateState();
+  });
 
-    window.ethereum.on("accountsChanged", function (accounts) {
-      if (accounts && accounts.length > 0) {
-        setConnected(true);
-      } else {
-        setConnected(false);
-      }
-    });
-  }, []);
-
-  const handleConnect = async () => {
-    await connect();
-  };
-
-  const handleMint = async (id) => {
-    // await mine
+  const handleAltMint = async (id) => {
+    await mineEmpireDrillContract.methods
+      .alternativeMintDrill(id)
+      .send({ from: selectedAddress });
+    await updateMintedQuantities();
   };
 
   const handleEnergyApprove = async () => {
     await energyContract.methods
       .approve(mineEmpireDrillAddress, "1000000000000000000000000")
-      .send({ from: window.ethereum.selectedAddress });
+      .send({ from: selectedAddress });
     await checkEnergyApproved();
   };
 
@@ -113,15 +125,15 @@ const MarketBody = () => {
                   <h3 id="stat">1 / 20</h3>
                   <h3 id="description">Power / Max</h3>
                   <h3 id="stat">1.00 / 48.63</h3>
-                  <h3 id="description">Available / Max</h3>
-                  <h3 id="stat">{mintedQuantity}/100</h3>
+                  <h3 id="description">Minted / Max</h3>
+                  <h3 id="stat">{alt1MintedQuantity}/100</h3>
                 </NFTCardStats>
                 <MintAmount>
                   <CardButtonContainer>
                     {connected ? (
                       <>
                         {energyApproved ? (
-                          <Button onClick={() => handleMint(1)}>
+                          <Button onClick={() => handleAltMint(1)}>
                             Mint Drill
                           </Button>
                         ) : (
@@ -129,7 +141,9 @@ const MarketBody = () => {
                         )}
                       </>
                     ) : (
-                      <Button onClick={handleConnect}>Connect</Button>
+                      <Button onClick={() => activate(injected)}>
+                        Connect
+                      </Button>
                     )}
                   </CardButtonContainer>
                 </MintAmount>

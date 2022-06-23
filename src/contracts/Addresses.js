@@ -1,4 +1,5 @@
-export const dailyEnergyAddress = "0x341EA747bdF30680d8a007a2595f705Ec2DDEF31";
-export const energyAddress = "0x018Bcd399B0209b7c27fBF6c242b4E6C38b53869";
+export const dailyEnergyAddress = "0x3710Ee4C23e7373bbfE37743C81F9f8E9DCE2e62";
+export const energyAddress = "0x9dd8b835794C207E7a7fBbb838C2E3E7620A1712";
 export const mineEmpireDrillAddress =
-  "0xeF3BE888199752b59523B355a210a3D61F1fB79C";
+  "0x55cee3eba670Cd760664C415aED9b04348E857c9";
+export const cosmicCashAddress = "0x3220B875b5A056774B2EfD8D6D42cFC853484B20";
