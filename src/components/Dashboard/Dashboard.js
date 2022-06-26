@@ -1,4 +1,4 @@
-import { Container, Button, Line } from "../../globalStyles";
+import { Container, Button, Line, ButtonContainer } from "../../globalStyles";
 import {
   DashboardSection,
   TitleImageContainer,
@@ -10,7 +10,6 @@ import {
   SmallText,
   SmallTextDollar,
   TokenInfoCardStats,
-  CardButtonContainer,
   DashboardContainer,
   ContainerFlexColumn,
   DataDiv,
@@ -60,9 +59,9 @@ const DashboardBody = () => {
               <h3 id="stat">$1,000</h3>
             </TokenInfoCardStats>
           </CardDescription>
-          <CardButtonContainer>
+          <ButtonContainer>
             <Button>Buy</Button>
-          </CardButtonContainer>
+          </ButtonContainer>
         </TokenInfoCard>
         <TokenInfoCard>
           <TokenInfoCardImgContainer>
@@ -99,9 +98,9 @@ const DashboardBody = () => {
               <h3 id="stat">$1,000</h3>
             </TokenInfoCardStats>
           </CardDescription>
-          <CardButtonContainer>
+          <ButtonContainer>
             <Button>Buy</Button>
-          </CardButtonContainer>
+          </ButtonContainer>
         </TokenInfoCard>
 
         <ContainerFlexColumn>

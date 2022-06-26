@@ -1,6 +1,7 @@
 import {
   BodyContainer,
   Button,
+  ButtonContainer,
   Container,
   Section,
   TitleContainer,
@@ -19,6 +20,7 @@ import {
   Arrow,
   ArrowContainer,
   SwapTitleContainer,
+  ConvertButtonContainer,
 } from "./ConverterStyles";
 import { useEffect, useState } from "react";
 import { isConnected } from "../../Web3Client";
@@ -87,11 +89,15 @@ const ConverterBody = () => {
                     <p>Cosmic Cash: 0</p>
                   </TokenBalanceContainer>
                 </ResourceBox>
-                {connected ? (
-                  <Button>Convert</Button>
-                ) : (
-                  <Button onClick={handleConnect}>Connect</Button>
-                )}
+                <ConvertButtonContainer>
+                  <ButtonContainer>
+                    {connected ? (
+                      <Button>Convert</Button>
+                    ) : (
+                      <Button onClick={handleConnect}>Connect</Button>
+                    )}
+                  </ButtonContainer>
+                </ConvertButtonContainer>
               </Swap>
             </SwapContainer>
           </BodyContainer>

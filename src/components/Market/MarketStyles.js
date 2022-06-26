@@ -59,12 +59,6 @@ export const NFTCardStats = styled.div`
   }
 `;
 
-export const MintAmount = styled.div`
-  display: flex;
-  align-items: center;
-  color: white;
-`;
-
 export const MarketContainer = styled.div`
   display: flex;
   width: 100%;

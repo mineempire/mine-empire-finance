@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  connect,
-  connectedAddress,
-  getDailyEnergyContract,
-  getEnergyContract,
-  isConnected,
-} from "../../Web3Client.js";
+import { getDailyEnergyContract, isConnected } from "../../Web3Client.js";
 import { Link } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import { CgMenuRight } from "react-icons/cg";
@@ -21,6 +15,7 @@ import {
   NavItem,
   ConnectWallet,
   Connected,
+  ClaimButtonContainer,
 } from "./NavbarStyles.js";
 import { Button } from "../../globalStyles.js";
 import { useWeb3React } from "@web3-react/core";
@@ -29,6 +24,7 @@ import { ethers } from "ethers";
 
 const Navbar = () => {
   // web3
+  let loaded = false;
   const [connected, setConnected] = useState(false);
   const [claimableEnergy, setClaimableEnergy] = useState(0);
   let selectedAddress = "";
@@ -36,14 +32,16 @@ const Navbar = () => {
 
   const { activate } = useWeb3React();
 
-  async function updateClaimableEnergy() {
+  async function updateClaimableEnergy(force = false) {
+    if (loaded && !force) return;
     const energy = await dailyEnergyContract.methods
       .getAccumulatedEnergy(selectedAddress)
       .call();
     setClaimableEnergy(ethers.utils.formatEther(energy).substring(0, 4));
   }
 
-  async function updateState() {
+  async function updateState(force = false) {
+    if (loaded && !force) return;
     if (await isConnected()) {
       selectedAddress = await injected.getAccount();
       setConnected(true);
@@ -73,7 +71,7 @@ const Navbar = () => {
     <IconContext.Provider value={{ color: "#fff" }}>
       <Nav>
         <NavbarContainer>
-          <NavLogo to="/">
+          <NavLogo to="/" connected={connected.toString()}>
             <NavIcon src="../../assets/logo.png" alt="logo" />
           </NavLogo>
           <NavMenu show={show}>
@@ -114,7 +112,9 @@ const Navbar = () => {
                 <Connected>
                   <img src="../../assets/energy.png" alt="" />
                   <p>{claimableEnergy}/30</p>
-                  <Button onClick={handleClaimEnergy}>Claim</Button>
+                  <ClaimButtonContainer>
+                    <Button onClick={handleClaimEnergy}>Claim</Button>
+                  </ClaimButtonContainer>
                 </Connected>
               </>
             ) : (

@@ -2,16 +2,22 @@ import Web3 from "web3";
 import {
   dailyEnergyAddress,
   energyAddress,
+  gadesAddress,
+  ironAddress,
   mineEmpireDrillAddress,
 } from "./contracts/Addresses";
 import { dailyEnergyABI } from "./contracts/DailyEnergy";
 import { energyABI } from "./contracts/Energy";
+import { gadesABI } from "./contracts/Gades";
+import { ironABI } from "./contracts/Iron";
 import { mineEmpireDrillABI } from "./contracts/MineEmpireDrill";
+
+export let accountAddress = "";
 
 export const connectedAddress = async () => {
   var web3 = new Web3(window.ethereum);
   var acc = web3.eth.accounts;
-  console.log(acc);
+  accountAddress = acc;
 };
 
 export const isConnected = async () => {
@@ -35,7 +41,7 @@ export const getSelectedAddress = async () => {
   let selectedAddress = "";
   let addr = window.ethereum.selectedAddress;
   let i = 0;
-  while (selectedAddress == "" && i < 10) {
+  while (selectedAddress === "" && i < 10) {
     addr = window.ethereum.selectedAddress;
     if (addr != null) {
       selectedAddress = addr;
@@ -64,6 +70,18 @@ export const getMineEmpireDrillContract = () => {
     mineEmpireDrillAddress
   );
   return mineEmpireDrillContract;
+};
+
+export const getIronContract = () => {
+  var web3 = new Web3(window.ethereum);
+  const ironContract = new web3.eth.Contract(ironABI, ironAddress);
+  return ironContract;
+};
+
+export const getGadesContract = () => {
+  var web3 = new Web3(window.ethereum);
+  const gadesContract = new web3.eth.Contract(gadesABI, gadesAddress);
+  return gadesContract;
 };
 
 export function sleep(ms) {

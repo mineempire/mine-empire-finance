@@ -15,7 +15,7 @@ import {
   CardStats,
 } from "./CosmosStyles";
 
-import { Button, CardButtonContainer } from "../../globalStyles";
+import { Button, ButtonContainer } from "../../globalStyles";
 import { useEffect, useState } from "react";
 import { isConnected } from "../../Web3Client";
 import { injected } from "../../connectors";
@@ -78,10 +78,10 @@ const CosmosBody = () => {
                 <h3 id="stat">8.8 CSC / Day</h3>
                 <h3 id="description">Capacity Level</h3>
                 <h3 id="stat">1</h3>
-                <h3 id="description">Your Stake</h3>
+                <h3 id="description">Ready to Collect</h3>
                 <h3 id="stat">0 / 10,215</h3>
               </CardStats>
-              <CardButtonContainer>
+              <ButtonContainer>
                 {connected ? (
                   <Link to="gades">
                     <Button>View</Button>
@@ -89,7 +89,7 @@ const CosmosBody = () => {
                 ) : (
                   <Button onClick={() => activate(injected)}>Connect</Button>
                 )}
-              </CardButtonContainer>
+              </ButtonContainer>
             </PlanetCard>
             <PlanetCard>
               <PlanetCardImgContainer>
@@ -120,7 +120,7 @@ const CosmosBody = () => {
                 <h3 id="description">Your Production</h3>
                 <h3 id="stat">0 / 981</h3>
               </CardStats>
-              <CardButtonContainer>
+              <ButtonContainer>
                 {connected ? (
                   <Link to="oberon">
                     <Button>View</Button>
@@ -128,7 +128,7 @@ const CosmosBody = () => {
                 ) : (
                   <Button onClick={() => activate(injected)}>Connect</Button>
                 )}
-              </CardButtonContainer>
+              </ButtonContainer>
             </PlanetCard>
             <PlanetCard>
               <PlanetCardImgContainer>
@@ -159,7 +159,7 @@ const CosmosBody = () => {
                 <h3 id="description">Your Production</h3>
                 <h3 id="stat">0 / 191</h3>
               </CardStats>
-              <CardButtonContainer>
+              <ButtonContainer>
                 {connected ? (
                   <Link to="canopsysprime">
                     <Button>View</Button>
@@ -167,7 +167,7 @@ const CosmosBody = () => {
                 ) : (
                   <Button onClick={() => activate(injected)}>Connect</Button>
                 )}
-              </CardButtonContainer>
+              </ButtonContainer>
             </PlanetCard>
           </BodyContainer>
         </Container>

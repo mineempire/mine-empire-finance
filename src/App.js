@@ -13,7 +13,6 @@ import Inventory from "./pages/Inventory";
 import Gades from "./pages/Gades";
 import Oberon from "./pages/Oberon";
 import CanopsysPrime from "./pages/CanopsysPrime";
-import MetamaskProvider from "./MetamaskProvider";
 
 function App() {
   return (

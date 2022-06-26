@@ -4,8 +4,9 @@ import {
   TitleContainer,
   Section,
   Line,
+  Button,
+  ButtonContainer,
 } from "../../globalStyles";
-import { Button, CardButtonContainer } from "../../globalStyles";
 import { useEffect, useState } from "react";
 import {
   isConnected,
@@ -17,7 +18,6 @@ import {
   NFTCard,
   NFTCardHeader,
   NFTCardStats,
-  MintAmount,
   MarketContainer,
 } from "./MarketStyles";
 import { mineEmpireDrillAddress } from "../../contracts/Addresses";
@@ -37,24 +37,34 @@ const MarketBody = () => {
   const mineEmpireDrillContract = getMineEmpireDrillContract();
 
   async function updateMintedQuantities() {
-    if (selectedAddress == "") return;
-    const alt1Details = await mineEmpireDrillContract.methods
+    if (selectedAddress === "") return;
+    await mineEmpireDrillContract.methods
       .alternativeMints(1)
-      .call();
-    setAlt1MintedQuantity(alt1Details.minted);
+      .call()
+      .then((alt1Details) => {
+        setAlt1MintedQuantity(alt1Details.minted);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   async function checkEnergyApproved() {
-    if (selectedAddress == "") return;
-    const approved = await energyContract.methods
+    if (selectedAddress === "") return;
+    await energyContract.methods
       .allowance(selectedAddress, mineEmpireDrillAddress)
-      .call();
-    const amount = ethers.utils.formatEther(approved).substring(0, 7);
-    if (+amount < 1000) {
-      setEnergyApproved(false);
-    } else {
-      setEnergyApproved(true);
-    }
+      .call()
+      .then((result) => {
+        const amount = ethers.utils.formatEther(result).substring(0, 7);
+        if (+amount < 1000) {
+          setEnergyApproved(false);
+        } else {
+          setEnergyApproved(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   async function updateState() {
@@ -69,9 +79,13 @@ const MarketBody = () => {
 
   useEffect(() => {
     updateState();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAltMint = async (id) => {
+    if (selectedAddress === "") {
+      selectedAddress = await injected.getAccount();
+    }
     await mineEmpireDrillContract.methods
       .alternativeMintDrill(id)
       .send({ from: selectedAddress });
@@ -128,25 +142,21 @@ const MarketBody = () => {
                   <h3 id="description">Minted / Max</h3>
                   <h3 id="stat">{alt1MintedQuantity}/100</h3>
                 </NFTCardStats>
-                <MintAmount>
-                  <CardButtonContainer>
-                    {connected ? (
-                      <>
-                        {energyApproved ? (
-                          <Button onClick={() => handleAltMint(1)}>
-                            Mint Drill
-                          </Button>
-                        ) : (
-                          <Button onClick={handleEnergyApprove}>Approve</Button>
-                        )}
-                      </>
-                    ) : (
-                      <Button onClick={() => activate(injected)}>
-                        Connect
-                      </Button>
-                    )}
-                  </CardButtonContainer>
-                </MintAmount>
+                <ButtonContainer>
+                  {connected ? (
+                    <>
+                      {energyApproved ? (
+                        <Button onClick={() => handleAltMint(1)}>
+                          Mint Drill
+                        </Button>
+                      ) : (
+                        <Button onClick={handleEnergyApprove}>Approve</Button>
+                      )}
+                    </>
+                  ) : (
+                    <Button onClick={() => activate(injected)}>Connect</Button>
+                  )}
+                </ButtonContainer>
               </NFTCard>
             </MarketContainer>
           </BodyContainer>

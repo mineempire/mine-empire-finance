@@ -12,7 +12,6 @@ export const Swap = styled.div`
   flex-direction: column;
   justify-content: center;
   padding-bottom: 10px;
-  margin: 0 1rem 3rem 1rem;
 `;
 
 export const SwapTitleContainer = styled.div`
@@ -43,7 +42,7 @@ export const ResourceBox = styled.div`
   background-color: #463d3d;
   justify-content: space-evenly;
   align-items: center;
-  margin: 10px;
+  margin: 10px 15px;
 `;
 
 export const TokenMain = styled.div`
@@ -129,4 +128,8 @@ export const TokenBalanceContainer = styled.div`
   &:hover {
     cursor: pointer;
   }
+`;
+
+export const ConvertButtonContainer = styled.div`
+  display: flex;
 `;

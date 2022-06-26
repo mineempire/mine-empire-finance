@@ -33,7 +33,8 @@ export const NavLogo = styled(Link)`
   display: flex;
   align-items: center;
   z-index: 50;
-  width: 14rem;
+  width: 4rem;
+  width: ${({ connected }) => (connected ? "100%" : "20%")} !important;
 
   @media screen and (max-width: 960px) {
     width: 2rem;
@@ -152,4 +153,9 @@ export const Connected = styled.div`
     font-size: 1rem;
     padding-right: 0.5rem;
   }
+`;
+
+export const ClaimButtonContainer = styled.div`
+  display: flex;
+  margin-right: 15px;
 `;

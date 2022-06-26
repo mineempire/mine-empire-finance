@@ -29,6 +29,9 @@ export const Container = styled.div`
   @media screen and (max-width: 960px) {
     padding: 0 30px;
   }
+  a {
+    width: 100%;
+  }
 `;
 
 export const Button = styled.button`
@@ -37,7 +40,8 @@ export const Button = styled.button`
   box-shadow: 0 0 0px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   font-weight: 700;
-  padding: 10px 25px;
+  padding: 10px;
+  width: 100%;
   background: linear-gradient(
     180deg,
     rgb(223.12, 66.01, 66.01) 0%,
@@ -47,7 +51,6 @@ export const Button = styled.button`
   font-style: normal;
   font-weight: 600;
   color: #fff;
-  margin: 0 10px 0 10px;
   transition: 0.3s;
   opacity: 1;
   &:hover {
@@ -91,9 +94,11 @@ export const BodyContainer = styled.div`
   }
 `;
 
-export const CardButtonContainer = styled.div`
+export const ButtonContainer = styled.div`
   display: flex;
-  margin: 30px auto 30px auto;
+  width: 100%;
+  margin: 15px;
+  justify-content: center;
 `;
 
 export const Line = styled.div`

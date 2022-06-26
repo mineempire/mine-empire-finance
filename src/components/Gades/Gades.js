@@ -1,4 +1,7 @@
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { injected } from "../../connectors";
+import { gadesAddress } from "../../contracts/Addresses";
 import {
   Container,
   TitleContainer,
@@ -7,9 +10,11 @@ import {
   Button,
   Line,
   Space,
-} from "../../globalStyles";
-import {
   ButtonContainer,
+} from "../../globalStyles";
+import { getGadesContract, getMineEmpireDrillContract } from "../../Web3Client";
+import DrillSelectorMenu from "../Planet/DrillSelectorMenu";
+import {
   DescriptionContainer,
   DescriptionRow,
   PlanetBody,
@@ -19,18 +24,155 @@ import {
   ConverterContainer,
   PlanetBodyContainer,
   ConversionBox,
+  SelectDrillModal,
+  SelectDrillModalBg,
+  PlanetButtonContainer,
 } from "../Planet/PlanetStyles";
 
 const GadesBody = () => {
   let selectedAddress = "";
-  const [drillStaked, setDrillStaked] = useState(false);
-  const [drillSelected, setDrillSelected] = useState(true);
+  const [ownedDrills, setOwnedDrills] = useState([]);
+  const [drillStaked, setDrillStaked] = useState(0);
+  const [drillSelected, setDrillSelected] = useState(false);
+  const [showSelect, setShowSelect] = useState(false);
   const [drillApproved, setDrillApproved] = useState(false);
+
   const [drillId, setDrillId] = useState(0);
   const [drillLevel, setDrillLevel] = useState(0);
   const [drillMultiplier, setDrillMultiplier] = useState(0);
+  const [collected, setCollected] = useState(0);
 
-  useEffect(() => {});
+  const gadesContract = getGadesContract();
+  const mineEmpireDrillContract = getMineEmpireDrillContract();
+
+  async function selectDrill(drillId) {
+    setDrillSelected(drillId);
+  }
+
+  async function getCollectedIron() {
+    selectedAddress = await injected.getAccount();
+    await gadesContract.methods
+      .getAccumulatedIron(selectedAddress)
+      .call()
+      .then((result) => {
+        setCollected(Math.floor(+ethers.utils.formatEther(result)));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  async function getStakeInfo() {
+    await gadesContract.methods
+      .getStake(selectedAddress)
+      .call()
+      .then((stake) => {
+        console.log(stake);
+        const drillId = stake[0];
+        if (drillId === "0") {
+          setDrillStaked(false);
+          setDrillId(0);
+          setDrillLevel(0);
+          setDrillMultiplier(0);
+        } else {
+          setDrillSelected(true);
+          setDrillStaked(true);
+          setDrillId(stake["drill"]["drillId"]);
+          setDrillLevel(+stake["drill"]["level"] + 1);
+          setDrillMultiplier(30);
+          getCollectedIron();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  async function getOwnedDrills() {
+    let ownedDrillsFetch = [];
+    let totalSupply = 0;
+    await mineEmpireDrillContract.methods
+      .nextDrillId()
+      .call()
+      .then((result) => {
+        totalSupply = result;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    let ownedDrillIds = [];
+    const addr = selectedAddress;
+    for (let i = 1; i < totalSupply; i++) {
+      await mineEmpireDrillContract.methods
+        .ownerOf(i)
+        .call()
+        .then((ownerOfDrill) => {
+          if (String(ownerOfDrill).toLowerCase() === addr) {
+            ownedDrillIds.push(i);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    for (let i = 0; i < ownedDrillIds.length; i++) {
+      await mineEmpireDrillContract.methods
+        .getDrill(ownedDrillIds[i])
+        .call()
+        .then((drill) => {
+          ownedDrillsFetch.push({
+            drillId: ownedDrillIds[i],
+            drillType: drill["drillType"],
+            level: drill["level"],
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    console.log(ownedDrillsFetch);
+    setOwnedDrills(ownedDrillsFetch);
+  }
+
+  async function updateState() {
+    selectedAddress = await injected.getAccount();
+    await getStakeInfo();
+    await getOwnedDrills();
+  }
+
+  async function handleApprove() {
+    if (drillSelected === 0) {
+      console.log("drill not selected");
+      return;
+    }
+    selectedAddress = await injected.getAccount();
+    await mineEmpireDrillContract.methods
+      .approve(gadesAddress, drillSelected)
+      .send({ from: selectedAddress });
+    setDrillApproved(true);
+  }
+
+  async function handleStake() {
+    selectedAddress = await injected.getAccount();
+    await gadesContract.methods
+      .stake(drillSelected)
+      .send({ from: selectedAddress });
+    await getStakeInfo();
+  }
+
+  useEffect(() => {
+    updateState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // website
+  const handleSelectDrill = () => {
+    setShowSelect(!showSelect);
+  };
+
+  const handleDisableSelect = () => {
+    setShowSelect(false);
+  };
 
   return (
     <>
@@ -42,6 +184,17 @@ const GadesBody = () => {
         </Container>
         <Container>
           <BodyContainer>
+            <SelectDrillModalBg
+              showSelect={showSelect}
+              onClick={handleDisableSelect}
+            >
+              <SelectDrillModal>
+                <DrillSelectorMenu
+                  selectDrill={selectDrill}
+                  ownedDrills={ownedDrills}
+                ></DrillSelectorMenu>
+              </SelectDrillModal>
+            </SelectDrillModalBg>
             <PlanetBodyContainer>
               <PlanetBody>
                 <StakeContainer>
@@ -68,30 +221,41 @@ const GadesBody = () => {
                   </DescriptionRow>
                   <DescriptionRow>
                     <h3 id="description">Collected</h3>
-                    <h3 id="value">7945/7945</h3>
+                    <h3 id="value">{collected}/7945</h3>
                   </DescriptionRow>
-                  <ButtonContainer>
-                    {drillStaked ? (
-                      <>
-                        <Button>Collect</Button>
-                        <Button>Unstake</Button>
-                      </>
-                    ) : (
-                      <>
-                        {drillSelected ? (
-                          <>
-                            {drillApproved ? (
-                              <Button>Stake #123</Button>
-                            ) : (
-                              <Button>Approve #123</Button>
-                            )}
-                          </>
-                        ) : (
-                          <Button>Select Drill</Button>
-                        )}
-                      </>
-                    )}
-                  </ButtonContainer>
+                  <PlanetButtonContainer>
+                    <ButtonContainer>
+                      {drillStaked ? (
+                        <>
+                          <Button>Collect</Button>
+                          <Button>Unstake</Button>
+                        </>
+                      ) : (
+                        <>
+                          {drillId !== 0 ? (
+                            <>
+                              <Button onClick={handleSelectDrill}>
+                                Select Drill
+                              </Button>
+                              {drillApproved ? (
+                                <Button onClick={handleStake}>
+                                  Stake #{drillSelected}
+                                </Button>
+                              ) : (
+                                <Button onClick={handleApprove}>
+                                  Approve #{drillSelected}
+                                </Button>
+                              )}
+                            </>
+                          ) : (
+                            <Button onClick={handleSelectDrill}>
+                              Select Drill
+                            </Button>
+                          )}
+                        </>
+                      )}
+                    </ButtonContainer>
+                  </PlanetButtonContainer>
                 </StakeContainer>
               </PlanetBody>
               <DescriptionContainer>
@@ -131,9 +295,11 @@ const GadesBody = () => {
                   <h3 id="description">Upgrade Cost</h3>
                   <h3 id="value">25 FTM</h3>
                 </DescriptionRow>
-                <ButtonContainer>
-                  <Button>Upgrade</Button>
-                </ButtonContainer>
+                <PlanetButtonContainer>
+                  <ButtonContainer>
+                    <Button>Upgrade</Button>
+                  </ButtonContainer>
+                </PlanetButtonContainer>
               </DescriptionContainer>
             </PlanetBodyContainer>
             <ConverterContainer>
