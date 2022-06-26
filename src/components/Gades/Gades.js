@@ -199,8 +199,8 @@ const GadesBody = () => {
     fetch(drillMetadataIPFSUrl)
       .then((response) => response.json())
       .then((data) => {
+        if (drillLevel === 0) return;
         const power = data["power"];
-        console.log(power[drillLevel - 1]);
         setDrillPower(power[drillLevel - 1]);
       });
   }

@@ -82,7 +82,7 @@ export const CardStats = styled.div`
     color: #949494;
     font-style: normal;
     font-weight: 600;
-    width: 155px;
+    width: 145px;
     margin: 0 0 5px 25px;
     text-align: left;
   }
@@ -91,7 +91,7 @@ export const CardStats = styled.div`
     color: #fff;
     font-style: normal;
     font-weight: 600;
-    width: 155px;
+    width: 165px;
     margin: 0 25px 5px 0;
     text-align: right;
   }

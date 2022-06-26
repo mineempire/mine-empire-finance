@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import {
+  converterAddress,
   cosmicCashAddress,
   dailyEnergyAddress,
   energyAddress,
@@ -7,6 +8,7 @@ import {
   ironAddress,
   mineEmpireDrillAddress,
 } from "./contracts/Addresses";
+import { converterABI } from "./contracts/Converter";
 import { cosmicCashABI } from "./contracts/CosmicCash";
 import { dailyEnergyABI } from "./contracts/DailyEnergy";
 import { energyABI } from "./contracts/Energy";
@@ -83,6 +85,12 @@ export const getIronContract = () => {
 export const getCosmicCashContract = () => {
   var web3 = new Web3(window.ethereum);
   const contract = new web3.eth.Contract(cosmicCashABI, cosmicCashAddress);
+  return contract;
+};
+
+export const getConverterContract = () => {
+  var web3 = new Web3(window.ethereum);
+  const contract = new web3.eth.Contract(converterABI, converterAddress);
   return contract;
 };
 

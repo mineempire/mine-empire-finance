@@ -102,7 +102,6 @@ const InventoryBody = () => {
     fetch(drillMetadataIPFSUrl)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setDrillMetadata(data);
       });
   }
@@ -111,6 +110,7 @@ const InventoryBody = () => {
     getOwnedDrills();
     getDrillMetadata();
     getCosmicCashApproved();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleApprove() {

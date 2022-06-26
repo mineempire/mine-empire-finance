@@ -34,7 +34,8 @@ export const NavLogo = styled(Link)`
   align-items: center;
   z-index: 50;
   width: 4rem;
-  width: ${({ connected }) => (connected ? "100%" : "20%")} !important;
+  width: ${({ connected }) =>
+    connected === "true" ? "100%" : "20%"} !important;
 
   @media screen and (max-width: 960px) {
     width: 2rem;

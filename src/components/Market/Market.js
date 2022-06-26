@@ -96,6 +96,7 @@ const MarketBody = () => {
   };
 
   const handleEnergyApprove = async () => {
+    selectedAddress = await injected.getAccount();
     await energyContract.methods
       .approve(mineEmpireDrillAddress, "1000000000000000000000000")
       .send({ from: selectedAddress });
@@ -143,7 +144,7 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">30 ENERGY</h3>
+                      <h3 id="stat">10 ENERGY</h3>
                       <img src="../../assets/energy.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>

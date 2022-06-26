@@ -84,6 +84,11 @@ export const TokenAmountText = styled.div`
     color: #fff;
     font-size: 2rem;
   }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
   @keyframes gradient {
     0% {
       background-position: 0 0;
@@ -132,4 +137,85 @@ export const TokenBalanceContainer = styled.div`
 
 export const ConvertButtonContainer = styled.div`
   display: flex;
+`;
+
+export const SelectResourceModalBg = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: ${({ showSelect }) => (showSelect ? 1 : 0)};
+  visibility: ${({ showSelect }) => (showSelect ? "visible" : "hidden")};
+  transition: visibility 0s, opacity 0.5s;
+  z-index: 10;
+`;
+
+export const SelectResourceModal = styled.div``;
+
+export const SelectResourceMenu = styled.div`
+  display: flex;
+  width: 360px;
+  background: #463d3d;
+  flex-direction: column;
+  border-radius: 15px;
+`;
+
+export const SelectResourceMenuTitle = styled.div`
+  display: flex;
+  h3 {
+    color: #fff;
+  }
+  margin: 15px;
+`;
+
+export const SelectResourceMenuBody = styled.div`
+  display: flex;
+  margin: 15px;
+  flex-direction: column;
+  max-height: 500px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 0.5em;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+  }
+`;
+
+export const SelectResourceMenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  transition: 0.3s;
+  padding: 5px 5px;
+
+  img {
+    width: 60px;
+    margin: 5px;
+  }
+  p#name {
+    color: #fff;
+    font-size: 1.3rem;
+  }
+  p#qt {
+    color: #df4242;
+    font-size: 1.3rem;
+  }
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+  }
+`;
+
+export const SelectResourceNameImg = styled.div`
+  display: flex;
+  align-items: center;
 `;

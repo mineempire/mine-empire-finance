@@ -71,7 +71,7 @@ const CosmosBody = () => {
                 <h3 id="description">Your Production</h3>
                 <h3 id="stat">0 Iron / Day</h3>
                 <h3 id="description">Max Production</h3>
-                <h3 id="stat">121,558 Iron / Day</h3>
+                <h3 id="stat">121.6k Iron / Day</h3>
                 <h3 id="description">Your CSC Equiv</h3>
                 <h3 id="stat">0 CSC / Day</h3>
                 <h3 id="description">Max CSC Equiv</h3>
@@ -104,27 +104,26 @@ const CosmosBody = () => {
               <PlanetCardProductionInfo>
                 <img src="../../assets/cobalt.png" alt="" />
                 <h3 id="production">Production:</h3>
-                <h3 id="amount">181 / Day</h3>
+                <h3 id="amount">835 / Day</h3>
               </PlanetCardProductionInfo>
               <CardStats>
-                <h3 id="description">Base ROI</h3>
-                <h3 id="stat">237%</h3>
-                <h3 id="description">Max ROI</h3>
-                <h3 id="stat">11,532%</h3>
-                <h3 id="description">Base CSC Equiv</h3>
-                <h3 id="stat">1.56 CSC / Day</h3>
-                <h3 id="description">Max CSC Equiv</h3>
-                <h3 id="stat">75.86 CSC / Day</h3>
-                <h3 id="description">Max Capacity</h3>
-                <h3 id="stat">981</h3>
                 <h3 id="description">Your Production</h3>
-                <h3 id="stat">0 / 981</h3>
+                <h3 id="stat">0 Cobalt / Day</h3>
+                <h3 id="description">Max Production</h3>
+                <h3 id="stat">29.8k Cobalt / Day</h3>
+                <h3 id="description">Your CSC Equiv</h3>
+                <h3 id="stat">0 CSC / Day</h3>
+                <h3 id="description">Max CSC Equiv</h3>
+                <h3 id="stat">11.3 CSC / Day</h3>
+                <h3 id="description">Capacity Level</h3>
+                <h3 id="stat">1</h3>
+                <h3 id="description">Ready to Collect</h3>
+                <h3 id="stat">0 / 2505</h3>
               </CardStats>
               <ButtonContainer>
                 {connected ? (
-                  <Link to="oberon">
-                    <Button>View</Button>
-                  </Link>
+                  // <Link to="oberon">
+                  <Button>Coming Soon</Button>
                 ) : (
                   <Button onClick={() => activate(injected)}>Connect</Button>
                 )}
@@ -143,27 +142,26 @@ const CosmosBody = () => {
               <PlanetCardProductionInfo>
                 <img src="../../assets/bismuth.png" alt="" />
                 <h3 id="production">Production:</h3>
-                <h3 id="amount">17 / Day</h3>
+                <h3 id="amount">179 / Day</h3>
               </PlanetCardProductionInfo>
               <CardStats>
-                <h3 id="description">Base ROI</h3>
-                <h3 id="stat">271%</h3>
-                <h3 id="description">Max ROI</h3>
-                <h3 id="stat">13,188%</h3>
-                <h3 id="description">Base CSC Equiv</h3>
-                <h3 id="stat">1.78 CSC / Day</h3>
-                <h3 id="description">Max CSC Equiv</h3>
-                <h3 id="stat">86.56 CSC / Day</h3>
-                <h3 id="description">Max Capacity</h3>
-                <h3 id="stat">191</h3>
                 <h3 id="description">Your Production</h3>
-                <h3 id="stat">0 / 191</h3>
+                <h3 id="stat">0 Bismuth / Day</h3>
+                <h3 id="description">Max Production</h3>
+                <h3 id="stat">6.4k Bismuth / Day</h3>
+                <h3 id="description">Your CSC Equiv</h3>
+                <h3 id="stat">0 CSC / Day</h3>
+                <h3 id="description">Max CSC Equiv</h3>
+                <h3 id="stat">13.6 CSC / Day</h3>
+                <h3 id="description">Capacity Level</h3>
+                <h3 id="stat">1</h3>
+                <h3 id="description">Ready to Collect</h3>
+                <h3 id="stat">0 / 537</h3>
               </CardStats>
               <ButtonContainer>
                 {connected ? (
-                  <Link to="canopsysprime">
-                    <Button>View</Button>
-                  </Link>
+                  // <Link to="canopsysprime">
+                  <Button>Coming Soon</Button>
                 ) : (
                   <Button onClick={() => activate(injected)}>Connect</Button>
                 )}

@@ -148,6 +148,7 @@ export const SelectDrillModalBg = styled.div`
   opacity: ${({ showSelect }) => (showSelect ? 1 : 0)};
   visibility: ${({ showSelect }) => (showSelect ? "visible" : "hidden")};
   transition: visibility 0s, opacity 0.5s;
+  z-index: 1;
 `;
 
 export const SelectDrillModal = styled.div``;
