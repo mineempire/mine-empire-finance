@@ -4,4 +4,4 @@ export const cosmicCashAddress = "0x3220B875b5A056774B2EfD8D6D42cFC853484B20";
 export const mineEmpireDrillAddress =
   "0x55cee3eba670Cd760664C415aED9b04348E857c9";
 export const ironAddress = "0xd606c66872EBC64cd7329cd8E89d9ac6aa214b9d";
-export const gadesAddress = "0x018Bcd399B0209b7c27fBF6c242b4E6C38b53869";
+export const gadesAddress = "0x464824d4b78d10Dcceba1184E952f781e5d3baF2";

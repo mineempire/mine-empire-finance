@@ -33,7 +33,7 @@ const GadesBody = () => {
   let selectedAddress = "";
   const [ownedDrills, setOwnedDrills] = useState([]);
   const [drillStaked, setDrillStaked] = useState(0);
-  const [drillSelected, setDrillSelected] = useState(false);
+  const [drillSelected, setDrillSelected] = useState(0);
   const [showSelect, setShowSelect] = useState(false);
   const [drillApproved, setDrillApproved] = useState(false);
 
@@ -79,7 +79,7 @@ const GadesBody = () => {
           setDrillStaked(true);
           setDrillId(stake["drill"]["drillId"]);
           setDrillLevel(+stake["drill"]["level"] + 1);
-          setDrillMultiplier(30);
+          setDrillMultiplier(0);
           getCollectedIron();
         }
       })
@@ -160,6 +160,33 @@ const GadesBody = () => {
     await getStakeInfo();
   }
 
+  async function handleCollectIron() {
+    selectedAddress = await injected.getAccount();
+    await gadesContract.methods
+      .collectIron()
+      .send({ from: selectedAddress })
+      .then((result) => {
+        console.log("collect iron result");
+        console.log(result);
+      })
+      .catch((err) => console.log(err));
+    await getCollectedIron();
+  }
+
+  async function handleUnstakeDrill() {
+    selectedAddress = await injected.getAccount();
+    await gadesContract.methods
+      .unstake()
+      .send({ from: selectedAddress })
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => console.log(err));
+    await getStakeInfo();
+    setDrillSelected(0);
+    await getOwnedDrills();
+  }
+
   useEffect(() => {
     updateState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,37 +251,47 @@ const GadesBody = () => {
                     <h3 id="value">{collected}/7945</h3>
                   </DescriptionRow>
                   <PlanetButtonContainer>
-                    <ButtonContainer>
-                      {drillStaked ? (
-                        <>
-                          <Button>Collect</Button>
-                          <Button>Unstake</Button>
-                        </>
-                      ) : (
-                        <>
-                          {drillId !== 0 ? (
-                            <>
+                    {drillStaked ? (
+                      <>
+                        <ButtonContainer>
+                          <Button onClick={handleCollectIron}>Collect</Button>
+                        </ButtonContainer>
+                        <ButtonContainer>
+                          <Button onClick={handleUnstakeDrill}>Unstake</Button>
+                        </ButtonContainer>
+                      </>
+                    ) : (
+                      <>
+                        {drillSelected !== 0 ? (
+                          <>
+                            <ButtonContainer>
                               <Button onClick={handleSelectDrill}>
                                 Select Drill
                               </Button>
-                              {drillApproved ? (
+                            </ButtonContainer>
+                            {drillApproved ? (
+                              <ButtonContainer>
                                 <Button onClick={handleStake}>
                                   Stake #{drillSelected}
                                 </Button>
-                              ) : (
+                              </ButtonContainer>
+                            ) : (
+                              <ButtonContainer>
                                 <Button onClick={handleApprove}>
                                   Approve #{drillSelected}
                                 </Button>
-                              )}
-                            </>
-                          ) : (
+                              </ButtonContainer>
+                            )}
+                          </>
+                        ) : (
+                          <ButtonContainer>
                             <Button onClick={handleSelectDrill}>
                               Select Drill
                             </Button>
-                          )}
-                        </>
-                      )}
-                    </ButtonContainer>
+                          </ButtonContainer>
+                        )}
+                      </>
+                    )}
                   </PlanetButtonContainer>
                 </StakeContainer>
               </PlanetBody>
