@@ -49,7 +49,14 @@ export const DescriptionRow = styled.div`
     font-weight: 400;
   }
   h3#value {
-    color: #fff;
+    color: ${({ miningStatus }) =>
+      miningStatus === "Mining"
+        ? "green"
+        : miningStatus === "Idle"
+        ? "yellow"
+        : miningStatus === "At Capacity"
+        ? "red"
+        : "#fff"};
   }
 `;
 
@@ -168,6 +175,17 @@ export const SelectDrillMenuTitle = styled.div`
 export const SelectDrillMenuBody = styled.div`
   display: flex;
   margin: 15px;
+  flex-direction: column;
+  height: 500px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 0.5em;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+  }
 `;
 
 export const SelectDrillMenuItem = styled.div`
@@ -176,6 +194,7 @@ export const SelectDrillMenuItem = styled.div`
   width: 100%;
   justify-content: space-between;
   transition: 0.3s;
+  padding: 5px 0;
 
   img {
     width: 60px;

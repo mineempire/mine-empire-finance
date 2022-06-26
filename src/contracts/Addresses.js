@@ -5,3 +5,12 @@ export const mineEmpireDrillAddress =
   "0x55cee3eba670Cd760664C415aED9b04348E857c9";
 export const ironAddress = "0xd606c66872EBC64cd7329cd8E89d9ac6aa214b9d";
 export const gadesAddress = "0x464824d4b78d10Dcceba1184E952f781e5d3baF2";
+
+export const gadesMetadataIPFS =
+  "QmeBK5Jbk1y6PLH3PsC4zqNVshpLagNotEL7AHB8SsvTKn";
+export const gadesMetadataIPFSUrl =
+  "https://ipfs.io/ipfs/QmeBK5Jbk1y6PLH3PsC4zqNVshpLagNotEL7AHB8SsvTKn?filename=gades-metadata.json";
+export const drillMetadataIPFS =
+  "QmRduGEWMkrknNecQUe7ZeUWFpiHKCy9tUXZ15h6z2QHLC";
+export const drillMetadataIPFSUrl =
+  "https://ipfs.io/ipfs/QmRduGEWMkrknNecQUe7ZeUWFpiHKCy9tUXZ15h6z2QHLC?filename=drill-metadata.json";

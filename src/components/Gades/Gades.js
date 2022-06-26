@@ -1,7 +1,11 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { injected } from "../../connectors";
-import { gadesAddress } from "../../contracts/Addresses";
+import {
+  drillMetadataIPFSUrl,
+  gadesAddress,
+  gadesMetadataIPFSUrl,
+} from "../../contracts/Addresses";
 import {
   Container,
   TitleContainer,
@@ -12,7 +16,11 @@ import {
   Space,
   ButtonContainer,
 } from "../../globalStyles";
-import { getGadesContract, getMineEmpireDrillContract } from "../../Web3Client";
+import {
+  getCosmicCashContract,
+  getGadesContract,
+  getMineEmpireDrillContract,
+} from "../../Web3Client";
 import DrillSelectorMenu from "../Planet/DrillSelectorMenu";
 import {
   DescriptionContainer,
@@ -31,6 +39,14 @@ import {
 
 const GadesBody = () => {
   let selectedAddress = "";
+  const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
+  const [upgradeCost, setUpgradeCost] = useState(0);
+  const [drillPower, setDrillPower] = useState(0);
+  const [capacityLevel, setCapacityLevel] = useState(0);
+  const [capacity, setCapacity] = useState(0);
+  const [baseProduction, setBaseProduction] = useState(0);
+  const [nextLevelCapacity, setNextLevelCapacity] = useState(0);
+  const [miningStatus, setMiningStatus] = useState("Idle");
   const [ownedDrills, setOwnedDrills] = useState([]);
   const [drillStaked, setDrillStaked] = useState(0);
   const [drillSelected, setDrillSelected] = useState(0);
@@ -44,6 +60,7 @@ const GadesBody = () => {
 
   const gadesContract = getGadesContract();
   const mineEmpireDrillContract = getMineEmpireDrillContract();
+  const cosmicCashContract = getCosmicCashContract();
 
   async function selectDrill(drillId) {
     setDrillSelected(drillId);
@@ -55,7 +72,11 @@ const GadesBody = () => {
       .getAccumulatedIron(selectedAddress)
       .call()
       .then((result) => {
-        setCollected(Math.floor(+ethers.utils.formatEther(result)));
+        const amt = Math.floor(+ethers.utils.formatEther(result));
+        if (amt === capacity && amt > 0) {
+          setMiningStatus("At Capacity");
+        }
+        setCollected(amt);
       })
       .catch((err) => {
         console.log(err);
@@ -67,19 +88,20 @@ const GadesBody = () => {
       .getStake(selectedAddress)
       .call()
       .then((stake) => {
-        console.log(stake);
         const drillId = stake[0];
         if (drillId === "0") {
           setDrillStaked(false);
           setDrillId(0);
           setDrillLevel(0);
           setDrillMultiplier(0);
+          setMiningStatus("Idle");
         } else {
           setDrillSelected(true);
           setDrillStaked(true);
           setDrillId(stake["drill"]["drillId"]);
           setDrillLevel(+stake["drill"]["level"] + 1);
           setDrillMultiplier(0);
+          setMiningStatus("Mining");
           getCollectedIron();
         }
       })
@@ -130,14 +152,70 @@ const GadesBody = () => {
           console.log(err);
         });
     }
-    console.log(ownedDrillsFetch);
     setOwnedDrills(ownedDrillsFetch);
   }
+
+  // TODO
+  async function getGadesMetadata() {
+    selectedAddress = await injected.getAccount();
+    let lv = 0;
+    await gadesContract.methods
+      .userLevel(selectedAddress)
+      .call()
+      .then((result) => {
+        lv = +result + 1;
+        setCapacityLevel(lv);
+      })
+      .catch((err) => console.log(err));
+    await gadesContract.methods
+      .getBaseProduction()
+      .call()
+      .then((result) => {
+        const amt = Math.floor(+ethers.utils.formatEther(result) * 86400);
+        setBaseProduction(amt);
+      })
+      .catch((err) => console.log(err));
+    await cosmicCashContract.methods
+      .allowance(selectedAddress, gadesAddress)
+      .call()
+      .then((result) => {
+        const amount = ethers.utils.formatEther(result).substring(0, 7);
+        if (+amount < 25) {
+          setCosmicCashApproved(false);
+        } else {
+          setCosmicCashApproved(true);
+        }
+      });
+    fetch(gadesMetadataIPFSUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        const levels = data["capacity"];
+        setCapacity(levels[lv - 1]);
+        setNextLevelCapacity(levels[lv]);
+        const upgrades = data["upgrade"];
+        setUpgradeCost(upgrades[lv]);
+      });
+  }
+
+  // TODO
+  async function getDrillMetadata() {
+    fetch(drillMetadataIPFSUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        setDrillPower(data[drillLevel - 1]);
+      });
+  }
+
+  useEffect(() => {
+    getDrillMetadata();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drillLevel]);
 
   async function updateState() {
     selectedAddress = await injected.getAccount();
     await getStakeInfo();
     await getOwnedDrills();
+    await getGadesMetadata();
   }
 
   async function handleApprove() {
@@ -165,10 +243,7 @@ const GadesBody = () => {
     await gadesContract.methods
       .collectIron()
       .send({ from: selectedAddress })
-      .then((result) => {
-        console.log("collect iron result");
-        console.log(result);
-      })
+      .then((result) => {})
       .catch((err) => console.log(err));
     await getCollectedIron();
   }
@@ -185,6 +260,30 @@ const GadesBody = () => {
     await getStakeInfo();
     setDrillSelected(0);
     await getOwnedDrills();
+  }
+
+  async function handleUpgrade() {
+    selectedAddress = await injected.getAccount();
+    await gadesContract.methods
+      .upgrade()
+      .send({
+        from: selectedAddress,
+      })
+      .then((result) => {
+        getGadesMetadata();
+      })
+      .catch((err) => console.log(err));
+    await getGadesContract();
+  }
+
+  async function handleApproveCosmicCash() {
+    selectedAddress = await injected.getAccount();
+    await cosmicCashContract.methods
+      .approve(gadesAddress, "1000000000000000000000")
+      .send({ from: selectedAddress })
+      .then()
+      .catch((err) => console.log(err));
+    await getGadesMetadata();
   }
 
   useEffect(() => {
@@ -233,7 +332,11 @@ const GadesBody = () => {
                     </PlanetTitle>
                   </PlanetTitleContainer>
                   <Line width="320px" />
-                  <Space height="60px" />
+                  <Space height="25px" />
+                  <DescriptionRow miningStatus={miningStatus}>
+                    <h3 id="description">Status</h3>
+                    <h3 id="value">{miningStatus}</h3>
+                  </DescriptionRow>
                   <DescriptionRow>
                     <h3 id="description">Staked Drill</h3>
                     <h3 id="value">#{drillId}</h3>
@@ -248,7 +351,9 @@ const GadesBody = () => {
                   </DescriptionRow>
                   <DescriptionRow>
                     <h3 id="description">Collected</h3>
-                    <h3 id="value">{collected}/7945</h3>
+                    <h3 id="value">
+                      {collected}/{capacity}
+                    </h3>
                   </DescriptionRow>
                   <PlanetButtonContainer>
                     {drillStaked ? (
@@ -310,32 +415,42 @@ const GadesBody = () => {
                 </DescriptionRow>
                 <DescriptionRow>
                   <h3 id="description">Base Production</h3>
-                  <h3 id="value">1,135 / Day</h3>
+                  <h3 id="value">{baseProduction} / Day</h3>
                 </DescriptionRow>
                 <DescriptionRow>
                   <h3 id="description">Your Production</h3>
-                  <h3 id="value">1,135 / Day</h3>
+                  <h3 id="value">
+                    {Math.floor((baseProduction * drillPower) / 100)} / Day
+                  </h3>
                 </DescriptionRow>
                 <DescriptionRow>
                   <h3 id="description">Capacity Level</h3>
-                  <h3 id="value">1 / 10</h3>
+                  <h3 id="value">{capacityLevel} / 10</h3>
                 </DescriptionRow>
                 <DescriptionRow>
                   <h3 id="description">Capacity</h3>
-                  <h3 id="value">7,945</h3>
+                  <h3 id="value">{capacity}</h3>
                 </DescriptionRow>
                 <DescriptionRow>
                   <h3 id="description">Next Level Capacity</h3>
-                  <h3 id="value">7,945</h3>
+                  <h3 id="value">{nextLevelCapacity}</h3>
                 </DescriptionRow>
                 <DescriptionRow>
                   <h3 id="description">Upgrade Cost</h3>
-                  <h3 id="value">25 FTM</h3>
+                  <h3 id="value">{upgradeCost} CSC</h3>
                 </DescriptionRow>
                 <PlanetButtonContainer>
-                  <ButtonContainer>
-                    <Button>Upgrade</Button>
-                  </ButtonContainer>
+                  {cosmicCashApproved ? (
+                    <ButtonContainer>
+                      <Button onClick={handleUpgrade}>Upgrade</Button>
+                    </ButtonContainer>
+                  ) : (
+                    <ButtonContainer>
+                      <Button onClick={handleApproveCosmicCash}>
+                        Approve CSC
+                      </Button>
+                    </ButtonContainer>
+                  )}
                 </PlanetButtonContainer>
               </DescriptionContainer>
             </PlanetBodyContainer>
