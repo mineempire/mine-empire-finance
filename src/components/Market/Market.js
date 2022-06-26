@@ -19,6 +19,8 @@ import {
   NFTCardHeader,
   NFTCardStats,
   MarketContainer,
+  NFTCardStatsRow,
+  NFTCardStatsRowWithImg,
 } from "./MarketStyles";
 import { mineEmpireDrillAddress } from "../../contracts/Addresses";
 import { ethers } from "ethers";
@@ -29,6 +31,7 @@ const MarketBody = () => {
   const [connected, setConnected] = useState(false);
   const [alt1MintedQuantity, setAlt1MintedQuantity] = useState(0);
   const [energyApproved, setEnergyApproved] = useState(false);
+  const miningPower = 30;
   let selectedAddress = "";
 
   const { activate } = useWeb3React();
@@ -120,9 +123,15 @@ const MarketBody = () => {
             <MarketContainer>
               <NFTCard>
                 <NFTCardHeader>
-                  <img src="../../assets/level-1-icon.png" alt="" />
+                  <img
+                    src="../../assets/asteroid-drill-levels/level-0-level.png"
+                    alt=""
+                  />
                   <h1>Asteroid Drill</h1>
-                  <img src="../../assets/power-1.00-icon.png" alt="" />
+                  <img
+                    src="../../assets/asteroid-drill-levels/level-0-power.png"
+                    alt=""
+                  />
                 </NFTCardHeader>
                 <img
                   id="drill-image"
@@ -131,16 +140,29 @@ const MarketBody = () => {
                 />
                 <Line width="320px" />
                 <NFTCardStats>
-                  <h3 id="description">Price</h3>
-                  <h3 id="stat">30 ENERGY</h3>
-                  <h3 id="description">Speciality</h3>
-                  <h3 id="stat">Asteroid</h3>
-                  <h3 id="description">Level / Max</h3>
-                  <h3 id="stat">1 / 20</h3>
-                  <h3 id="description">Power / Max</h3>
-                  <h3 id="stat">1.00 / 48.63</h3>
-                  <h3 id="description">Minted / Max</h3>
-                  <h3 id="stat">{alt1MintedQuantity}/100</h3>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Price</h3>
+                    <NFTCardStatsRowWithImg>
+                      <h3 id="stat">30 ENERGY</h3>
+                      <img src="../../assets/energy.png" alt="" />
+                    </NFTCardStatsRowWithImg>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Speciality</h3>
+                    <h3 id="stat">Asteroid</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Level / Max</h3>
+                    <h3 id="stat">1 / 20</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Power / Max</h3>
+                    <h3 id="stat">{miningPower / 100} / 48.63</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Minted / Max</h3>
+                    <h3 id="stat">{alt1MintedQuantity}/100</h3>
+                  </NFTCardStatsRow>
                 </NFTCardStats>
                 <ButtonContainer>
                   {connected ? (

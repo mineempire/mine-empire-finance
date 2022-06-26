@@ -55,7 +55,6 @@ const GadesBody = () => {
 
   const [drillId, setDrillId] = useState(0);
   const [drillLevel, setDrillLevel] = useState(0);
-  const [drillMultiplier, setDrillMultiplier] = useState(0);
   const [collected, setCollected] = useState(0);
 
   const gadesContract = getGadesContract();
@@ -93,14 +92,12 @@ const GadesBody = () => {
           setDrillStaked(false);
           setDrillId(0);
           setDrillLevel(0);
-          setDrillMultiplier(0);
           setMiningStatus("Idle");
         } else {
           setDrillSelected(true);
           setDrillStaked(true);
           setDrillId(stake["drill"]["drillId"]);
           setDrillLevel(+stake["drill"]["level"] + 1);
-          setDrillMultiplier(0);
           setMiningStatus("Mining");
           getCollectedIron();
         }
@@ -202,7 +199,9 @@ const GadesBody = () => {
     fetch(drillMetadataIPFSUrl)
       .then((response) => response.json())
       .then((data) => {
-        setDrillPower(data[drillLevel - 1]);
+        const power = data["power"];
+        console.log(power[drillLevel - 1]);
+        setDrillPower(power[drillLevel - 1]);
       });
   }
 
@@ -347,7 +346,7 @@ const GadesBody = () => {
                   </DescriptionRow>
                   <DescriptionRow>
                     <h3 id="description">Drill Multiplier</h3>
-                    <h3 id="value">x{drillMultiplier}</h3>
+                    <h3 id="value">x{drillPower / 100}</h3>
                   </DescriptionRow>
                   <DescriptionRow>
                     <h3 id="description">Collected</h3>

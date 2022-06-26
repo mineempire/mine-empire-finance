@@ -11,6 +11,6 @@ export const gadesMetadataIPFS =
 export const gadesMetadataIPFSUrl =
   "https://ipfs.io/ipfs/QmeBK5Jbk1y6PLH3PsC4zqNVshpLagNotEL7AHB8SsvTKn?filename=gades-metadata.json";
 export const drillMetadataIPFS =
-  "QmRduGEWMkrknNecQUe7ZeUWFpiHKCy9tUXZ15h6z2QHLC";
+  "QmQf5PixuZzJE47Qanot99QMrkRPkGHCjoonDDoXennCJV";
 export const drillMetadataIPFSUrl =
-  "https://ipfs.io/ipfs/QmRduGEWMkrknNecQUe7ZeUWFpiHKCy9tUXZ15h6z2QHLC?filename=drill-metadata.json";
+  "https://ipfs.io/ipfs/QmQf5PixuZzJE47Qanot99QMrkRPkGHCjoonDDoXennCJV?filename=drill-metadata.json";
