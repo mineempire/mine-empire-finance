@@ -13,8 +13,38 @@ import Inventory from "./pages/Inventory";
 import Gades from "./pages/Gades";
 import Oberon from "./pages/Oberon";
 import CanopsysPrime from "./pages/CanopsysPrime";
+import { useEffect } from "react";
 
 function App() {
+  const switchNetwork = async () => {
+    if (window.ethereum.networkVersion !== 4002) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0xfa2" }],
+        });
+      } catch (err) {
+        if (err.code === 4902) {
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainName: "Fantom Testnet",
+                chainId: "0xfa2",
+                nativeCurrency: { name: "Fantom", decimals: 18, symbol: "FTM" },
+                rpcUrls: ["https://rpc.testnet.fantom.network/"],
+              },
+            ],
+          });
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    switchNetwork();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <GlobalStyle />
