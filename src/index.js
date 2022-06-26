@@ -6,7 +6,6 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import { MoralisProvider } from "react-moralis";
 
 function getLibrary(provider) {
   return new Web3Provider(provider);
@@ -16,12 +15,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Web3ReactProvider getLibrary={getLibrary}>
     <BrowserRouter>
-      <MoralisProvider
-        serverUrl="https://taa4lylq0t3n.usemoralis.com:2053/server"
-        appId="RkqQalyLw2ct29G9UPxqOsaKnkXBba6jS30XYUpB"
-      >
-        <App />
-      </MoralisProvider>
+      <App />
     </BrowserRouter>
   </Web3ReactProvider>
 );
