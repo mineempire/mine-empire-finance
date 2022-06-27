@@ -60,7 +60,7 @@ const DashboardBody = () => {
             </TokenInfoCardStats>
           </CardDescription>
           <ButtonContainer>
-            <Button>Buy</Button>
+            <Button>Coming Soon</Button>
           </ButtonContainer>
         </TokenInfoCard>
         <TokenInfoCard>
@@ -99,7 +99,7 @@ const DashboardBody = () => {
             </TokenInfoCardStats>
           </CardDescription>
           <ButtonContainer>
-            <Button>Buy</Button>
+            <Button>Coming Soon</Button>
           </ButtonContainer>
         </TokenInfoCard>
 

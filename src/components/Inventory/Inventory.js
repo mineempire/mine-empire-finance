@@ -139,6 +139,8 @@ const InventoryBody = () => {
         <Container>
           <TitleContainer>
             <h1>Inventory</h1>
+            <h3>View your drills, resources and relics in one place!</h3>
+            <h3>Visit the market to purchase items.</h3>
           </TitleContainer>
         </Container>
         <Container>
