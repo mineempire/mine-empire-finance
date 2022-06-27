@@ -2,6 +2,7 @@ import Web3 from "web3";
 import {
   converterAddress,
   cosmicCashAddress,
+  CSCMinterAddress,
   dailyEnergyAddress,
   energyAddress,
   gadesAddress,
@@ -10,6 +11,7 @@ import {
 } from "./contracts/Addresses";
 import { converterABI } from "./contracts/Converter";
 import { cosmicCashABI } from "./contracts/CosmicCash";
+import { CSCMinterABI } from "./contracts/CSCMinter";
 import { dailyEnergyABI } from "./contracts/DailyEnergy";
 import { energyABI } from "./contracts/Energy";
 import { gadesABI } from "./contracts/Gades";
@@ -98,6 +100,12 @@ export const getGadesContract = () => {
   var web3 = new Web3(window.ethereum);
   const gadesContract = new web3.eth.Contract(gadesABI, gadesAddress);
   return gadesContract;
+};
+
+export const getCSCMinter = () => {
+  var web3 = new Web3(window.ethereum);
+  const contract = new web3.eth.Contract(CSCMinterABI, CSCMinterAddress);
+  return contract;
 };
 
 export function sleep(ms) {

@@ -6,6 +6,7 @@ export const mineEmpireDrillAddress =
 export const ironAddress = "0x97BeEE045Ab8952D561AAf665ecb1B9e1Ed4D4bd";
 export const gadesAddress = "0x20afBA55a904E51746474E242BfA0faCBb17629C";
 export const converterAddress = "0x490030418493A8f6C858081dFeBff2ba91110F71";
+export const CSCMinterAddress = "0xeb194b17467f98F6AD131c2EDfF094E3a42f8585";
 
 export const gadesMetadataIPFS =
   "QmeBK5Jbk1y6PLH3PsC4zqNVshpLagNotEL7AHB8SsvTKn";
