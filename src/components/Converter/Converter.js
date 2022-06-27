@@ -32,6 +32,7 @@ import {
 import { useEffect, useState } from "react";
 import {
   getConverterContract,
+  getCosmicCashContract,
   getIronContract,
   isConnected,
 } from "../../Web3Client";
@@ -45,7 +46,8 @@ const ConverterBody = () => {
   const [showSelect, setShowSelect] = useState(false);
   const [selectedResource, setSelectedResource] = useState("iron");
   const [selectedQuantity, setSelectedQuantity] = useState(0);
-  const [inputQuantity] = useState();
+  const [cosmicCashQuantity, setCosmicCashQuantity] = useState();
+  const [inputQuantity, setInputQuantity] = useState();
   const [ouputQuantity, setOutputQuantity] = useState(0);
   const [ironQuantity, setIronQuantity] = useState(0);
   const [conversionRate, setConversionRate] = useState(13809);
@@ -57,6 +59,7 @@ const ConverterBody = () => {
   const { activate } = useWeb3React();
 
   const ironContract = getIronContract();
+  const cscContract = getCosmicCashContract();
   const converterContract = getConverterContract();
 
   async function checkConnection() {
@@ -90,6 +93,13 @@ const ConverterBody = () => {
         setSelectedQuantity(amt);
       });
     getApproved();
+    await cscContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(+ethers.utils.formatEther(result));
+        setCosmicCashQuantity(amt);
+      });
   }
 
   useEffect(() => {
@@ -132,6 +142,7 @@ const ConverterBody = () => {
     const amt = event.target.value;
     const outputAmount = amt / conversionRate;
     setOutputQuantity(outputAmount);
+    setInputQuantity(amt);
   }
 
   async function handleApprove() {
@@ -147,6 +158,7 @@ const ConverterBody = () => {
   async function handleConvert() {
     if (selectedResource !== "iron") return;
     const addr = await injected.getAccount();
+    console.log(inputQuantity);
     await converterContract.methods
       .convert(ironAddress, inputQuantity + "000000000000000000")
       .send({ from: addr })
@@ -270,7 +282,7 @@ const ConverterBody = () => {
                     </TokenAmountContainer>
                   </TokenMain>
                   <TokenBalanceContainer>
-                    <p>Cosmic Cash: 0</p>
+                    <p>Cosmic Cash: {cosmicCashQuantity}</p>
                   </TokenBalanceContainer>
                 </ResourceBox>
                 <ConvertButtonContainer>

@@ -105,6 +105,11 @@ const Navbar = () => {
                 <NavLinks onClick={handleClick}>Inventory</NavLinks>
               </Link>
             </NavItem>
+            <NavItem>
+              <Link to="/rewards">
+                <NavLinks onClick={handleClick}>Rewards</NavLinks>
+              </Link>
+            </NavItem>
           </NavMenu>
           <ConnectWallet>
             {connected ? (
