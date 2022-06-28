@@ -5,6 +5,7 @@ import {
   drillMetadataIPFSUrl,
   gadesAddress,
   gadesMetadataIPFSUrl,
+  mineEmpireDrillAddress,
 } from "../../contracts/Addresses";
 import {
   Container,
@@ -108,39 +109,36 @@ const GadesBody = () => {
   }
 
   async function getOwnedDrills() {
-    let ownedDrillsFetch = [];
-    let totalSupply = 0;
-    await mineEmpireDrillContract.methods
-      .nextDrillId()
-      .call()
-      .then((result) => {
-        totalSupply = result;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    let ownedDrillIds = [];
-    const addr = selectedAddress;
-    for (let i = 1; i < totalSupply; i++) {
-      await mineEmpireDrillContract.methods
-        .ownerOf(i)
-        .call()
-        .then((ownerOfDrill) => {
-          if (String(ownerOfDrill).toLowerCase() === addr) {
-            ownedDrillIds.push(i);
+    const addr = await injected.getAccount();
+    let fetchedDrills = [];
+    let ids = new Set();
+    let url =
+      "https://api-testnet.ftmscan.com/api?module=account&action=tokennfttx&contractaddress=" +
+      mineEmpireDrillAddress +
+      "&address=" +
+      addr +
+      "&startblock=0&endblock=99999999&page=1&offset=100&sort=asc&apikey=YourApiKeyToken";
+    console.log(url);
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const result = data["result"];
+        for (let i = 0; i < result.length; i++) {
+          if (result[i]["to"] === addr) {
+            ids.add(result[i]["tokenID"]);
+          } else if (result[i]["from"] === addr) {
+            ids.delete(result[i]["tokenID"]);
           }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-    for (let i = 0; i < ownedDrillIds.length; i++) {
+        }
+      });
+    const itr = ids.keys();
+    for (const key of itr) {
       await mineEmpireDrillContract.methods
-        .getDrill(ownedDrillIds[i])
+        .getDrill(key)
         .call()
         .then((drill) => {
-          ownedDrillsFetch.push({
-            drillId: ownedDrillIds[i],
+          fetchedDrills.push({
+            drillId: key,
             drillType: drill["drillType"],
             level: drill["level"],
           });
@@ -149,7 +147,8 @@ const GadesBody = () => {
           console.log(err);
         });
     }
-    setOwnedDrills(ownedDrillsFetch);
+
+    setOwnedDrills(fetchedDrills);
   }
 
   // TODO

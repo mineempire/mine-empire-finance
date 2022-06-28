@@ -37,40 +37,39 @@ const InventoryBody = () => {
   const mineEmpireDrillContract = getMineEmpireDrillContract();
   const cosmicCashContract = getCosmicCashContract();
 
+  const nullAddr = "0x0000000000000000000000000000000000000000";
+
   async function getOwnedDrills() {
-    let totalSupply = 0;
-    await mineEmpireDrillContract.methods
-      .nextDrillId()
-      .call()
-      .then((result) => {
-        totalSupply = result;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    let ownedDrillIds = [];
+    let fetchedDrills = [];
     const addr = await injected.getAccount();
-    for (let i = 1; i < totalSupply; i++) {
-      await mineEmpireDrillContract.methods
-        .ownerOf(i)
-        .call()
-        .then((ownerOfDrill) => {
-          if (String(ownerOfDrill).toLowerCase() === addr) {
-            ownedDrillIds.push(i);
+    let ids = new Set();
+    let url =
+      "https://api-testnet.ftmscan.com/api?module=account&action=tokennfttx&contractaddress=" +
+      mineEmpireDrillAddress +
+      "&address=" +
+      addr +
+      "&startblock=0&endblock=99999999&page=1&offset=100&sort=asc&apikey=YourApiKeyToken";
+    console.log(url);
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const result = data["result"];
+        for (let i = 0; i < result.length; i++) {
+          if (result[i]["to"] === addr) {
+            ids.add(result[i]["tokenID"]);
+          } else if (result[i]["from"] === addr) {
+            ids.delete(result[i]["tokenID"]);
           }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-    ownedDrills.splice(0, ownedDrills.length);
-    for (let i = 0; i < ownedDrillIds.length; i++) {
+        }
+      });
+    const itr = ids.keys();
+    for (const key of itr) {
       await mineEmpireDrillContract.methods
-        .getDrill(ownedDrillIds[i])
+        .getDrill(key)
         .call()
         .then((drill) => {
-          ownedDrills.push({
-            drillId: ownedDrillIds[i],
+          fetchedDrills.push({
+            drillId: key,
             drillType: drill["drillType"],
             level: drill["level"],
           });
@@ -79,8 +78,9 @@ const InventoryBody = () => {
           console.log(err);
         });
     }
+
     setDrillsLoaded(true);
-    setOwnedDrills(ownedDrills);
+    setOwnedDrills(fetchedDrills);
   }
 
   async function getCosmicCashApproved() {
