@@ -37,8 +37,6 @@ const InventoryBody = () => {
   const mineEmpireDrillContract = getMineEmpireDrillContract();
   const cosmicCashContract = getCosmicCashContract();
 
-  const nullAddr = "0x0000000000000000000000000000000000000000";
-
   async function getOwnedDrills() {
     let fetchedDrills = [];
     const addr = await injected.getAccount();
