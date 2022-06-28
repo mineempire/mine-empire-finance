@@ -62,6 +62,26 @@ export const Button = styled.button`
   }
 `;
 
+export const ButtonGray = styled.button`
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 0 0px rgba(0, 0, 0, 0.15);
+  font-weight: 700;
+  padding: 10px;
+  width: 100%;
+  background: linear-gradient(
+    180deg,
+    rgb(151, 132, 132) 0%,
+    rgb(46, 36, 50) 100%
+  );
+  font-size: ${({ size }) => (size ? size : "16px")};
+  font-style: normal;
+  font-weight: 600;
+  color: #fff;
+  transition: 0.3s;
+  opacity: 1;
+`;
+
 export const Section = styled.section`
   background-position: center;
   background-size: cover;

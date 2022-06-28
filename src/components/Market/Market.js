@@ -6,6 +6,7 @@ import {
   Line,
   Button,
   ButtonContainer,
+  ButtonGray,
 } from "../../globalStyles";
 import { useEffect, useState } from "react";
 import {
@@ -30,6 +31,9 @@ import { useWeb3React } from "@web3-react/core";
 const MarketBody = () => {
   const [connected, setConnected] = useState(false);
   const [alt1MintedQuantity, setAlt1MintedQuantity] = useState(0);
+  const [alt1MaxedOut, setAlt1MaxedOut] = useState(false);
+  const [alt2MintedQuantity, setAlt2MintedQuantity] = useState(0);
+  const [alt2MaxedOut, setAlt2MaxedOut] = useState(false);
   const [energyApproved, setEnergyApproved] = useState(false);
   const miningPower = 30;
   let selectedAddress = "";
@@ -40,12 +44,27 @@ const MarketBody = () => {
   const mineEmpireDrillContract = getMineEmpireDrillContract();
 
   async function updateMintedQuantities() {
-    if (selectedAddress === "") return;
+    selectedAddress = await injected.getAccount();
     await mineEmpireDrillContract.methods
       .alternativeMints(1)
       .call()
       .then((alt1Details) => {
         setAlt1MintedQuantity(alt1Details.minted);
+        if (String(alt1Details.minted) === "500") {
+          setAlt1MaxedOut(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    await mineEmpireDrillContract.methods
+      .alternativeMints(2)
+      .call()
+      .then((alt2Details) => {
+        setAlt2MintedQuantity(alt2Details.minted);
+        if (String(alt2Details.minted) === "500") {
+          setAlt2MaxedOut(true);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -162,16 +181,87 @@ const MarketBody = () => {
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Minted / Max</h3>
-                    <h3 id="stat">{alt1MintedQuantity}/100</h3>
+                    <h3 id="stat">{alt2MintedQuantity}/500</h3>
                   </NFTCardStatsRow>
                 </NFTCardStats>
                 <ButtonContainer>
                   {connected ? (
                     <>
                       {energyApproved ? (
-                        <Button onClick={() => handleAltMint(1)}>
-                          Mint Drill
-                        </Button>
+                        <>
+                          {alt2MaxedOut ? (
+                            <ButtonGray>Minted Out</ButtonGray>
+                          ) : (
+                            <Button onClick={() => handleAltMint(2)}>
+                              Mint Drill
+                            </Button>
+                          )}
+                        </>
+                      ) : (
+                        <Button onClick={handleEnergyApprove}>Approve</Button>
+                      )}
+                    </>
+                  ) : (
+                    <Button onClick={() => activate(injected)}>Connect</Button>
+                  )}
+                </ButtonContainer>
+              </NFTCard>
+              <NFTCard>
+                <NFTCardHeader>
+                  <img
+                    src="../../assets/asteroid-drill-levels/level-0-level.png"
+                    alt=""
+                  />
+                  <h1>Asteroid Drill</h1>
+                  <img
+                    src="../../assets/asteroid-drill-levels/level-0-power.png"
+                    alt=""
+                  />
+                </NFTCardHeader>
+                <img
+                  id="drill-image"
+                  src="../../assets/asteroid-drill.png"
+                  alt=""
+                />
+                <Line width="320px" />
+                <NFTCardStats>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Price</h3>
+                    <NFTCardStatsRowWithImg>
+                      <h3 id="stat">10 ENERGY</h3>
+                      <img src="../../assets/energy.png" alt="" />
+                    </NFTCardStatsRowWithImg>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Speciality</h3>
+                    <h3 id="stat">Asteroid</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Level / Max</h3>
+                    <h3 id="stat">1 / 20</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Power / Max</h3>
+                    <h3 id="stat">{miningPower / 100} / 48.63</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Minted / Max</h3>
+                    <h3 id="stat">{alt1MintedQuantity}/500</h3>
+                  </NFTCardStatsRow>
+                </NFTCardStats>
+                <ButtonContainer>
+                  {connected ? (
+                    <>
+                      {energyApproved ? (
+                        <>
+                          {alt1MaxedOut ? (
+                            <ButtonGray>Minted Out</ButtonGray>
+                          ) : (
+                            <Button onClick={() => handleAltMint(1)}>
+                              Mint Drill
+                            </Button>
+                          )}
+                        </>
                       ) : (
                         <Button onClick={handleEnergyApprove}>Approve</Button>
                       )}
