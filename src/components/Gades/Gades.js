@@ -49,6 +49,7 @@ const GadesBody = () => {
   const [nextLevelCapacity, setNextLevelCapacity] = useState(0);
   const [miningStatus, setMiningStatus] = useState("Idle");
   const [ownedDrills, setOwnedDrills] = useState([]);
+  const [drillsLoaded, setDrillsLoaded] = useState(false);
   const [drillStaked, setDrillStaked] = useState(0);
   const [drillSelected, setDrillSelected] = useState(0);
   const [showSelect, setShowSelect] = useState(false);
@@ -147,8 +148,8 @@ const GadesBody = () => {
           console.log(err);
         });
     }
-
     setOwnedDrills(fetchedDrills);
+    setDrillsLoaded(true);
   }
 
   // TODO
@@ -316,6 +317,7 @@ const GadesBody = () => {
                 <DrillSelectorMenu
                   selectDrill={selectDrill}
                   ownedDrills={ownedDrills}
+                  drillsLoaded={drillsLoaded}
                 ></DrillSelectorMenu>
               </SelectDrillModal>
             </SelectDrillModalBg>
