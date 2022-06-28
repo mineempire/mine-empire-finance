@@ -34,6 +34,8 @@ const MarketBody = () => {
   const [alt1MaxedOut, setAlt1MaxedOut] = useState(false);
   const [alt2MintedQuantity, setAlt2MintedQuantity] = useState(0);
   const [alt2MaxedOut, setAlt2MaxedOut] = useState(false);
+  const [alt3MintedQuantity, setAlt3MintedQuantity] = useState(0);
+  const [alt3MaxedOut, setAlt3MaxedOut] = useState(false);
   const [energyApproved, setEnergyApproved] = useState(false);
   const miningPower = 30;
   let selectedAddress = "";
@@ -64,6 +66,18 @@ const MarketBody = () => {
         setAlt2MintedQuantity(alt2Details.minted);
         if (String(alt2Details.minted) === "500") {
           setAlt2MaxedOut(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    await mineEmpireDrillContract.methods
+      .alternativeMints(3)
+      .call()
+      .then((alt3Details) => {
+        setAlt3MintedQuantity(alt3Details.minted);
+        if (String(alt3Details.minted) === "10000") {
+          setAlt3MaxedOut(true);
         }
       })
       .catch((err) => {
@@ -177,7 +191,72 @@ const MarketBody = () => {
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Power / Max</h3>
-                    <h3 id="stat">{miningPower / 100} / 48.63</h3>
+                    <h3 id="stat">{miningPower / 100} / 35.70</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Minted / Max</h3>
+                    <h3 id="stat">{alt3MintedQuantity}/10000</h3>
+                  </NFTCardStatsRow>
+                </NFTCardStats>
+                <ButtonContainer>
+                  {connected ? (
+                    <>
+                      {energyApproved ? (
+                        <>
+                          {alt3MaxedOut ? (
+                            <ButtonGray>Minted Out</ButtonGray>
+                          ) : (
+                            <Button onClick={() => handleAltMint(3)}>
+                              Mint Drill
+                            </Button>
+                          )}
+                        </>
+                      ) : (
+                        <Button onClick={handleEnergyApprove}>Approve</Button>
+                      )}
+                    </>
+                  ) : (
+                    <Button onClick={() => activate(injected)}>Connect</Button>
+                  )}
+                </ButtonContainer>
+              </NFTCard>
+              <NFTCard>
+                <NFTCardHeader>
+                  <img
+                    src="../../assets/asteroid-drill-levels/level-0-level.png"
+                    alt=""
+                  />
+                  <h1>Asteroid Drill</h1>
+                  <img
+                    src="../../assets/asteroid-drill-levels/level-0-power.png"
+                    alt=""
+                  />
+                </NFTCardHeader>
+                <img
+                  id="drill-image"
+                  src="../../assets/asteroid-drill.png"
+                  alt=""
+                />
+                <Line width="320px" />
+                <NFTCardStats>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Price</h3>
+                    <NFTCardStatsRowWithImg>
+                      <h3 id="stat">10 ENERGY</h3>
+                      <img src="../../assets/energy.png" alt="" />
+                    </NFTCardStatsRowWithImg>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Speciality</h3>
+                    <h3 id="stat">Asteroid</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Level / Max</h3>
+                    <h3 id="stat">1 / 20</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Power / Max</h3>
+                    <h3 id="stat">{miningPower / 100} / 35.70</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Minted / Max</h3>
@@ -242,7 +321,7 @@ const MarketBody = () => {
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Power / Max</h3>
-                    <h3 id="stat">{miningPower / 100} / 48.63</h3>
+                    <h3 id="stat">{miningPower / 100} / 35.70</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Minted / Max</h3>

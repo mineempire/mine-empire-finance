@@ -2,6 +2,7 @@ import {
   BodyContainer,
   Button,
   ButtonContainer,
+  ButtonGray,
   Container,
   Line,
   Section,
@@ -46,7 +47,7 @@ const InventoryBody = () => {
       mineEmpireDrillAddress +
       "&address=" +
       addr +
-      "&startblock=0&endblock=99999999&page=1&offset=100&sort=asc&apikey=YourApiKeyToken";
+      "&startblock=0&endblock=99999999&page=1&offset=100&sort=asc&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
     console.log(url);
     await fetch(url)
       .then((response) => response.json())
@@ -197,11 +198,19 @@ const InventoryBody = () => {
                       </DrillStats>
                       <ButtonContainer>
                         {cosmicCashApproved ? (
-                          <Button
-                            onClick={() => handleUpgradeDrill(drill.drillId)}
-                          >
-                            Upgrade Drill
-                          </Button>
+                          <>
+                            {+drill.level === 19 ? (
+                              <ButtonGray>MAX</ButtonGray>
+                            ) : (
+                              <Button
+                                onClick={() =>
+                                  handleUpgradeDrill(drill.drillId)
+                                }
+                              >
+                                Upgrade Drill
+                              </Button>
+                            )}
+                          </>
                         ) : (
                           <Button onClick={handleApprove}>Approve CSC</Button>
                         )}

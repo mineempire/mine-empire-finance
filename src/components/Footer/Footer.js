@@ -6,6 +6,7 @@ import {
   FooterSocialIcon,
   FooterWrapper,
   FooterContainerFlex,
+  FooterNotes,
 } from "./FooterStyles";
 
 function Footer() {
@@ -15,7 +16,6 @@ function Footer() {
         <FooterLogo to="/">
           <SocialIcon src="../../assets/logo.png" />
         </FooterLogo>
-
         <FooterSocialIcon
           href="https://twitter.com/mine_empire"
           target="_blank"
@@ -45,6 +45,9 @@ function Footer() {
           <img src="../../assets/gitbook.png" alt="" />
         </FooterSocialIcon>
       </FooterContainerFlex>
+      <FooterNotes>
+        <p>Powered by FtmScan.com APIs</p>
+      </FooterNotes>
     </FooterWrapper>
   );
 }

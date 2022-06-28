@@ -16,6 +16,7 @@ import {
   Line,
   Space,
   ButtonContainer,
+  ButtonGray,
 } from "../../globalStyles";
 import {
   getCosmicCashContract,
@@ -118,7 +119,7 @@ const GadesBody = () => {
       mineEmpireDrillAddress +
       "&address=" +
       addr +
-      "&startblock=0&endblock=99999999&page=1&offset=100&sort=asc&apikey=YourApiKeyToken";
+      "&startblock=0&endblock=99999999&page=1&offset=100&sort=asc&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
     console.log(url);
     await fetch(url)
       .then((response) => response.json())
@@ -441,9 +442,19 @@ const GadesBody = () => {
                 </DescriptionRow>
                 <PlanetButtonContainer>
                   {cosmicCashApproved ? (
-                    <ButtonContainer>
-                      <Button onClick={handleUpgrade}>Upgrade</Button>
-                    </ButtonContainer>
+                    <>
+                      {capacityLevel === 10 ? (
+                        <ButtonContainer>
+                          <ButtonGray>MAX</ButtonGray>
+                        </ButtonContainer>
+                      ) : (
+                        <ButtonContainer>
+                          <Button onClick={handleUpgrade}>
+                            Upgrade Capacity
+                          </Button>
+                        </ButtonContainer>
+                      )}
+                    </>
                   ) : (
                     <ButtonContainer>
                       <Button onClick={handleApproveCosmicCash}>

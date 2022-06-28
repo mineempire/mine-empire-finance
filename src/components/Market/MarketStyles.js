@@ -86,5 +86,7 @@ export const MarketContainer = styled.div`
 
   @media screen and (max-width: 960px) {
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 `;

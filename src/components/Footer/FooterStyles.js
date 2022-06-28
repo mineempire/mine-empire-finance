@@ -49,3 +49,11 @@ export const FooterSocialIcon = styled.a`
     width: 30px;
   }
 `;
+export const FooterNotes = styled.div`
+  display: flex;
+  justify-content: center;
+  p {
+    color: #fff;
+    font-size: 0.8rem;
+  }
+`;
