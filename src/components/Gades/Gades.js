@@ -227,6 +227,7 @@ const GadesBody = () => {
   }
 
   async function handleStake() {
+    if (disableGadesButtons) return;
     setDisableGadesButtons(true);
     selectedAddress = await injected.getAccount();
     await gadesContract.methods
@@ -239,6 +240,7 @@ const GadesBody = () => {
   }
 
   async function handleCollectIron() {
+    if (disableGadesButtons) return;
     setDisableGadesButtons(true);
     selectedAddress = await injected.getAccount();
     await gadesContract.methods
@@ -251,6 +253,7 @@ const GadesBody = () => {
   }
 
   async function handleUnstakeDrill() {
+    if (disableGadesButtons) return;
     setDisableGadesButtons(true);
     selectedAddress = await injected.getAccount();
     await gadesContract.methods
@@ -267,6 +270,8 @@ const GadesBody = () => {
   }
 
   async function handleUpgrade() {
+    if (disableGadesButtons) return;
+    setDisableGadesButtons(true);
     selectedAddress = await injected.getAccount();
     await gadesContract.methods
       .upgrade()
@@ -278,9 +283,12 @@ const GadesBody = () => {
       })
       .catch((err) => console.log(err));
     await getGadesContract();
+    setDisableGadesButtons(false);
   }
 
   async function handleApproveCosmicCash() {
+    if (disableGadesButtons) return;
+    setDisableGadesButtons(true);
     selectedAddress = await injected.getAccount();
     await cosmicCashContract.methods
       .approve(gadesAddress, "1000000000000000000000")
@@ -288,9 +296,11 @@ const GadesBody = () => {
       .then()
       .catch((err) => console.log(err));
     await getGadesMetadata();
+    setDisableGadesButtons(false);
   }
 
   async function handleApproveDrills() {
+    if (disableGadesButtons) return;
     setDisableGadesButtons(true);
     selectedAddress = await injected.getAccount();
     await mineEmpireDrillContract.methods
@@ -493,7 +503,10 @@ const GadesBody = () => {
                         </ButtonContainer>
                       ) : (
                         <ButtonContainer>
-                          <Button onClick={handleUpgrade}>
+                          <Button
+                            onClick={handleUpgrade}
+                            disable={disableGadesButtons}
+                          >
                             Upgrade Capacity
                           </Button>
                         </ButtonContainer>
@@ -501,7 +514,10 @@ const GadesBody = () => {
                     </>
                   ) : (
                     <ButtonContainer>
-                      <Button onClick={handleApproveCosmicCash}>
+                      <Button
+                        onClick={handleApproveCosmicCash}
+                        disable={disableGadesButtons}
+                      >
                         Approve CSC
                       </Button>
                     </ButtonContainer>
