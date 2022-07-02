@@ -203,7 +203,7 @@ export const SelectDrillMenuItem = styled.div`
   }
   p {
     color: #fff;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);

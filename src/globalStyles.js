@@ -38,14 +38,17 @@ export const Button = styled.button`
   border-radius: 15px;
   border: none;
   box-shadow: 0 0 0px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
+  cursor: ${({ disable }) => (disable ? "" : "pointer")};
   font-weight: 700;
   padding: 10px;
   width: 100%;
   background: linear-gradient(
     180deg,
-    rgb(223.12, 66.01, 66.01) 0%,
-    rgb(153, 41, 198) 100%
+    rgb(
+        ${({ disable }) => (disable ? "151, 132, 132" : "223.12, 66.01, 66.01")}
+      )
+      0%,
+    rgb(${({ disable }) => (disable ? "46, 36, 50" : "153, 41, 198")}) 100%
   );
   font-size: ${({ size }) => (size ? size : "16px")};
   font-style: normal;
@@ -54,11 +57,11 @@ export const Button = styled.button`
   transition: 0.3s;
   opacity: 1;
   &:hover {
-    opacity: 0.9;
+    opacity: ${({ disable }) => (disable ? "1" : "0.9")};
   }
   &:active {
     transition: 0s;
-    transform: scale(0.98);
+    transform: scale(${({ disable }) => (disable ? "1" : "0.98")});
   }
 `;
 

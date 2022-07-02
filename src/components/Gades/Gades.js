@@ -54,7 +54,8 @@ const GadesBody = () => {
   const [drillStaked, setDrillStaked] = useState(0);
   const [drillSelected, setDrillSelected] = useState(0);
   const [showSelect, setShowSelect] = useState(false);
-  const [drillApproved, setDrillApproved] = useState(false);
+  const [drillsApproved, setDrillsApproved] = useState(false);
+  const [disableGadesButtons, setDisableGadesButtons] = useState(false);
 
   const [drillId, setDrillId] = useState(0);
   const [drillLevel, setDrillLevel] = useState(0);
@@ -193,6 +194,13 @@ const GadesBody = () => {
         const upgrades = data["upgrade"];
         setUpgradeCost(upgrades[lv]);
       });
+    await mineEmpireDrillContract.methods
+      .isApprovedForAll(selectedAddress, gadesAddress)
+      .call()
+      .then((result) => {
+        setDrillsApproved(result);
+      })
+      .catch((err) => console.log(err));
   }
 
   // TODO
@@ -218,27 +226,20 @@ const GadesBody = () => {
     await getGadesMetadata();
   }
 
-  async function handleApprove() {
-    if (drillSelected === 0) {
-      console.log("drill not selected");
-      return;
-    }
-    selectedAddress = await injected.getAccount();
-    await mineEmpireDrillContract.methods
-      .approve(gadesAddress, drillSelected)
-      .send({ from: selectedAddress });
-    setDrillApproved(true);
-  }
-
   async function handleStake() {
+    setDisableGadesButtons(true);
     selectedAddress = await injected.getAccount();
     await gadesContract.methods
       .stake(drillSelected)
-      .send({ from: selectedAddress });
+      .send({ from: selectedAddress })
+      .then()
+      .catch((err) => console.log(err));
     await getStakeInfo();
+    setDisableGadesButtons(false);
   }
 
   async function handleCollectIron() {
+    setDisableGadesButtons(true);
     selectedAddress = await injected.getAccount();
     await gadesContract.methods
       .collectIron()
@@ -246,9 +247,11 @@ const GadesBody = () => {
       .then((result) => {})
       .catch((err) => console.log(err));
     await getCollectedIron();
+    setDisableGadesButtons(false);
   }
 
   async function handleUnstakeDrill() {
+    setDisableGadesButtons(true);
     selectedAddress = await injected.getAccount();
     await gadesContract.methods
       .unstake()
@@ -260,6 +263,7 @@ const GadesBody = () => {
     await getStakeInfo();
     setDrillSelected(0);
     await getOwnedDrills();
+    setDisableGadesButtons(false);
   }
 
   async function handleUpgrade() {
@@ -286,6 +290,17 @@ const GadesBody = () => {
     await getGadesMetadata();
   }
 
+  async function handleApproveDrills() {
+    setDisableGadesButtons(true);
+    selectedAddress = await injected.getAccount();
+    await mineEmpireDrillContract.methods
+      .setApprovalForAll(gadesAddress, "true")
+      .send({ from: selectedAddress })
+      .then()
+      .catch((err) => console.log(err));
+    setDisableGadesButtons(false);
+  }
+
   useEffect(() => {
     updateState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -293,6 +308,7 @@ const GadesBody = () => {
 
   // website
   const handleSelectDrill = () => {
+    if (disableGadesButtons) return;
     setShowSelect(!showSelect);
   };
 
@@ -360,41 +376,69 @@ const GadesBody = () => {
                     {drillStaked ? (
                       <>
                         <ButtonContainer>
-                          <Button onClick={handleCollectIron}>Collect</Button>
+                          <Button
+                            onClick={handleCollectIron}
+                            disable={disableGadesButtons}
+                          >
+                            Collect
+                          </Button>
                         </ButtonContainer>
                         <ButtonContainer>
-                          <Button onClick={handleUnstakeDrill}>Unstake</Button>
+                          <Button
+                            onClick={handleUnstakeDrill}
+                            disable={disableGadesButtons}
+                          >
+                            Unstake
+                          </Button>
                         </ButtonContainer>
                       </>
                     ) : (
                       <>
-                        {drillSelected !== 0 ? (
+                        {drillsApproved ? (
                           <>
-                            <ButtonContainer>
-                              <Button onClick={handleSelectDrill}>
-                                Select Drill
-                              </Button>
-                            </ButtonContainer>
-                            {drillApproved ? (
-                              <ButtonContainer>
-                                <Button onClick={handleStake}>
-                                  Stake #{drillSelected}
-                                </Button>
-                              </ButtonContainer>
+                            {drillSelected !== 0 ? (
+                              <>
+                                <ButtonContainer>
+                                  <Button
+                                    onClick={handleSelectDrill}
+                                    disable={disableGadesButtons}
+                                  >
+                                    Select Drill
+                                  </Button>
+                                </ButtonContainer>
+                                <ButtonContainer>
+                                  <Button
+                                    onClick={handleStake}
+                                    disable={disableGadesButtons}
+                                  >
+                                    Stake #{drillSelected}
+                                  </Button>
+                                </ButtonContainer>
+                              </>
                             ) : (
-                              <ButtonContainer>
-                                <Button onClick={handleApprove}>
-                                  Approve #{drillSelected}
-                                </Button>
-                              </ButtonContainer>
+                              <>
+                                <ButtonContainer>
+                                  <Button
+                                    onClick={handleSelectDrill}
+                                    disable={disableGadesButtons}
+                                  >
+                                    Select Drill
+                                  </Button>
+                                </ButtonContainer>
+                              </>
                             )}
                           </>
                         ) : (
-                          <ButtonContainer>
-                            <Button onClick={handleSelectDrill}>
-                              Select Drill
-                            </Button>
-                          </ButtonContainer>
+                          <>
+                            <ButtonContainer>
+                              <Button
+                                onClick={handleApproveDrills}
+                                disable={disableGadesButtons}
+                              >
+                                Approve Drill
+                              </Button>
+                            </ButtonContainer>
+                          </>
                         )}
                       </>
                     )}
