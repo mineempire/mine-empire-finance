@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { injected } from "../../connectors";
+import { Link } from "react-router-dom";
 import {
   drillMetadataIPFSUrl,
   gadesAddress,
@@ -18,6 +19,7 @@ import {
   ButtonContainer,
   ButtonGray,
 } from "../../globalStyles";
+import { gadesUpgradeCost } from "../../stats/GadesStats";
 import {
   getCosmicCashContract,
   getGadesContract,
@@ -41,7 +43,9 @@ import {
 
 const GadesBody = () => {
   let selectedAddress = "";
+  let cosmicCashBalance = "0";
   const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
+  const [enoughCosmicCash, setEnoughCosmicCash] = useState(false);
   const [upgradeCost, setUpgradeCost] = useState(0);
   const [drillPower, setDrillPower] = useState(0);
   const [capacityLevel, setCapacityLevel] = useState(0);
@@ -154,6 +158,22 @@ const GadesBody = () => {
     setDrillsLoaded(true);
   }
 
+  async function getCosmicCashBalance() {
+    const addr = await injected.getAccount();
+    await cosmicCashContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amount = ethers.utils.formatEther(result);
+        cosmicCashBalance = amount;
+        const upgradeCost = +gadesUpgradeCost[capacityLevel];
+        setEnoughCosmicCash(false);
+        if (upgradeCost <= +cosmicCashBalance) {
+          setEnoughCosmicCash(true);
+        }
+      });
+  }
+
   // TODO
   async function getGadesMetadata() {
     selectedAddress = await injected.getAccount();
@@ -201,6 +221,7 @@ const GadesBody = () => {
         setDrillsApproved(result);
       })
       .catch((err) => console.log(err));
+    await getCosmicCashBalance();
   }
 
   // TODO
@@ -283,6 +304,7 @@ const GadesBody = () => {
       })
       .catch((err) => console.log(err));
     await getGadesContract();
+    await getCosmicCashBalance();
     setDisableGadesButtons(false);
   }
 
@@ -502,14 +524,31 @@ const GadesBody = () => {
                           <ButtonGray>MAX</ButtonGray>
                         </ButtonContainer>
                       ) : (
-                        <ButtonContainer>
-                          <Button
-                            onClick={handleUpgrade}
-                            disable={disableGadesButtons}
-                          >
-                            Upgrade Capacity
-                          </Button>
-                        </ButtonContainer>
+                        <>
+                          {enoughCosmicCash === true ? (
+                            <>
+                              <ButtonContainer>
+                                <Button
+                                  onClick={handleUpgrade}
+                                  disable={disableGadesButtons}
+                                >
+                                  Upgrade Capacity
+                                </Button>
+                              </ButtonContainer>
+                            </>
+                          ) : (
+                            <>
+                              <ButtonContainer>
+                                <Link to="/rewards">
+                                  <Button>Get CSC</Button>
+                                </Link>
+                              </ButtonContainer>
+                              <ButtonContainer>
+                                <Button disable={true}>Upgrade</Button>
+                              </ButtonContainer>
+                            </>
+                          )}
+                        </>
                       )}
                     </>
                   ) : (
