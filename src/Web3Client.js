@@ -17,6 +17,7 @@ import { energyABI } from "./contracts/Energy";
 import { gadesABI } from "./contracts/Gades";
 import { ironABI } from "./contracts/Iron";
 import { mineEmpireDrillABI } from "./contracts/MineEmpireDrill";
+import { ethers } from "ethers";
 
 export let accountAddress = "";
 

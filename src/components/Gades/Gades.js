@@ -257,6 +257,7 @@ const GadesBody = () => {
       .then()
       .catch((err) => console.log(err));
     await getStakeInfo();
+    await getGadesMetadata();
     setDisableGadesButtons(false);
   }
 
@@ -270,6 +271,7 @@ const GadesBody = () => {
       .then((result) => {})
       .catch((err) => console.log(err));
     await getCollectedIron();
+    await getGadesMetadata();
     setDisableGadesButtons(false);
   }
 
@@ -287,6 +289,7 @@ const GadesBody = () => {
     await getStakeInfo();
     setDrillSelected(0);
     await getOwnedDrills();
+    await getGadesMetadata();
     setDisableGadesButtons(false);
   }
 
@@ -330,6 +333,7 @@ const GadesBody = () => {
       .send({ from: selectedAddress })
       .then()
       .catch((err) => console.log(err));
+    await getGadesMetadata();
     setDisableGadesButtons(false);
   }
 

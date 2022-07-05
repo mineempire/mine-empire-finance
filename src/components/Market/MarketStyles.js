@@ -83,6 +83,7 @@ export const NFTCardStatsRow = styled.div`
 export const MarketContainer = styled.div`
   display: flex;
   width: 100%;
+  flex-wrap: wrap;
 
   @media screen and (max-width: 960px) {
     justify-content: center;
