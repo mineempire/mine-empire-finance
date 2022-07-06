@@ -33,6 +33,7 @@ function App() {
                 chainId: "0xfa2",
                 nativeCurrency: { name: "Fantom", decimals: 18, symbol: "FTM" },
                 rpcUrls: ["https://rpc.testnet.fantom.network/"],
+                blockExplorerUrls: ["https://testnet.ftmscan.com/"],
               },
             ],
           });

@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getDailyEnergyContract, isConnected } from "../../Web3Client.js";
+import {
+  getCosmicCashContract,
+  getDailyEnergyContract,
+  getEnergyContract,
+  getIronContract,
+  isConnected,
+  isCorrectNetwork,
+  switchNetwork,
+} from "../../Web3Client.js";
 import { Link } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import { CgMenuRight } from "react-icons/cg";
@@ -16,6 +24,9 @@ import {
   ConnectWallet,
   Connected,
   ClaimButtonContainer,
+  BalancesMenu,
+  BalanceItem,
+  SingleButtonContainer,
 } from "./NavbarStyles.js";
 import { Button } from "../../globalStyles.js";
 import { useWeb3React } from "@web3-react/core";
@@ -24,41 +35,86 @@ import { ethers } from "ethers";
 
 const Navbar = () => {
   // web3
-  let loaded = false;
   const [connected, setConnected] = useState(false);
   const [claimableEnergy, setClaimableEnergy] = useState(0);
-  let selectedAddress = "";
+  const [dropdown, setDropdown] = useState(false);
+  const [energyBal, setEnergyBal] = useState(0);
+  const [cscBal, setCscBal] = useState(0);
+  const [ironBal, setIronBal] = useState(0);
   const dailyEnergyContract = getDailyEnergyContract();
+  const [correctNetwork, setCorrectNetwork] = useState(false);
+
+  const energyContract = getEnergyContract();
+  const cscContract = getCosmicCashContract();
+  const ironContract = getIronContract();
 
   const { activate } = useWeb3React();
 
-  async function updateClaimableEnergy(force = false) {
-    if (loaded && !force) return;
+  async function getBalances() {
+    if (!(await isConnected())) return;
+    const addr = await injected.getAccount();
+    await energyContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(+ethers.utils.formatEther(result));
+        setEnergyBal(amt);
+      });
+    await cscContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(+ethers.utils.formatEther(result));
+        setCscBal(amt);
+      });
+    await ironContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(+ethers.utils.formatEther(result));
+        setIronBal(amt);
+      });
+  }
+
+  async function updateClaimableEnergy() {
+    if (!(await isConnected())) return;
+    const addr = await injected.getAccount();
     const energy = await dailyEnergyContract.methods
-      .getAccumulatedEnergy(selectedAddress)
+      .getAccumulatedEnergy(addr)
       .call();
     setClaimableEnergy(ethers.utils.formatEther(energy).substring(0, 4));
   }
 
-  async function updateState(force = false) {
-    if (loaded && !force) return;
-    if (await isConnected()) {
-      selectedAddress = await injected.getAccount();
-      setConnected(true);
-      updateClaimableEnergy();
-    }
-  }
-
   const handleClaimEnergy = async () => {
-    await dailyEnergyContract.methods
-      .claimEnergy()
-      .send({ from: selectedAddress });
-    await updateState();
+    if (!isCorrectNetwork()) return;
+    const addr = await injected.getAccount();
+    await dailyEnergyContract.methods.claimEnergy().send({ from: addr });
+    updateClaimableEnergy();
   };
 
+  const handleSwitch = async () => {
+    await switchNetwork();
+    await checkNetwork();
+    await checkConnected();
+    await updateClaimableEnergy();
+    await getBalances();
+  };
+
+  async function checkConnected() {
+    if (await isConnected()) setConnected(true);
+  }
+
+  async function checkNetwork() {
+    const network = await isCorrectNetwork();
+    setCorrectNetwork(network);
+  }
+
   useEffect(() => {
-    updateState();
-  });
+    checkNetwork();
+    checkConnected();
+    updateClaimableEnergy();
+    getBalances();
+  }, []);
 
   // website
   const [show, setShow] = useState(false);
@@ -112,19 +168,68 @@ const Navbar = () => {
             </NavItem>
           </NavMenu>
           <ConnectWallet>
-            {connected ? (
-              <>
-                <Connected>
-                  <img src="../../assets/energy.png" alt="" />
-                  <p>{claimableEnergy}/30</p>
-                  <ClaimButtonContainer>
-                    <Button onClick={handleClaimEnergy}>Claim</Button>
-                  </ClaimButtonContainer>
-                </Connected>
-              </>
-            ) : (
-              <Button onClick={() => activate(injected)}>Connect</Button>
-            )}
+            <>
+              {correctNetwork ? (
+                <>
+                  {connected ? (
+                    <>
+                      <Connected
+                        onMouseEnter={() => setDropdown(true)}
+                        onMouseLeave={() => setDropdown(false)}
+                      >
+                        <img src="../../assets/energy.png" alt="" />
+                        <p>{claimableEnergy}/30</p>
+                        <ClaimButtonContainer>
+                          <Button onClick={handleClaimEnergy}>Claim</Button>
+                        </ClaimButtonContainer>
+                      </Connected>
+                      <BalancesMenu dropdown={dropdown}>
+                        <BalanceItem>
+                          <img src="../../assets/energy.png" alt="" />
+                          <p> {energyBal} ENERGY</p>
+                        </BalanceItem>
+                        <BalanceItem>
+                          <img src="../../assets/csc-icon.png" alt="" />
+                          <p>{cscBal} CSC</p>
+                        </BalanceItem>
+                        <BalanceItem>
+                          <img src="../../assets/iron.png" alt="" />
+                          <p>{ironBal} IRON</p>
+                        </BalanceItem>
+                        <BalanceItem>
+                          <img src="../../assets/cobalt.png" alt="" />
+                          <p>0 COBALT</p>
+                        </BalanceItem>
+                        <BalanceItem>
+                          <img src="../../assets/silver.png" alt="" />
+                          <p>0 SILVER</p>
+                        </BalanceItem>
+                        <BalanceItem>
+                          <img src="../../assets/bismuth.png" alt="" />
+                          <p>0 BISMUTH</p>
+                        </BalanceItem>
+                        <BalanceItem>
+                          <img src="../../assets/ruby.png" alt="" />
+                          <p>0 RUBY</p>
+                        </BalanceItem>
+                      </BalancesMenu>
+                    </>
+                  ) : (
+                    <SingleButtonContainer>
+                      <Button onClick={() => activate(injected)}>
+                        Connect
+                      </Button>
+                    </SingleButtonContainer>
+                  )}
+                </>
+              ) : (
+                <>
+                  <SingleButtonContainer>
+                    <Button onClick={handleSwitch}>Switch</Button>
+                  </SingleButtonContainer>
+                </>
+              )}
+            </>
           </ConnectWallet>
 
           <MobileIcon onClick={handleClick}>

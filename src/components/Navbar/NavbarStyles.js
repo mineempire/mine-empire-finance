@@ -130,8 +130,8 @@ export const ConnectWallet = styled.div`
   display: flex;
   width: 22rem;
   align-items: center;
-
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
 `;
 
 export const Connected = styled.div`
@@ -144,7 +144,7 @@ export const Connected = styled.div`
   margin: 0.5rem;
   padding: 0 0 0 0.5rem;
   img {
-    width: 25px;
+    height: 40px;
     background: none;
     margin: 0.6rem;
   }
@@ -159,4 +159,40 @@ export const Connected = styled.div`
 export const ClaimButtonContainer = styled.div`
   display: flex;
   margin-right: 15px;
+`;
+
+export const SingleButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 25%;
+`;
+
+export const BalancesMenu = styled.div`
+  display: flex;
+  visibility: ${({ dropdown }) => (dropdown ? "visible" : "hidden")};
+  opacity: ${({ dropdown }) => (dropdown ? 1 : 0)};
+  flex-direction: column;
+  color: #fff;
+  border-radius: 15px;
+  background: #463d3d;
+  width: 93%;
+  align-items: center;
+  transition visibility 0s, opacity 0.5s;
+`;
+
+export const BalanceItem = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-start;
+
+  p {
+    font-weight: 200;
+    font-size: 1rem;
+  }
+
+  img {
+    height: 40px;
+    margin: 0.6rem;
+  }
 `;

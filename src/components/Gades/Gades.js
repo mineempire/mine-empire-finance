@@ -45,7 +45,6 @@ const GadesBody = () => {
   let selectedAddress = "";
   let cosmicCashBalance = "0";
   const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
-  const [enoughCosmicCash, setEnoughCosmicCash] = useState(false);
   const [upgradeCost, setUpgradeCost] = useState(0);
   const [drillPower, setDrillPower] = useState(0);
   const [capacityLevel, setCapacityLevel] = useState(0);
@@ -164,13 +163,7 @@ const GadesBody = () => {
       .balanceOf(addr)
       .call()
       .then((result) => {
-        const amount = ethers.utils.formatEther(result);
-        cosmicCashBalance = amount;
-        const upgradeCost = +gadesUpgradeCost[capacityLevel];
-        setEnoughCosmicCash(false);
-        if (upgradeCost <= +cosmicCashBalance) {
-          setEnoughCosmicCash(true);
-        }
+        cosmicCashBalance = ethers.utils.formatEther(result);
       });
   }
 
@@ -221,7 +214,6 @@ const GadesBody = () => {
         setDrillsApproved(result);
       })
       .catch((err) => console.log(err));
-    await getCosmicCashBalance();
   }
 
   // TODO
@@ -245,6 +237,7 @@ const GadesBody = () => {
     await getStakeInfo();
     await getOwnedDrills();
     await getGadesMetadata();
+    await getCosmicCashBalance();
   }
 
   async function handleStake() {
@@ -529,7 +522,7 @@ const GadesBody = () => {
                         </ButtonContainer>
                       ) : (
                         <>
-                          {enoughCosmicCash === true ? (
+                          {cosmicCashBalance >= upgradeCost ? (
                             <>
                               <ButtonContainer>
                                 <Button

@@ -17,17 +17,65 @@ import {
 
 import { Button, ButtonContainer } from "../../globalStyles";
 import { useEffect, useState } from "react";
-import { isConnected } from "../../Web3Client";
+import { getGadesContract, isConnected } from "../../Web3Client";
 import { injected } from "../../connectors";
 import { useWeb3React } from "@web3-react/core";
+import { AsteroidDrillPower } from "../../stats/DrillStats";
+import { ethers } from "ethers";
 
 const CosmosBody = () => {
   const [connected, setConnected] = useState(false);
+  const [ironProduction, setIronProduction] = useState(0);
+  const [ironReadyToCollect, setIronReadyToCollect] = useState(0);
+  const [gadesLevel, setGadesLevel] = useState(1);
   const { activate } = useWeb3React();
+  const gadesContract = getGadesContract();
+
+  async function getGadesStats() {
+    const addr = await injected.getAccount();
+    let baseProduction = 0;
+    await gadesContract.methods
+      .getBaseProduction()
+      .call()
+      .then((result) => {
+        baseProduction = +ethers.utils.formatEther(result);
+      });
+    await gadesContract.methods
+      .getStake(addr)
+      .call()
+      .then((stake) => {
+        const drillId = stake[0];
+        if (drillId === "0") {
+          return;
+        } else {
+          const level = +stake["drill"]["level"];
+          const mult = AsteroidDrillPower[level];
+          const prodPerDay = Math.floor(
+            (baseProduction * 60 * 60 * 24 * mult) / 100
+          );
+          setIronProduction(prodPerDay);
+        }
+      });
+    await gadesContract.methods
+      .getAccumulatedIron(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(ethers.utils.formatEther(result));
+        setIronReadyToCollect(amt);
+      })
+      .catch((err) => console.log(err));
+    await gadesContract.methods
+      .getUserLevel(addr)
+      .call()
+      .then((result) => {
+        setGadesLevel(+result + 1);
+      });
+  }
 
   async function updateState() {
     if (await isConnected()) {
       setConnected(true);
+      await getGadesStats();
     }
   }
 
@@ -69,17 +117,20 @@ const CosmosBody = () => {
               </PlanetCardProductionInfo>
               <CardStats>
                 <h3 id="description">Your Production</h3>
-                <h3 id="stat">0 Iron / Day</h3>
+                <h3 id="stat">{ironProduction} Iron / Day</h3>
                 <h3 id="description">Max Production</h3>
                 <h3 id="stat">121.6k Iron / Day</h3>
                 <h3 id="description">Your CSC Equiv</h3>
-                <h3 id="stat">0 CSC / Day</h3>
+                <h3 id="stat">
+                  {Math.floor((ironProduction / 13809) * 1000000) / 1000000} CSC
+                  / Day
+                </h3>
                 <h3 id="description">Max CSC Equiv</h3>
                 <h3 id="stat">8.8 CSC / Day</h3>
                 <h3 id="description">Capacity Level</h3>
-                <h3 id="stat">1</h3>
+                <h3 id="stat">{gadesLevel}</h3>
                 <h3 id="description">Ready to Collect</h3>
-                <h3 id="stat">0 / 10,215</h3>
+                <h3 id="stat">{ironReadyToCollect} / 10,215</h3>
               </CardStats>
               <ButtonContainer>
                 {connected ? (

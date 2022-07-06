@@ -263,7 +263,7 @@ const MarketBody = () => {
                                   Mint Drill
                                 </Button>
                               ) : (
-                                <Button disable={true}>Not Enough CSC</Button>
+                                <Button>Get Cosmic Cash</Button>
                               )}
                             </>
                           )}
@@ -347,7 +347,7 @@ const MarketBody = () => {
                                   Mint Drill
                                 </Button>
                               ) : (
-                                <Button disable={true}>Not Enough CSC</Button>
+                                <Button>Get Cosmic Cash</Button>
                               )}
                             </>
                           )}
@@ -431,7 +431,7 @@ const MarketBody = () => {
                                   Mint Drill
                                 </Button>
                               ) : (
-                                <Button disable={true}>Not Enough CSC</Button>
+                                <Button>Get Cosmic Cash</Button>
                               )}
                             </>
                           )}

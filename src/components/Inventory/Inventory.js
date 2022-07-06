@@ -34,6 +34,8 @@ const InventoryBody = () => {
   const [drillsLoaded, setDrillsLoaded] = useState(false);
   const [drillMetadata, setDrillMetadata] = useState();
   const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
+  const [disableButtons, setDisableButtons] = useState(false);
+  const [cosmicCashBalance, setCosmicCashBalance] = useState(0);
 
   const mineEmpireDrillContract = getMineEmpireDrillContract();
   const cosmicCashContract = getCosmicCashContract();
@@ -97,6 +99,17 @@ const InventoryBody = () => {
       });
   }
 
+  async function getCosmicCashBalance() {
+    const addr = await injected.getAccount();
+    await cosmicCashContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amount = ethers.utils.formatEther(result);
+        setCosmicCashBalance(+amount);
+      });
+  }
+
   async function getDrillMetadata() {
     fetch(drillMetadataIPFSUrl)
       .then((response) => response.json())
@@ -109,27 +122,34 @@ const InventoryBody = () => {
     getOwnedDrills();
     getDrillMetadata();
     getCosmicCashApproved();
+    getCosmicCashBalance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleApprove() {
+    if (disableButtons) return;
+    setDisableButtons(true);
     const selectedAddress = await injected.getAccount();
     await cosmicCashContract.methods
       .approve(mineEmpireDrillAddress, "10000000000000000000000")
       .send({ from: selectedAddress })
       .catch((err) => console.log(err));
-    getCosmicCashApproved();
+    await getCosmicCashApproved();
+    setDisableButtons(false);
   }
 
   async function handleUpgradeDrill(drillId) {
+    if (disableButtons) return;
+    setDisableButtons(true);
     const selectedAddress = await injected.getAccount();
     await mineEmpireDrillContract.methods
       .upgradeDrill(drillId)
       .send({ from: selectedAddress })
       .catch((err) => console.log(err));
-    getOwnedDrills();
-    getDrillMetadata();
+    await getOwnedDrills();
+    await getDrillMetadata();
     setDrillsLoaded(false);
+    setDisableButtons(false);
   }
 
   return (
@@ -178,10 +198,10 @@ const InventoryBody = () => {
                         <DrillStatsRow>
                           <h3 id="description">Next Level Power</h3>
                           <h3 id="stat">
-                            x
-                            {drillMetadata
-                              ? +drillMetadata["power"][+drill.level + 1] / 100
-                              : 0}
+                            {+drill.level < 19
+                              ? "x" +
+                                drillMetadata["power"][+drill.level + 1] / 100
+                              : "MAX"}
                           </h3>
                         </DrillStatsRow>
                         <DrillStatsRow>
@@ -189,7 +209,7 @@ const InventoryBody = () => {
                           <DrillStatsRowWithImg>
                             <h3 id="stat">
                               {drillMetadata
-                                ? +drillMetadata["upgrade"][+drill.level + 1]
+                                ? drillMetadata["upgrade"][+drill.level + 1]
                                 : 0}
                             </h3>
                             <img src="../../assets/csc-icon.png" alt="" />
@@ -199,20 +219,35 @@ const InventoryBody = () => {
                       <ButtonContainer>
                         {cosmicCashApproved ? (
                           <>
-                            {+drill.level === 19 ? (
-                              <ButtonGray>MAX</ButtonGray>
+                            {cosmicCashBalance <=
+                            drillMetadata["upgrade"][+drill.level + 1] ? (
+                              <>
+                                <Button>Get Cosmic Cash</Button>
+                              </>
                             ) : (
-                              <Button
-                                onClick={() =>
-                                  handleUpgradeDrill(drill.drillId)
-                                }
-                              >
-                                Upgrade Drill
-                              </Button>
+                              <>
+                                {+drill.level === 19 ? (
+                                  <ButtonGray>MAX</ButtonGray>
+                                ) : (
+                                  <Button
+                                    onClick={() =>
+                                      handleUpgradeDrill(drill.drillId)
+                                    }
+                                    disable={disableButtons}
+                                  >
+                                    Upgrade Drill
+                                  </Button>
+                                )}
+                              </>
                             )}
                           </>
                         ) : (
-                          <Button onClick={handleApprove}>Approve CSC</Button>
+                          <Button
+                            onClick={handleApprove}
+                            disable={disableButtons}
+                          >
+                            Approve CSC
+                          </Button>
                         )}
                       </ButtonContainer>
                     </DrillCard>

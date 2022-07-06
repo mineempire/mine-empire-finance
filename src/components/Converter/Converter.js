@@ -57,6 +57,7 @@ const ConverterBody = () => {
   const [rubyQuantity] = useState(0);
   const [approvedIron, setApprovedIron] = useState(false);
   const { activate } = useWeb3React();
+  const [disableButtons, setDisableButtons] = useState(false);
 
   const ironContract = getIronContract();
   const cscContract = getCosmicCashContract();
@@ -92,7 +93,7 @@ const ConverterBody = () => {
         setIronQuantity(amt);
         setSelectedQuantity(amt);
       });
-    getApproved();
+    await getApproved();
     await cscContract.methods
       .balanceOf(addr)
       .call()
@@ -136,7 +137,11 @@ const ConverterBody = () => {
     }
   }
 
-  async function handleSetMaxAmount() {}
+  async function handleSetMaxAmount() {
+    setInputQuantity(selectedQuantity);
+    const outputAmount = selectedQuantity / conversionRate;
+    setOutputQuantity(outputAmount);
+  }
 
   async function handleInputOnChange(event) {
     const amt = event.target.value;
@@ -146,13 +151,16 @@ const ConverterBody = () => {
   }
 
   async function handleApprove() {
+    if (disableButtons) return;
+    setDisableButtons(true);
     const addr = await injected.getAccount();
     await ironContract.methods
       .approve(converterAddress, "1000000000000000000000000000")
       .send({ from: addr })
       .then()
       .catch((err) => console.log(err));
-    getApproved();
+    await getApproved();
+    setDisableButtons(false);
   }
 
   async function handleConvert() {
@@ -165,6 +173,10 @@ const ConverterBody = () => {
       .then()
       .catch((err) => console.log(err));
     getBalances();
+  }
+
+  function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
   }
 
   return (
@@ -255,13 +267,14 @@ const ConverterBody = () => {
                         <input
                           type="number"
                           onChange={(val) => handleInputOnChange(val)}
+                          value={inputQuantity || 0}
                         />
                       </TokenAmountText>
                     </TokenAmountContainer>
                   </TokenMain>
                   <TokenBalanceContainer onClick={handleSetMaxAmount}>
                     <p>
-                      {selectedResource}: {selectedQuantity}
+                      {capitalize(selectedResource)}: {selectedQuantity}
                     </p>
                   </TokenBalanceContainer>
                 </ResourceBox>
@@ -289,16 +302,30 @@ const ConverterBody = () => {
                   <ButtonContainer>
                     {connected ? (
                       approvedIron ? (
-                        <Button onClick={handleConvert}>
-                          Convert {selectedResource}
+                        <Button
+                          onClick={handleConvert}
+                          disable={
+                            disableButtons ||
+                            inputQuantity <= 0 ||
+                            inputQuantity > selectedQuantity ||
+                            inputQuantity == null
+                          }
+                        >
+                          Convert {capitalize(selectedResource)}
                         </Button>
                       ) : (
-                        <Button onClick={handleApprove}>
-                          Approve {selectedResource}
+                        <Button
+                          onClick={handleApprove}
+                          disable={disableButtons}
+                        >
+                          Approve {capitalize(selectedResource)}
                         </Button>
                       )
                     ) : (
-                      <Button onClick={() => activate(injected)}>
+                      <Button
+                        onClick={() => activate(injected)}
+                        disable={disableButtons}
+                      >
                         Connect
                       </Button>
                     )}

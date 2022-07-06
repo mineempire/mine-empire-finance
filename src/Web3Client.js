@@ -44,6 +44,36 @@ export const isConnected = async () => {
   return ret;
 };
 
+export const isCorrectNetwork = async () => {
+  const version = await window.ethereum.networkVersion;
+  if (version !== "4002") return false;
+  return true;
+};
+
+export const switchNetwork = async () => {
+  try {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: "0xfa2" }],
+    });
+  } catch (err) {
+    if (err.code === 4902) {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            chainName: "Fantom Testnet",
+            chainId: "0xfa2",
+            nativeCurrency: { name: "Fantom", decimals: 18, symbol: "FTM" },
+            rpcUrls: ["https://rpc.testnet.fantom.network/"],
+            blockExplorerUrls: ["https://testnet.ftmscan.com/"],
+          },
+        ],
+      });
+    }
+  }
+};
+
 export const getSelectedAddress = async () => {
   let selectedAddress = "";
   let addr = window.ethereum.selectedAddress;
