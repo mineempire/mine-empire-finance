@@ -14,6 +14,7 @@ import Gades from "./pages/Gades";
 import Oberon from "./pages/Oberon";
 import CanopsysPrime from "./pages/CanopsysPrime";
 import { useEffect } from "react";
+import Rewards from "./pages/Rewards";
 
 function App() {
   const switchNetwork = async () => {
@@ -61,6 +62,7 @@ function App() {
           <Route path="/refinery" element={<Refinery />} />
           <Route path="/converter" element={<Converter />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/rewards" element={<Rewards />} />
         </Routes>
       </PageContainer>
       <Footer />

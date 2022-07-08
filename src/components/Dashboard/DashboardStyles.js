@@ -55,6 +55,9 @@ export const TokenInfoTitleContainer = styled.div`
   img {
     width: 30px;
     margin: 0 5px 0 5px;
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   h1 {

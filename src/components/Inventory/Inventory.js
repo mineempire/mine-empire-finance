@@ -23,10 +23,7 @@ import {
   DrillStatsRowWithImg,
   InventoryLoading,
 } from "./InventoryStyles";
-import {
-  drillMetadataIPFSUrl,
-  mineEmpireDrillAddress,
-} from "../../contracts/Addresses";
+import { mineEmpireDrillAddress } from "../../contracts/Addresses";
 import { ethers } from "ethers";
 import {
   AsteroidDrillPower,
@@ -162,6 +159,82 @@ const InventoryBody = () => {
     setDisableButtons(false);
   }
 
+  function getAsteroidDrillCard(level, id) {
+    let drillv = "1";
+    if (level >= 5) drillv = "2";
+    if (level >= 10) drillv = "3";
+    if (level >= 15) drillv = "4";
+    const drillSrc = "../../assets/asteroid-drill-v" + drillv + ".png";
+    return (
+      <>
+        <DrillCardHeader>
+          <img
+            src={
+              "../../assets/asteroid-drill-levels/level-" + level + "-level.png"
+            }
+            alt=""
+          />
+          <h1>Asteroid Drill #{id}</h1>
+          <img
+            src={
+              "../../assets/asteroid-drill-levels/level-" + level + "-power.png"
+            }
+            alt=""
+          />
+        </DrillCardHeader>
+        <img id="drill-image" src={drillSrc} alt="" />
+        <Line width="320px" />
+        <DrillStats>
+          <DrillStatsRow>
+            <h3 id="description">Next Level Power</h3>
+            <h3 id="stat">
+              {+level < 19
+                ? "x" + drillMetadata["power"][+level + 1] / 100
+                : "MAX"}
+            </h3>
+          </DrillStatsRow>
+          <DrillStatsRow>
+            <h3 id="description">Upgrade Cost</h3>
+            <DrillStatsRowWithImg>
+              <h3 id="stat">
+                {+level < 19 ? drillMetadata["upgrade"][+level + 1] : 0}
+              </h3>
+              <img src="../../assets/csc-icon.png" alt="" />
+            </DrillStatsRowWithImg>
+          </DrillStatsRow>
+        </DrillStats>
+        <ButtonContainer>
+          {cosmicCashApproved ? (
+            <>
+              {cosmicCashBalance <= drillMetadata["upgrade"][+level + 1] ? (
+                <>
+                  <Button>Get Cosmic Cash</Button>
+                </>
+              ) : (
+                <>
+                  {+level === 19 ? (
+                    <ButtonGray>MAX</ButtonGray>
+                  ) : (
+                    <Button
+                      onClick={() => handleUpgradeDrill(id)}
+                      disable={disableButtons}
+                    >
+                      Upgrade Drill
+                    </Button>
+                  )}
+                </>
+              )}
+            </>
+          ) : (
+            <Button onClick={handleApprove} disable={disableButtons}>
+              Approve CSC
+            </Button>
+          )}
+        </ButtonContainer>
+      </>
+    );
+  }
+
   return (
     <>
       <Section>
@@ -188,88 +261,7 @@ const InventoryBody = () => {
                     <>
                       {ownedDrills.map((drill, index) => (
                         <DrillCard key={index}>
-                          <DrillCardHeader>
-                            <img
-                              src={
-                                "../../assets/asteroid-drill-levels/level-" +
-                                drill.level +
-                                "-level.png"
-                              }
-                              alt=""
-                            />
-                            <h1>Asteroid Drill #{drill.drillId}</h1>
-                            <img
-                              src={
-                                "../../assets/asteroid-drill-levels/level-" +
-                                drill.level +
-                                "-power.png"
-                              }
-                              alt=""
-                            />
-                          </DrillCardHeader>
-                          <img
-                            id="drill-image"
-                            src="../../assets/asteroid-drill.png"
-                            alt=""
-                          />
-                          <Line width="320px" />
-                          <DrillStats>
-                            <DrillStatsRow>
-                              <h3 id="description">Next Level Power</h3>
-                              <h3 id="stat">
-                                {+drill.level < 19
-                                  ? "x" +
-                                    drillMetadata["power"][+drill.level + 1] /
-                                      100
-                                  : "MAX"}
-                              </h3>
-                            </DrillStatsRow>
-                            <DrillStatsRow>
-                              <h3 id="description">Upgrade Cost</h3>
-                              <DrillStatsRowWithImg>
-                                <h3 id="stat">
-                                  {+drill.level < 19
-                                    ? drillMetadata["upgrade"][+drill.level + 1]
-                                    : 0}
-                                </h3>
-                                <img src="../../assets/csc-icon.png" alt="" />
-                              </DrillStatsRowWithImg>
-                            </DrillStatsRow>
-                          </DrillStats>
-                          <ButtonContainer>
-                            {cosmicCashApproved ? (
-                              <>
-                                {cosmicCashBalance <=
-                                drillMetadata["upgrade"][+drill.level + 1] ? (
-                                  <>
-                                    <Button>Get Cosmic Cash</Button>
-                                  </>
-                                ) : (
-                                  <>
-                                    {+drill.level === 19 ? (
-                                      <ButtonGray>MAX</ButtonGray>
-                                    ) : (
-                                      <Button
-                                        onClick={() =>
-                                          handleUpgradeDrill(drill.drillId)
-                                        }
-                                        disable={disableButtons}
-                                      >
-                                        Upgrade Drill
-                                      </Button>
-                                    )}
-                                  </>
-                                )}
-                              </>
-                            ) : (
-                              <Button
-                                onClick={handleApprove}
-                                disable={disableButtons}
-                              >
-                                Approve CSC
-                              </Button>
-                            )}
-                          </ButtonContainer>
+                          {getAsteroidDrillCard(drill.level, drill.drillId)}
                         </DrillCard>
                       ))}
                     </>

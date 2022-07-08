@@ -1,4 +1,4 @@
-export const gadesCapacity = [
+export const GadesCapacity = [
   "10215",
   "11747",
   "13509",

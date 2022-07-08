@@ -22,12 +22,14 @@ import { injected } from "../../connectors";
 import { useWeb3React } from "@web3-react/core";
 import { AsteroidDrillPower } from "../../stats/DrillStats";
 import { ethers } from "ethers";
+import { GadesCapacity } from "../../stats/GadesStats";
 
 const CosmosBody = () => {
   const [connected, setConnected] = useState(false);
   const [ironProduction, setIronProduction] = useState(0);
   const [ironReadyToCollect, setIronReadyToCollect] = useState(0);
   const [gadesLevel, setGadesLevel] = useState(1);
+  const [gadesCapacity, setGadesCapacity] = useState(0);
   const { activate } = useWeb3React();
   const gadesContract = getGadesContract();
 
@@ -46,6 +48,7 @@ const CosmosBody = () => {
       .call()
       .then((result) => {
         setGadesLevel(+result + 1);
+        setGadesCapacity(GadesCapacity[+result]);
       });
   }
 
@@ -136,7 +139,9 @@ const CosmosBody = () => {
                 <h3 id="description">Capacity Level</h3>
                 <h3 id="stat">{gadesLevel}</h3>
                 <h3 id="description">Ready to Collect</h3>
-                <h3 id="stat">{ironReadyToCollect} / 10,215</h3>
+                <h3 id="stat">
+                  {ironReadyToCollect} / {gadesCapacity}
+                </h3>
               </CardStats>
               <ButtonContainer>
                 {connected ? (

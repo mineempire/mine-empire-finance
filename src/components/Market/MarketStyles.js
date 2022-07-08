@@ -10,7 +10,7 @@ export const NFTCard = styled.div`
   justify-content: center;
 
   img#drill-image {
-    width: 300px;
+    height: 325px;
     padding: 15px;
   }
 `;

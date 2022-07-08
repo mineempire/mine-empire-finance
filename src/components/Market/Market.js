@@ -13,7 +13,6 @@ import {
   isConnected,
   getEnergyContract,
   getMineEmpireDrillContract,
-  getBalance,
   getCosmicCashContract,
 } from "../../Web3Client";
 
@@ -25,10 +24,7 @@ import {
   NFTCardStatsRow,
   NFTCardStatsRowWithImg,
 } from "./MarketStyles";
-import {
-  energyAddress,
-  mineEmpireDrillAddress,
-} from "../../contracts/Addresses";
+import { mineEmpireDrillAddress } from "../../contracts/Addresses";
 import { ethers } from "ethers";
 import { injected } from "../../connectors";
 import { useWeb3React } from "@web3-react/core";
@@ -41,6 +37,7 @@ const MarketBody = () => {
   const [alt4MintedQuantity, setAlt4MintedQuantity] = useState(0);
   const [alt5MintedQuantity, setAlt5MintedQuantity] = useState(0);
   const [alt6MintedQuantity, setAlt6MintedQuantity] = useState(0);
+  const [launchTime, setLaunchTime] = useState(0);
   const [energyApproved, setEnergyApproved] = useState(false);
   const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
   const [energyBalance, setEnergyBalance] = useState(0);
@@ -140,6 +137,19 @@ const MarketBody = () => {
   }
 
   useEffect(() => {
+    const timeDiff = 1657382400 - Math.floor(Date.now() / 1000);
+    setLaunchTime(timeDiff);
+    const intervalId = setInterval(() => {
+      if (launchTime >= 0) {
+        const timeDiff = 1657382400 - Math.floor(Date.now() / 1000);
+        setLaunchTime(timeDiff);
+      }
+    }, 1000);
+    return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     updateState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -183,6 +193,17 @@ const MarketBody = () => {
     setDisableButtons(false);
   };
 
+  function secondsToHms(d) {
+    d = Number(d);
+    const h = Math.floor(d / 3600);
+    const m = Math.floor((d % 3600) / 60);
+    const s = Math.floor((d % 3600) % 60);
+    const hDisplay = h > 0 ? h + "h " : "";
+    const mDisplay = m > 0 ? m + "m " : "";
+    const sDisplay = s > 0 ? s + "s " : "";
+    return hDisplay + mDisplay + sDisplay;
+  }
+
   return (
     <>
       <Section>
@@ -216,7 +237,7 @@ const MarketBody = () => {
                 </NFTCardHeader>
                 <img
                   id="drill-image"
-                  src="../../assets/asteroid-drill.png"
+                  src="../../assets/asteroid-drill-v2.png"
                   alt=""
                 />
                 <Line width="320px" />
@@ -248,32 +269,42 @@ const MarketBody = () => {
                 <ButtonContainer>
                   {connected ? (
                     <>
-                      {cosmicCashApproved ? (
+                      {launchTime > 0 ? (
                         <>
-                          {alt4MintedQuantity === "200" ? (
-                            <ButtonGray>Minted Out</ButtonGray>
-                          ) : (
-                            <>
-                              {cosmicCashBalance >= 116 ? (
-                                <Button
-                                  onClick={() => handleAltMint(4)}
-                                  disable={disableButtons}
-                                >
-                                  Mint Drill
-                                </Button>
-                              ) : (
-                                <Button>Get Cosmic Cash</Button>
-                              )}
-                            </>
-                          )}
+                          <Button disable={true}>
+                            {secondsToHms(launchTime)}
+                          </Button>
                         </>
                       ) : (
-                        <Button
-                          onClick={handleCosmicCashApprove}
-                          disable={disableButtons}
-                        >
-                          Approve CSC
-                        </Button>
+                        <>
+                          {cosmicCashApproved ? (
+                            <>
+                              {alt4MintedQuantity === "200" ? (
+                                <ButtonGray>Minted Out</ButtonGray>
+                              ) : (
+                                <>
+                                  {cosmicCashBalance >= 116 ? (
+                                    <Button
+                                      onClick={() => handleAltMint(4)}
+                                      disable={disableButtons}
+                                    >
+                                      Mint Drill
+                                    </Button>
+                                  ) : (
+                                    <Button>Get Cosmic Cash</Button>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <Button
+                              onClick={handleCosmicCashApprove}
+                              disable={disableButtons}
+                            >
+                              Approve CSC
+                            </Button>
+                          )}
+                        </>
                       )}
                     </>
                   ) : (
@@ -300,7 +331,7 @@ const MarketBody = () => {
                 </NFTCardHeader>
                 <img
                   id="drill-image"
-                  src="../../assets/asteroid-drill.png"
+                  src="../../assets/asteroid-drill-v3.png"
                   alt=""
                 />
                 <Line width="320px" />
@@ -332,32 +363,42 @@ const MarketBody = () => {
                 <ButtonContainer>
                   {connected ? (
                     <>
-                      {cosmicCashApproved ? (
+                      {launchTime > 0 ? (
                         <>
-                          {alt5MintedQuantity === "50" ? (
-                            <ButtonGray>Minted Out</ButtonGray>
-                          ) : (
-                            <>
-                              {cosmicCashBalance >= 434 ? (
-                                <Button
-                                  onClick={() => handleAltMint(5)}
-                                  disable={disableButtons}
-                                >
-                                  Mint Drill
-                                </Button>
-                              ) : (
-                                <Button>Get Cosmic Cash</Button>
-                              )}
-                            </>
-                          )}
+                          <Button disable={true}>
+                            {secondsToHms(launchTime)}
+                          </Button>
                         </>
                       ) : (
-                        <Button
-                          onClick={handleCosmicCashApprove}
-                          disable={disableButtons}
-                        >
-                          Approve CSC
-                        </Button>
+                        <>
+                          {cosmicCashApproved ? (
+                            <>
+                              {alt5MintedQuantity === "50" ? (
+                                <ButtonGray>Minted Out</ButtonGray>
+                              ) : (
+                                <>
+                                  {cosmicCashBalance >= 434 ? (
+                                    <Button
+                                      onClick={() => handleAltMint(5)}
+                                      disable={disableButtons}
+                                    >
+                                      Mint Drill
+                                    </Button>
+                                  ) : (
+                                    <Button>Get Cosmic Cash</Button>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <Button
+                              onClick={handleCosmicCashApprove}
+                              disable={disableButtons}
+                            >
+                              Approve CSC
+                            </Button>
+                          )}
+                        </>
                       )}
                     </>
                   ) : (
@@ -384,7 +425,7 @@ const MarketBody = () => {
                 </NFTCardHeader>
                 <img
                   id="drill-image"
-                  src="../../assets/asteroid-drill.png"
+                  src="../../assets/asteroid-drill-v4.png"
                   alt=""
                 />
                 <Line width="320px" />
@@ -416,32 +457,42 @@ const MarketBody = () => {
                 <ButtonContainer>
                   {connected ? (
                     <>
-                      {cosmicCashApproved ? (
+                      {launchTime > 0 ? (
                         <>
-                          {alt6MintedQuantity === "20" ? (
-                            <ButtonGray>Minted Out</ButtonGray>
-                          ) : (
-                            <>
-                              {cosmicCashBalance >= 1094 ? (
-                                <Button
-                                  onClick={() => handleAltMint(6)}
-                                  disable={disableButtons}
-                                >
-                                  Mint Drill
-                                </Button>
-                              ) : (
-                                <Button>Get Cosmic Cash</Button>
-                              )}
-                            </>
-                          )}
+                          <Button disable={true}>
+                            {secondsToHms(launchTime)}
+                          </Button>
                         </>
                       ) : (
-                        <Button
-                          onClick={handleCosmicCashApprove}
-                          disable={disableButtons}
-                        >
-                          Approve CSC
-                        </Button>
+                        <>
+                          {cosmicCashApproved ? (
+                            <>
+                              {alt6MintedQuantity === "20" ? (
+                                <ButtonGray>Minted Out</ButtonGray>
+                              ) : (
+                                <>
+                                  {cosmicCashBalance >= 1094 ? (
+                                    <Button
+                                      onClick={() => handleAltMint(6)}
+                                      disable={disableButtons}
+                                    >
+                                      Mint Drill
+                                    </Button>
+                                  ) : (
+                                    <Button>Get Cosmic Cash</Button>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <Button
+                              onClick={handleCosmicCashApprove}
+                              disable={disableButtons}
+                            >
+                              Approve CSC
+                            </Button>
+                          )}
+                        </>
                       )}
                     </>
                   ) : (
@@ -500,34 +551,44 @@ const MarketBody = () => {
                 <ButtonContainer>
                   {connected ? (
                     <>
-                      {energyApproved ? (
+                      {launchTime > 0 ? (
                         <>
-                          {alt1MintedQuantity === "250" ? (
-                            <ButtonGray>Minted Out</ButtonGray>
-                          ) : (
-                            <>
-                              {energyBalance >= 30 ? (
-                                <Button
-                                  onClick={() => handleAltMint(1)}
-                                  disable={disableButtons}
-                                >
-                                  Mint Drill
-                                </Button>
-                              ) : (
-                                <Button disable={true}>
-                                  Not Enough Energy
-                                </Button>
-                              )}
-                            </>
-                          )}
+                          <Button disable={true}>
+                            {secondsToHms(launchTime)}
+                          </Button>
                         </>
                       ) : (
-                        <Button
-                          onClick={handleEnergyApprove}
-                          disable={disableButtons}
-                        >
-                          Approve ENERGY
-                        </Button>
+                        <>
+                          {energyApproved ? (
+                            <>
+                              {alt1MintedQuantity === "250" ? (
+                                <ButtonGray>Minted Out</ButtonGray>
+                              ) : (
+                                <>
+                                  {energyBalance >= 30 ? (
+                                    <Button
+                                      onClick={() => handleAltMint(1)}
+                                      disable={disableButtons}
+                                    >
+                                      Mint Drill
+                                    </Button>
+                                  ) : (
+                                    <Button disable={true}>
+                                      Not Enough Energy
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <Button
+                              onClick={handleEnergyApprove}
+                              disable={disableButtons}
+                            >
+                              Approve ENERGY
+                            </Button>
+                          )}
+                        </>
                       )}
                     </>
                   ) : (
@@ -586,34 +647,44 @@ const MarketBody = () => {
                 <ButtonContainer>
                   {connected ? (
                     <>
-                      {energyApproved ? (
+                      {launchTime > 0 ? (
                         <>
-                          {alt2MintedQuantity === "150" ? (
-                            <ButtonGray>Minted Out</ButtonGray>
-                          ) : (
-                            <>
-                              {energyBalance >= 90 ? (
-                                <Button
-                                  onClick={() => handleAltMint(2)}
-                                  disable={disableButtons}
-                                >
-                                  Mint Drill
-                                </Button>
-                              ) : (
-                                <Button disable={true}>
-                                  Not Enough Energy
-                                </Button>
-                              )}
-                            </>
-                          )}
+                          <Button disable={true}>
+                            {secondsToHms(launchTime)}
+                          </Button>
                         </>
                       ) : (
-                        <Button
-                          onClick={handleEnergyApprove}
-                          disable={disableButtons}
-                        >
-                          Approve ENERGY
-                        </Button>
+                        <>
+                          {energyApproved ? (
+                            <>
+                              {alt2MintedQuantity === "150" ? (
+                                <ButtonGray>Minted Out</ButtonGray>
+                              ) : (
+                                <>
+                                  {energyBalance >= 90 ? (
+                                    <Button
+                                      onClick={() => handleAltMint(2)}
+                                      disable={disableButtons}
+                                    >
+                                      Mint Drill
+                                    </Button>
+                                  ) : (
+                                    <Button disable={true}>
+                                      Not Enough Energy
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <Button
+                              onClick={handleEnergyApprove}
+                              disable={disableButtons}
+                            >
+                              Approve ENERGY
+                            </Button>
+                          )}
+                        </>
                       )}
                     </>
                   ) : (
@@ -672,34 +743,44 @@ const MarketBody = () => {
                 <ButtonContainer>
                   {connected ? (
                     <>
-                      {energyApproved ? (
+                      {launchTime > 0 ? (
                         <>
-                          {alt3MintedQuantity === "100" ? (
-                            <ButtonGray>Minted Out</ButtonGray>
-                          ) : (
-                            <>
-                              {energyBalance >= 150 ? (
-                                <Button
-                                  onClick={() => handleAltMint(3)}
-                                  disable={disableButtons}
-                                >
-                                  Mint Drill
-                                </Button>
-                              ) : (
-                                <Button disable={true}>
-                                  Not Enough Energy
-                                </Button>
-                              )}
-                            </>
-                          )}
+                          <Button disable={true}>
+                            {secondsToHms(launchTime)}
+                          </Button>
                         </>
                       ) : (
-                        <Button
-                          onClick={handleEnergyApprove}
-                          disable={disableButtons}
-                        >
-                          Approve ENERGY
-                        </Button>
+                        <>
+                          {energyApproved ? (
+                            <>
+                              {alt3MintedQuantity === "100" ? (
+                                <ButtonGray>Minted Out</ButtonGray>
+                              ) : (
+                                <>
+                                  {energyBalance >= 150 ? (
+                                    <Button
+                                      onClick={() => handleAltMint(3)}
+                                      disable={disableButtons}
+                                    >
+                                      Mint Drill
+                                    </Button>
+                                  ) : (
+                                    <Button disable={true}>
+                                      Not Enough Energy
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <Button
+                              onClick={handleEnergyApprove}
+                              disable={disableButtons}
+                            >
+                              Approve ENERGY
+                            </Button>
+                          )}
+                        </>
                       )}
                     </>
                   ) : (

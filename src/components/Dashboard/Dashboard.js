@@ -1,3 +1,4 @@
+import { cosmicCashAddress } from "../../contracts/Addresses";
 import { Container, Button, Line, ButtonContainer } from "../../globalStyles";
 import {
   DashboardSection,
@@ -16,6 +17,24 @@ import {
 } from "./DashboardStyles";
 
 const DashboardBody = () => {
+  async function handleAddCSCToMM() {
+    try {
+      await window.ethereum.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: cosmicCashAddress,
+            symbol: "CSC",
+            decimals: 18,
+            image: "https://mineempire.io/assets/csc-256x256.png",
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <DashboardSection>
       <Container>
@@ -50,13 +69,13 @@ const DashboardBody = () => {
             </CardFeature>
             <TokenInfoCardStats>
               <h3 id="description">Circulating Supply</h3>
-              <h3 id="stat">1,000</h3>
+              <h3 id="stat">0</h3>
               <h3 id="description">Market Cap</h3>
-              <h3 id="stat">$1,000</h3>
+              <h3 id="stat">$0</h3>
               <h3 id="description">Total Liquidity</h3>
-              <h3 id="stat">$1,000</h3>
+              <h3 id="stat">$0</h3>
               <h3 id="description">Protocol Owned Liquidity</h3>
-              <h3 id="stat">$1,000</h3>
+              <h3 id="stat">$0</h3>
             </TokenInfoCardStats>
           </CardDescription>
           <ButtonContainer>
@@ -75,7 +94,7 @@ const DashboardBody = () => {
             <TokenInfoTitleContainer>
               <img src="../../assets/coinmarketcap-icon.png" alt="" />
               <img src="../../assets/coingecko-icon.png" alt="" />
-              <CardFeature>
+              <CardFeature onClick={handleAddCSCToMM}>
                 <img src="../../assets/svg/plus.svg" alt="" />
                 <img src="../../assets/metamask-icon.png" alt="" />
               </CardFeature>
