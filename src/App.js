@@ -18,11 +18,11 @@ import Rewards from "./pages/Rewards";
 
 function App() {
   const switchNetwork = async () => {
-    if (window.ethereum.networkVersion !== 4002) {
+    if (window.ethereum.networkVersion !== 250) {
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: "0xfa2" }],
+          params: [{ chainId: "0xfa" }],
         });
       } catch (err) {
         if (err.code === 4902) {
@@ -31,10 +31,14 @@ function App() {
             params: [
               {
                 chainName: "Fantom Testnet",
-                chainId: "0xfa2",
-                nativeCurrency: { name: "Fantom", decimals: 18, symbol: "FTM" },
-                rpcUrls: ["https://rpc.testnet.fantom.network/"],
-                blockExplorerUrls: ["https://testnet.ftmscan.com/"],
+                chainId: "0xfa",
+                nativeCurrency: {
+                  name: "Fantom Opera Mainnet",
+                  decimals: 18,
+                  symbol: "FTM",
+                },
+                rpcUrls: ["https://rpc.fantom.network/"],
+                blockExplorerUrls: ["https://api.ftmscan.com/"],
               },
             ],
           });
