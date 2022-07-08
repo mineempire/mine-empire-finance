@@ -61,7 +61,11 @@ const RewardsBody = () => {
             <h1>Asteroid Drill</h1>
             <img src={pwsrc} alt="" />
           </NFTCardHeader>
-          <img id="drill-image" src="../../assets/asteroid-drill.png" alt="" />
+          <img
+            id="drill-image"
+            src="../../assets/asteroid-drill-v1.png"
+            alt=""
+          />
           <Line width="320px" />
           <NFTCardStats>
             <NFTCardStatsRow>

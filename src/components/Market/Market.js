@@ -519,7 +519,7 @@ const MarketBody = () => {
                 </NFTCardHeader>
                 <img
                   id="drill-image"
-                  src="../../assets/asteroid-drill.png"
+                  src="../../assets/asteroid-drill-v1.png"
                   alt=""
                 />
                 <Line width="320px" />
@@ -615,7 +615,7 @@ const MarketBody = () => {
                 </NFTCardHeader>
                 <img
                   id="drill-image"
-                  src="../../assets/asteroid-drill.png"
+                  src="../../assets/asteroid-drill-v1.png"
                   alt=""
                 />
                 <Line width="320px" />
@@ -711,7 +711,7 @@ const MarketBody = () => {
                 </NFTCardHeader>
                 <img
                   id="drill-image"
-                  src="../../assets/asteroid-drill.png"
+                  src="../../assets/asteroid-drill-v1.png"
                   alt=""
                 />
                 <Line width="320px" />
