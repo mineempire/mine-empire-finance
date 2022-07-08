@@ -127,6 +127,7 @@ const Navbar = () => {
     }, 5000);
 
     return () => clearInterval(intervalId);
+    // eslint-disable-next-line
   }, []);
 
   // website
