@@ -2,7 +2,6 @@ import Web3 from "web3";
 import {
   converterAddress,
   cosmicCashAddress,
-  CSCMinterAddress,
   dailyEnergyAddress,
   energyAddress,
   gadesAddress,
@@ -11,7 +10,6 @@ import {
 } from "./contracts/Addresses";
 import { converterABI } from "./contracts/Converter";
 import { cosmicCashABI } from "./contracts/CosmicCash";
-import { CSCMinterABI } from "./contracts/CSCMinter";
 import { dailyEnergyABI } from "./contracts/DailyEnergy";
 import { energyABI } from "./contracts/Energy";
 import { gadesABI } from "./contracts/Gades";
@@ -53,7 +51,7 @@ export const isCorrectNetwork = async () => {
       await sleep(100);
     }
   }
-  if (version !== "4002") return false;
+  if (version !== "250") return false;
   return true;
 };
 
@@ -61,7 +59,7 @@ export const switchNetwork = async () => {
   try {
     await window.ethereum.request({
       method: "wallet_switchEthereumChain",
-      params: [{ chainId: "0xfa2" }],
+      params: [{ chainId: "0xfa" }],
     });
   } catch (err) {
     if (err.code === 4902) {
@@ -69,11 +67,11 @@ export const switchNetwork = async () => {
         method: "wallet_addEthereumChain",
         params: [
           {
-            chainName: "Fantom Testnet",
-            chainId: "0xfa2",
+            chainName: "Fantom Opera Mainnet",
+            chainId: "0xfa",
             nativeCurrency: { name: "Fantom", decimals: 18, symbol: "FTM" },
-            rpcUrls: ["https://rpc.testnet.fantom.network/"],
-            blockExplorerUrls: ["https://testnet.ftmscan.com/"],
+            rpcUrls: ["https://rpc.fantom.network/"],
+            blockExplorerUrls: ["https://apiftmscan.com/"],
           },
         ],
       });

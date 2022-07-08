@@ -122,6 +122,9 @@ export const ButtonContainer = styled.div`
   width: 100%;
   margin: 15px;
   justify-content: center;
+  a {
+    width: 100%;
+  }
 `;
 
 export const Line = styled.div`

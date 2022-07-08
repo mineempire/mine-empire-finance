@@ -46,12 +46,11 @@ const InventoryBody = () => {
     const addr = await injected.getAccount();
     let ids = new Set();
     let url =
-      "https://api-testnet.ftmscan.com/api?module=account&action=tokennfttx&contractaddress=" +
+      "https://api.ftmscan.com/api?module=account&action=tokennfttx&contractaddress=" +
       mineEmpireDrillAddress +
       "&address=" +
       addr +
       "&startblock=0&endblock=99999999&page=1&offset=100&sort=asc&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
-    console.log(url);
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {

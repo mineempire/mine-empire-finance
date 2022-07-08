@@ -164,7 +164,7 @@ export const ClaimButtonContainer = styled.div`
 export const SingleButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 25%;
+  margin-top: 10%;
 `;
 
 export const BalancesMenu = styled.div`

@@ -43,13 +43,6 @@ const CosmosBody = () => {
         setIronReadyToCollect(amt);
       })
       .catch((err) => console.log(err));
-    await gadesContract.methods
-      .getUserLevel(addr)
-      .call()
-      .then((result) => {
-        setGadesLevel(+result + 1);
-        setGadesCapacity(GadesCapacity[+result]);
-      });
   }
 
   async function getGadesStats() {
@@ -77,6 +70,13 @@ const CosmosBody = () => {
           );
           setIronProduction(prodPerDay);
         }
+      });
+    await gadesContract.methods
+      .getUserLevel(addr)
+      .call()
+      .then((result) => {
+        setGadesLevel(+result + 1);
+        setGadesCapacity(GadesCapacity[+result]);
       });
     if (checkStaked) await getStakedStats();
   }
