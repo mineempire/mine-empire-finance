@@ -1,12 +1,11 @@
-export const dailyEnergyAddress = "0xf0b6C0B3e4992a12F18C790CE09550720d857f7E";
-export const energyAddress = "0xeD25CD810417F0D79DbF104DF797B96DAbbb7529";
-export const cosmicCashAddress = "0x6E2a671Bc129931dC273423F531c31d33c710e9C";
+export const dailyEnergyAddress = "0x43F05055779A6277F7a2f683Ee7b30DC48E20C6E";
+export const energyAddress = "0x672f8356365AFf3BCfbb9bEf48F6972894f68FC4";
+export const cosmicCashAddress = "0x38b0b2AB7f6777B025D5b6F6eb22A5841Ae90cCC";
 export const mineEmpireDrillAddress =
-  "0xb9bD54C7326a79aA0E54d34f3ae901733c6Dec60";
-export const ironAddress = "0xc8A8bA90a20B4BD1504061AB74758EDd673322e1";
-export const gadesAddress = "0x843557501fc1B80DB7732181Db9DDcde3Df2B034";
-export const converterAddress = "0xC13b0BABE315488793eE620e776A40e518eb6727";
-export const CSCMinterAddress = "0xeb194b17467f98F6AD131c2EDfF094E3a42f8585";
+  "0x0F2273F67219c29fB2316a900dd899c8465F9d66";
+export const ironAddress = "0x44b28061aeBd19306cDEb1F3452Bf4F2A5954958";
+export const gadesAddress = "0x724CdC45eA78b5A2474Cb2cD4764C01918F9CcC0";
+export const converterAddress = "0x95785D047Bf23305525a09145eFe29325D32975F";
 
 export const gadesMetadataIPFS =
   "QmeBK5Jbk1y6PLH3PsC4zqNVshpLagNotEL7AHB8SsvTKn";

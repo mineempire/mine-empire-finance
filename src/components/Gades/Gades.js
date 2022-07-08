@@ -43,7 +43,7 @@ import {
 
 const GadesBody = () => {
   let selectedAddress = "";
-  let cosmicCashBalance = "0";
+  const [cosmicCashBalance, setCosmicCashBalance] = useState(0);
   const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
   const [upgradeCost, setUpgradeCost] = useState(0);
   const [drillPower, setDrillPower] = useState(0);
@@ -163,7 +163,7 @@ const GadesBody = () => {
       .balanceOf(addr)
       .call()
       .then((result) => {
-        cosmicCashBalance = ethers.utils.formatEther(result);
+        setCosmicCashBalance(+ethers.utils.formatEther(result));
       });
   }
 
@@ -332,6 +332,10 @@ const GadesBody = () => {
 
   useEffect(() => {
     updateState();
+    const intervalId = setInterval(() => {
+      if (!disableGadesButtons) updateState();
+    }, 5000);
+    return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

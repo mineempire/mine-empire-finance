@@ -31,31 +31,8 @@ const CosmosBody = () => {
   const { activate } = useWeb3React();
   const gadesContract = getGadesContract();
 
-  async function getGadesStats() {
+  async function getStakedStats() {
     const addr = await injected.getAccount();
-    let baseProduction = 0;
-    await gadesContract.methods
-      .getBaseProduction()
-      .call()
-      .then((result) => {
-        baseProduction = +ethers.utils.formatEther(result);
-      });
-    await gadesContract.methods
-      .getStake(addr)
-      .call()
-      .then((stake) => {
-        const drillId = stake[0];
-        if (drillId === "0") {
-          return;
-        } else {
-          const level = +stake["drill"]["level"];
-          const mult = AsteroidDrillPower[level];
-          const prodPerDay = Math.floor(
-            (baseProduction * 60 * 60 * 24 * mult) / 100
-          );
-          setIronProduction(prodPerDay);
-        }
-      });
     await gadesContract.methods
       .getAccumulatedIron(addr)
       .call()
@@ -70,6 +47,35 @@ const CosmosBody = () => {
       .then((result) => {
         setGadesLevel(+result + 1);
       });
+  }
+
+  async function getGadesStats() {
+    const addr = await injected.getAccount();
+    let baseProduction = 0;
+    let checkStaked = true;
+    await gadesContract.methods
+      .getBaseProduction()
+      .call()
+      .then((result) => {
+        baseProduction = +ethers.utils.formatEther(result);
+      });
+    await gadesContract.methods
+      .getStake(addr)
+      .call()
+      .then((stake) => {
+        const drillId = stake[0];
+        if (drillId === "0") {
+          checkStaked = false;
+        } else {
+          const level = +stake["drill"]["level"];
+          const mult = AsteroidDrillPower[level];
+          const prodPerDay = Math.floor(
+            (baseProduction * 60 * 60 * 24 * mult) / 100
+          );
+          setIronProduction(prodPerDay);
+        }
+      });
+    if (checkStaked) await getStakedStats();
   }
 
   async function updateState() {

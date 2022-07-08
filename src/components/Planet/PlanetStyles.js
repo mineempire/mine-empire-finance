@@ -187,6 +187,10 @@ export const SelectDrillMenuBody = styled.div`
     background-color: darkgrey;
     outline: 1px solid slategrey;
   }
+
+  h3 {
+    color: #fff;
+  }
 `;
 
 export const SelectDrillMenuItem = styled.div`

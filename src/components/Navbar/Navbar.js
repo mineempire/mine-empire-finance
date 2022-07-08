@@ -27,6 +27,7 @@ import {
   BalancesMenu,
   BalanceItem,
   SingleButtonContainer,
+  AddressBox,
 } from "./NavbarStyles.js";
 import { Button } from "../../globalStyles.js";
 import { useWeb3React } from "@web3-react/core";
@@ -36,13 +37,14 @@ import { ethers } from "ethers";
 const Navbar = () => {
   // web3
   const [connected, setConnected] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("");
   const [claimableEnergy, setClaimableEnergy] = useState(0);
   const [dropdown, setDropdown] = useState(false);
   const [energyBal, setEnergyBal] = useState(0);
   const [cscBal, setCscBal] = useState(0);
   const [ironBal, setIronBal] = useState(0);
   const dailyEnergyContract = getDailyEnergyContract();
-  const [correctNetwork, setCorrectNetwork] = useState(false);
+  const [correctNetwork, setCorrectNetwork] = useState(true);
 
   const energyContract = getEnergyContract();
   const cscContract = getCosmicCashContract();
@@ -101,7 +103,10 @@ const Navbar = () => {
   };
 
   async function checkConnected() {
-    if (await isConnected()) setConnected(true);
+    if (await isConnected()) {
+      setConnected(true);
+      setSelectedAddress(await injected.getAccount());
+    }
   }
 
   async function checkNetwork() {
@@ -114,6 +119,14 @@ const Navbar = () => {
     checkConnected();
     updateClaimableEnergy();
     getBalances();
+    const intervalId = setInterval(() => {
+      checkNetwork();
+      checkConnected();
+      updateClaimableEnergy();
+      getBalances();
+    }, 5000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   // website
@@ -184,6 +197,15 @@ const Navbar = () => {
                         </ClaimButtonContainer>
                       </Connected>
                       <BalancesMenu dropdown={dropdown}>
+                        <AddressBox>
+                          <p>
+                            {selectedAddress.substring(0, 5) +
+                              "..." +
+                              selectedAddress.substring(
+                                selectedAddress.length - 3
+                              )}
+                          </p>
+                        </AddressBox>
                         <BalanceItem>
                           <img src="../../assets/energy.png" alt="" />
                           <p> {energyBal} ENERGY</p>

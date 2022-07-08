@@ -17,7 +17,6 @@ import { energyABI } from "./contracts/Energy";
 import { gadesABI } from "./contracts/Gades";
 import { ironABI } from "./contracts/Iron";
 import { mineEmpireDrillABI } from "./contracts/MineEmpireDrill";
-import { ethers } from "ethers";
 
 export let accountAddress = "";
 
@@ -45,7 +44,15 @@ export const isConnected = async () => {
 };
 
 export const isCorrectNetwork = async () => {
-  const version = await window.ethereum.networkVersion;
+  let version = 0;
+  while (version === 0) {
+    const curVersion = await window.ethereum.networkVersion;
+    if (curVersion !== null) {
+      version = curVersion;
+    } else {
+      await sleep(100);
+    }
+  }
   if (version !== "4002") return false;
   return true;
 };
@@ -131,12 +138,6 @@ export const getGadesContract = () => {
   var web3 = new Web3(window.ethereum);
   const gadesContract = new web3.eth.Contract(gadesABI, gadesAddress);
   return gadesContract;
-};
-
-export const getCSCMinter = () => {
-  var web3 = new Web3(window.ethereum);
-  const contract = new web3.eth.Contract(CSCMinterABI, CSCMinterAddress);
-  return contract;
 };
 
 export function sleep(ms) {

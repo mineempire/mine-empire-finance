@@ -3,6 +3,10 @@ import styled from "styled-components";
 export const AsteroidDrillInventory = styled.div`
   display: flex;
   flex-wrap: wrap;
+
+  h3 {
+    color: #fff;
+  }
 `;
 
 export const InventoryLoading = styled.div`

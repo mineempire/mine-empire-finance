@@ -196,3 +196,10 @@ export const BalanceItem = styled.div`
     margin: 0.6rem;
   }
 `;
+
+export const AddressBox = styled.div`
+  p {
+    font-size: 1rem;
+    padding-top: 0.5rem;
+  }
+`;

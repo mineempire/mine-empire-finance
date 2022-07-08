@@ -46,7 +46,6 @@ const MarketBody = () => {
   const [energyBalance, setEnergyBalance] = useState(0);
   const [cosmicCashBalance, setcosmicCashBalance] = useState(0);
   const [disableButtons, setDisableButtons] = useState(false);
-  const miningPower = 30;
   let selectedAddress = "";
 
   const { activate } = useWeb3React();
@@ -225,7 +224,7 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">223 CSC</h3>
+                      <h3 id="stat">116 CSC</h3>
                       <img src="../../assets/csc-icon.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>
@@ -255,7 +254,7 @@ const MarketBody = () => {
                             <ButtonGray>Minted Out</ButtonGray>
                           ) : (
                             <>
-                              {cosmicCashBalance >= 223 ? (
+                              {cosmicCashBalance >= 116 ? (
                                 <Button
                                   onClick={() => handleAltMint(4)}
                                   disable={disableButtons}
@@ -273,7 +272,7 @@ const MarketBody = () => {
                           onClick={handleCosmicCashApprove}
                           disable={disableButtons}
                         >
-                          Approve
+                          Approve CSC
                         </Button>
                       )}
                     </>
@@ -309,7 +308,7 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">652 CSC</h3>
+                      <h3 id="stat">434 CSC</h3>
                       <img src="../../assets/csc-icon.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>
@@ -339,7 +338,7 @@ const MarketBody = () => {
                             <ButtonGray>Minted Out</ButtonGray>
                           ) : (
                             <>
-                              {cosmicCashBalance >= 652 ? (
+                              {cosmicCashBalance >= 434 ? (
                                 <Button
                                   onClick={() => handleAltMint(5)}
                                   disable={disableButtons}
@@ -357,7 +356,7 @@ const MarketBody = () => {
                           onClick={handleCosmicCashApprove}
                           disable={disableButtons}
                         >
-                          Approve
+                          Approve CSC
                         </Button>
                       )}
                     </>
@@ -393,7 +392,7 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">1297 CSC</h3>
+                      <h3 id="stat">1094 CSC</h3>
                       <img src="../../assets/csc-icon.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>
@@ -423,7 +422,7 @@ const MarketBody = () => {
                             <ButtonGray>Minted Out</ButtonGray>
                           ) : (
                             <>
-                              {cosmicCashBalance >= 1297 ? (
+                              {cosmicCashBalance >= 1094 ? (
                                 <Button
                                   onClick={() => handleAltMint(6)}
                                   disable={disableButtons}
@@ -441,7 +440,7 @@ const MarketBody = () => {
                           onClick={handleCosmicCashApprove}
                           disable={disableButtons}
                         >
-                          Approve
+                          Approve CSC
                         </Button>
                       )}
                     </>
@@ -527,7 +526,7 @@ const MarketBody = () => {
                           onClick={handleEnergyApprove}
                           disable={disableButtons}
                         >
-                          Approve
+                          Approve ENERGY
                         </Button>
                       )}
                     </>
@@ -613,7 +612,7 @@ const MarketBody = () => {
                           onClick={handleEnergyApprove}
                           disable={disableButtons}
                         >
-                          Approve
+                          Approve ENERGY
                         </Button>
                       )}
                     </>
@@ -699,7 +698,7 @@ const MarketBody = () => {
                           onClick={handleEnergyApprove}
                           disable={disableButtons}
                         >
-                          Approve
+                          Approve ENERGY
                         </Button>
                       )}
                     </>
