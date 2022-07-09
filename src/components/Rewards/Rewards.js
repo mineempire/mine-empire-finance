@@ -33,14 +33,22 @@ const RewardsBody = () => {
         .call()
         .then((result) => {
           if (+result > 0) {
-            setAsteroidDrillLevel(result);
+            setAsteroidDrillLevel(i);
           }
           setDrillChecked(true);
         });
     }
   };
 
-  const handleFreeMint = async () => {};
+  const handleFreeMint = async () => {
+    if (asteroidDrillLevel === "?") return;
+    const addr = await injected.getAccount();
+    await mineEmpireDrillContract.methods
+      .freeMintDrill(1, +asteroidDrillLevel)
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+  };
 
   function getNFTCard(level) {
     let lvSrc = level;
