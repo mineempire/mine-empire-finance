@@ -84,6 +84,7 @@ export const MarketContainer = styled.div`
   display: flex;
   width: 100%;
   flex-wrap: wrap;
+  align-content: center;
 
   @media screen and (max-width: 960px) {
     justify-content: center;

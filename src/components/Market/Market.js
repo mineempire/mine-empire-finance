@@ -245,7 +245,7 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">116 CSC</h3>
+                      <h3 id="stat">116 CSC (33% off)</h3>
                       <img src="../../assets/csc-icon.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>
@@ -339,7 +339,7 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">434 CSC</h3>
+                      <h3 id="stat">434 CSC (33% off)</h3>
                       <img src="../../assets/csc-icon.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>
@@ -433,7 +433,7 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">1094 CSC</h3>
+                      <h3 id="stat">1094 CSC (33% off)</h3>
                       <img src="../../assets/csc-icon.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>
