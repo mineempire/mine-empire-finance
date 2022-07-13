@@ -98,7 +98,7 @@ const ConverterBody = () => {
       .balanceOf(addr)
       .call()
       .then((result) => {
-        const amt = Math.floor(+ethers.utils.formatEther(result));
+        const amt = Math.floor(+ethers.utils.formatEther(result) * 100) / 100;
         setCosmicCashQuantity(amt);
       });
   }

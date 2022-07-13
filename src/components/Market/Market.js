@@ -151,6 +151,10 @@ const MarketBody = () => {
 
   useEffect(() => {
     updateState();
+    const intervalId = setInterval(() => {
+      updateState();
+    }, 5000);
+    return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

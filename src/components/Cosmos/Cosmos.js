@@ -23,13 +23,17 @@ import { useWeb3React } from "@web3-react/core";
 import { AsteroidDrillPower } from "../../stats/DrillStats";
 import { ethers } from "ethers";
 import { GadesCapacity } from "../../stats/GadesStats";
+import { cosmicCashAddress } from "../../contracts/Addresses";
 
 const CosmosBody = () => {
   const [connected, setConnected] = useState(false);
   const [ironProduction, setIronProduction] = useState(0);
+  const [cscProduction, setCscProduction] = useState(0);
   const [ironReadyToCollect, setIronReadyToCollect] = useState(0);
   const [gadesLevel, setGadesLevel] = useState(1);
   const [gadesCapacity, setGadesCapacity] = useState(0);
+  const [cosmicCashPrice, setCosmicCashPrice] = useState(0);
+  const [launchTime, setLaunchTime] = useState(0);
   const { activate } = useWeb3React();
   const gadesContract = getGadesContract();
 
@@ -43,6 +47,17 @@ const CosmosBody = () => {
         setIronReadyToCollect(amt);
       })
       .catch((err) => console.log(err));
+  }
+
+  async function getCosmicCashPrice() {
+    let url =
+      "https://api.dexscreener.com/latest/dex/tokens/" + cosmicCashAddress;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const priceUsd = data["pairs"][0]["priceUsd"];
+        setCosmicCashPrice(priceUsd);
+      });
   }
 
   async function getGadesStats() {
@@ -69,6 +84,9 @@ const CosmosBody = () => {
             (baseProduction * 60 * 60 * 24 * mult) / 100
           );
           setIronProduction(prodPerDay);
+          setCscProduction(
+            Math.floor((ironProduction / 13809) * 1000000) / 1000000
+          );
         }
       });
     await gadesContract.methods
@@ -86,11 +104,39 @@ const CosmosBody = () => {
       setConnected(true);
       await getGadesStats();
     }
+    getCosmicCashPrice();
   }
 
   useEffect(() => {
     updateState();
   });
+
+  useEffect(() => {
+    const timeDiff = 1657987200 - Math.floor(Date.now() / 1000);
+    setLaunchTime(timeDiff);
+    const intervalId = setInterval(() => {
+      if (launchTime >= 0) {
+        const timeDiff = 1657987200 - Math.floor(Date.now() / 1000);
+        setLaunchTime(timeDiff);
+      }
+    }, 1000);
+    return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function secondsToHms(d) {
+    d = Number(d);
+    const day = Math.floor(d / 86400);
+    const h = Math.floor((d % 86400) / 3600);
+    const m = Math.floor((d % 3600) / 60);
+    const s = Math.floor((d % 3600) % 60);
+    const dDisplay = day > 0 ? day + "d " : "";
+    const hDisplay = h > 0 ? h + "h " : "";
+    const mDisplay = m > 0 ? m + "m " : "";
+    const sDisplay = s > 0 ? s + "s " : "";
+    return dDisplay + hDisplay + mDisplay + sDisplay;
+  }
+
   return (
     <>
       <Section>
@@ -129,13 +175,15 @@ const CosmosBody = () => {
                 <h3 id="stat">{ironProduction} Iron / Day</h3>
                 <h3 id="description">Max Production</h3>
                 <h3 id="stat">121.6k Iron / Day</h3>
-                <h3 id="description">Your CSC Equiv</h3>
+                <h3 id="description">Your USD Equiv</h3>
                 <h3 id="stat">
-                  {Math.floor((ironProduction / 13809) * 1000000) / 1000000} CSC
-                  / Day
+                  ${Math.floor(cscProduction * cosmicCashPrice * 100) / 100} /
+                  Day
                 </h3>
-                <h3 id="description">Max CSC Equiv</h3>
-                <h3 id="stat">8.8 CSC / Day</h3>
+                <h3 id="description">Max USD Equiv</h3>
+                <h3 id="stat">
+                  ${Math.floor(8.8 * cosmicCashPrice * 100) / 100} / Day
+                </h3>
                 <h3 id="description">Capacity Level</h3>
                 <h3 id="stat">{gadesLevel}</h3>
                 <h3 id="description">Ready to Collect</h3>
@@ -173,10 +221,10 @@ const CosmosBody = () => {
                 <h3 id="stat">0 Cobalt / Day</h3>
                 <h3 id="description">Max Production</h3>
                 <h3 id="stat">29.8k Cobalt / Day</h3>
-                <h3 id="description">Your CSC Equiv</h3>
-                <h3 id="stat">0 CSC / Day</h3>
-                <h3 id="description">Max CSC Equiv</h3>
-                <h3 id="stat">11.3 CSC / Day</h3>
+                <h3 id="description">Your USD Equiv</h3>
+                <h3 id="stat">$0 / Day</h3>
+                <h3 id="description">Max USD Equiv</h3>
+                <h3 id="stat">$10.12 / Day</h3>
                 <h3 id="description">Capacity Level</h3>
                 <h3 id="stat">1</h3>
                 <h3 id="description">Ready to Collect</h3>
@@ -185,7 +233,7 @@ const CosmosBody = () => {
               <ButtonContainer>
                 {connected ? (
                   // <Link to="oberon">
-                  <Button>Coming Soon</Button>
+                  <Button disable={true}>{secondsToHms(launchTime)}</Button>
                 ) : (
                   <Button onClick={() => activate(injected)}>Connect</Button>
                 )}
@@ -204,21 +252,21 @@ const CosmosBody = () => {
               <PlanetCardProductionInfo>
                 <img src="../../assets/bismuth.png" alt="" />
                 <h3 id="production">Production:</h3>
-                <h3 id="amount">179 / Day</h3>
+                <h3 id="amount">--- / Day</h3>
               </PlanetCardProductionInfo>
               <CardStats>
                 <h3 id="description">Your Production</h3>
-                <h3 id="stat">0 Bismuth / Day</h3>
+                <h3 id="stat">- Bismuth / Day</h3>
                 <h3 id="description">Max Production</h3>
-                <h3 id="stat">6.4k Bismuth / Day</h3>
-                <h3 id="description">Your CSC Equiv</h3>
-                <h3 id="stat">0 CSC / Day</h3>
-                <h3 id="description">Max CSC Equiv</h3>
-                <h3 id="stat">13.6 CSC / Day</h3>
+                <h3 id="stat">- Bismuth / Day</h3>
+                <h3 id="description">Your USD Equiv</h3>
+                <h3 id="stat">- / Day</h3>
+                <h3 id="description">Max USD Equiv</h3>
+                <h3 id="stat">- / Day</h3>
                 <h3 id="description">Capacity Level</h3>
                 <h3 id="stat">1</h3>
                 <h3 id="description">Ready to Collect</h3>
-                <h3 id="stat">0 / 537</h3>
+                <h3 id="stat">0 / ---</h3>
               </CardStats>
               <ButtonContainer>
                 {connected ? (
