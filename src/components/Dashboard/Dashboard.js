@@ -4,7 +4,6 @@ import {
   BEETS_VAULT,
   converterAddress,
   cosmicCashAddress,
-  TreasuryAddress,
 } from "../../contracts/Addresses";
 import {
   Container,
@@ -15,7 +14,6 @@ import {
 } from "../../globalStyles";
 import {
   DashboardSection,
-  TitleImageContainer,
   TokenInfoCard,
   TokenInfoCardImgContainer,
   TokenInfoTitleContainer,
