@@ -6,7 +6,13 @@ import {
   cosmicCashAddress,
   TreasuryAddress,
 } from "../../contracts/Addresses";
-import { Container, Button, Line, ButtonContainer } from "../../globalStyles";
+import {
+  Container,
+  Button,
+  Line,
+  ButtonContainer,
+  TitleContainer,
+} from "../../globalStyles";
 import {
   DashboardSection,
   TitleImageContainer,
@@ -19,15 +25,12 @@ import {
   SmallTextDollar,
   TokenInfoCardStats,
   DashboardContainer,
-  ContainerFlexColumn,
-  DataDiv,
 } from "./DashboardStyles";
 
 const DashboardBody = () => {
   const [cosmicCashPrice, setCosmicCashPrice] = useState(0);
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [totalCosmicCashLiquidity, setTotalCosmicCashLiquidity] = useState(0);
-  const [totalTreasuryValue, setTotalTreasuryValue] = useState(0);
 
   async function handleAddCSCToMM() {
     try {
@@ -101,21 +104,6 @@ const DashboardBody = () => {
           setTotalCosmicCashLiquidity(cscInPool * 2);
         }
       });
-    url =
-      "https://api.ftmscan.com/api?module=account&action=tokenbalance&contractaddress=" +
-      cosmicCashAddress +
-      "&address=" +
-      TreasuryAddress +
-      "&tag=latest&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
-    await fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data["result"]) {
-          const cscInTreasury = +ethers.utils.formatEther(data["result"]);
-          totalTreasury = Math.floor(totalTreasury + cscInTreasury);
-          setTotalTreasuryValue(totalTreasury);
-        }
-      });
   }
 
   useEffect(() => {
@@ -126,9 +114,11 @@ const DashboardBody = () => {
   return (
     <DashboardSection>
       <Container>
-        <TitleImageContainer>
-          <img src="../../assets/logo-large.png" alt="" />
-        </TitleImageContainer>
+        <TitleContainer>
+          <h1>Mine Empire</h1>
+          <h3>The first emissionless, idle game built for passive income.</h3>
+          <h3>Mint Asteroid Drills in the Market and earn up to 263% APR!</h3>
+        </TitleContainer>
       </Container>
       <DashboardContainer>
         <TokenInfoCard>
@@ -220,19 +210,6 @@ const DashboardBody = () => {
             </a>
           </ButtonContainer>
         </TokenInfoCard>
-
-        <ContainerFlexColumn>
-          <DataDiv>
-            <h1>
-              ${(totalTreasuryValue * cosmicCashPrice).toLocaleString("en-US")}
-            </h1>
-            <h3>Total Treasury Value</h3>
-          </DataDiv>
-          <DataDiv>
-            <h1>$0.00</h1>
-            <h3>Total Income</h3>
-          </DataDiv>
-        </ContainerFlexColumn>
       </DashboardContainer>
     </DashboardSection>
   );

@@ -7,6 +7,7 @@ import {
   Button,
   ButtonContainer,
   ButtonGray,
+  BasicButton,
 } from "../../globalStyles";
 import { useEffect, useState } from "react";
 import {
@@ -23,6 +24,7 @@ import {
   MarketContainer,
   NFTCardStatsRow,
   NFTCardStatsRowWithImg,
+  RightFlexDiv,
 } from "./MarketStyles";
 import { mineEmpireDrillAddress } from "../../contracts/Addresses";
 import { ethers } from "ethers";
@@ -222,6 +224,15 @@ const MarketBody = () => {
               Upgrade your drills to to increase your mining power. Mining Power
               multiplies the base production of any asteroid or planet.
             </h3>
+            <RightFlexDiv>
+              <a
+                href="https://paintswap.finance/marketplace/collections/0x51bc1283a760ef2528b57210af73330af71f052b"
+                rel="noreferrer"
+                target="_blank"
+              >
+                <BasicButton>PaintSwap Collection</BasicButton>
+              </a>
+            </RightFlexDiv>
           </TitleContainer>
         </Container>
         <Container>
@@ -249,13 +260,17 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">116 CSC (33% off)</h3>
+                      <h3 id="stat">116 CSC</h3>
                       <img src="../../assets/csc-icon.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Speciality</h3>
                     <h3 id="stat">Asteroid</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">APR / Max</h3>
+                    <h3 id="stat">218% / 263%</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>
@@ -343,13 +358,17 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">434 CSC (33% off)</h3>
+                      <h3 id="stat">434 CSC</h3>
                       <img src="../../assets/csc-icon.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Speciality</h3>
                     <h3 id="stat">Asteroid</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">APR / Max</h3>
+                    <h3 id="stat">184% / 223%</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>
@@ -437,13 +456,17 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Price</h3>
                     <NFTCardStatsRowWithImg>
-                      <h3 id="stat">1094 CSC (33% off)</h3>
+                      <h3 id="stat">1094 CSC</h3>
                       <img src="../../assets/csc-icon.png" alt="" />
                     </NFTCardStatsRowWithImg>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Speciality</h3>
                     <h3 id="stat">Asteroid</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">APR / Max</h3>
+                    <h3 id="stat">164% / 199%</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>
@@ -538,6 +561,10 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Speciality</h3>
                     <h3 id="stat">Asteroid</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">APR / Max</h3>
+                    <h3 id="stat">INF% / INF%</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>
@@ -636,6 +663,10 @@ const MarketBody = () => {
                     <h3 id="stat">Asteroid</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
+                    <h3 id="description">APR / Max</h3>
+                    <h3 id="stat">INF% / INF%</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>
                     <h3 id="stat">1 / 20</h3>
                   </NFTCardStatsRow>
@@ -730,6 +761,10 @@ const MarketBody = () => {
                   <NFTCardStatsRow>
                     <h3 id="description">Speciality</h3>
                     <h3 id="stat">Asteroid</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">APR / Max</h3>
+                    <h3 id="stat">INF% / INF%</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>

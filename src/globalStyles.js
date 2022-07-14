@@ -65,6 +65,26 @@ export const Button = styled.button`
   }
 `;
 
+export const BasicButton = styled.button`
+  border-radius: 5px;
+  border: 1px solid white;
+  cursor: ${({ disable }) => (disable ? "" : "pointer")};
+  font-weight: 500;
+  padding: 10px;
+  font-size: 1rem;
+  color: #fff;
+  background: #1f0302;
+  transition: 0.3s;
+  opacity: 1;
+  &:hover {
+    opacity: ${({ disable }) => (disable ? "1" : "0.9")};
+  }
+  &:active {
+    transition: 0s;
+    transform: scale(${({ disable }) => (disable ? "1" : "0.995")});
+  }
+`;
+
 export const ButtonGray = styled.button`
   border-radius: 15px;
   border: none;

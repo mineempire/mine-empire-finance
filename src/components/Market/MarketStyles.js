@@ -92,3 +92,7 @@ export const MarketContainer = styled.div`
     flex-direction: column;
   }
 `;
+
+export const RightFlexDiv = styled.div`
+  display: flex;
+`;
