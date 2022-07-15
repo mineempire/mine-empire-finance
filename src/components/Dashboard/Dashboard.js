@@ -60,7 +60,7 @@ const DashboardBody = () => {
             address: MineEmpireAddress,
             symbol: "GEM",
             decimals: 18,
-            image: "https://mineempire.io/assets/gem-256x256.png",
+            image: "https://app.mineempire.io/assets/gem-256x256.png",
           },
         },
       });
