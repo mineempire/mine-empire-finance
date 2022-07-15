@@ -351,6 +351,14 @@ const GadesBody = () => {
         <Container>
           <TitleContainer>
             <h1>Gades</h1>
+            <h3>
+              Gades is an iron rich asteroid. Stake an asteroid drill to start
+              earning iron.
+            </h3>
+            <h3>
+              Buy a drill from the Market. Upgrading the drill allows you to
+              multiply your production!
+            </h3>
           </TitleContainer>
         </Container>
         <Container>

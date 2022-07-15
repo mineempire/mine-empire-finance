@@ -317,6 +317,14 @@ const OberonBody = () => {
         <Container>
           <TitleContainer>
             <h1>Oberon</h1>
+            <h3>
+              Oberon is a cobalt rich asteroid. Cobalt has a more favorable
+              conversion rate compared to iron.
+            </h3>
+            <h3>
+              Pay a one time unlock fee of 250 Energy OR 25 Cosmic Cash to start
+              earning Cobalt!
+            </h3>
           </TitleContainer>
         </Container>
         <Container>
