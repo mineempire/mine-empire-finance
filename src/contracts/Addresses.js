@@ -7,6 +7,8 @@ export const ironAddress = "0x9fC56042d03C9f16f98e81853C75B0E0E7443eb0";
 export const gadesAddress = "0x7bB9B5a6d1aB6004D95B9f87601DEBC3cd8Cd747";
 export const converterAddress = "0x471C40E7cFA048D23bD2a96141da84afF59fF1e7";
 
+export const MineEmpireAddress = "0x68EFc4716507709691d5e7AD9906a44FaBCdb1CA";
+
 export const TreasuryAddress = "0x556bb1a7e81c383215a4866086f7bb9843fbfbc7";
 export const BEETS_VAULT = "0x20dd72ed959b6147912c2e529f0a0c651c33c9ce";
 export const PoolBPT = "0x22e9a59a39d902a03d02d3149908326a2e56723c";

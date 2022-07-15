@@ -4,6 +4,7 @@ import {
   BEETS_VAULT,
   converterAddress,
   cosmicCashAddress,
+  MineEmpireAddress,
 } from "../../contracts/Addresses";
 import {
   Container,
@@ -41,6 +42,25 @@ const DashboardBody = () => {
             symbol: "CSC",
             decimals: 18,
             image: "https://mineempire.io/assets/csc-256x256.png",
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleAddGEMToMM() {
+    try {
+      await window.ethereum.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: MineEmpireAddress,
+            symbol: "GEM",
+            decimals: 18,
+            image: "https://mineempire.io/assets/gem-256x256.png",
           },
         },
       });
@@ -121,7 +141,7 @@ const DashboardBody = () => {
       <DashboardContainer>
         <TokenInfoCard>
           <TokenInfoCardImgContainer>
-            <img src="../../assets/gem-icon.png" alt="" />
+            <img src="../../assets/gem-256x256.png" alt="" />
           </TokenInfoCardImgContainer>
           <TokenInfoTitleContainer>
             <TokenInfoTitleContainer>
@@ -131,7 +151,7 @@ const DashboardBody = () => {
             <TokenInfoTitleContainer>
               <img src="../../assets/coinmarketcap-icon.png" alt="" />
               <img src="../../assets/coingecko-icon.png" alt="" />
-              <CardFeature>
+              <CardFeature onClick={handleAddGEMToMM}>
                 <img src="../../assets/svg/plus.svg" alt="" />
                 <img src="../../assets/metamask-icon.png" alt="" />
               </CardFeature>
