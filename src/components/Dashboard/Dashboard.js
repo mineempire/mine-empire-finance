@@ -4,7 +4,9 @@ import {
   BEETS_VAULT,
   converterAddress,
   cosmicCashAddress,
+  GemBeetsVault,
   MineEmpireAddress,
+  MineEmpireVestingWallet,
 } from "../../contracts/Addresses";
 import {
   Container,
@@ -30,6 +32,9 @@ const DashboardBody = () => {
   const [cosmicCashPrice, setCosmicCashPrice] = useState(0);
   const [circulatingSupply, setCirculatingSupply] = useState(0);
   const [totalCosmicCashLiquidity, setTotalCosmicCashLiquidity] = useState(0);
+  const [gemPrice, setGemPrice] = useState(0);
+  const [gemCirculatingSupply, setGemCirculatingSupply] = useState(0);
+  const [totalGemLiquidity, setTotalGemLiquidity] = useState(0);
 
   async function handleAddCSCToMM() {
     try {
@@ -70,7 +75,6 @@ const DashboardBody = () => {
   }
 
   async function getCosmicCashPrice() {
-    let totalTreasury = 0;
     let url =
       "https://api.dexscreener.com/latest/dex/tokens/" + cosmicCashAddress;
     await fetch(url)
@@ -118,14 +122,55 @@ const DashboardBody = () => {
       .then((data) => {
         if (data["result"]) {
           const cscInPool = +ethers.utils.formatEther(data["result"]);
-          totalTreasury = totalTreasury + cscInPool * 2;
           setTotalCosmicCashLiquidity(cscInPool * 2);
+        }
+      });
+  }
+
+  async function getGemPrice() {
+    let lockedGem = 0;
+    let priceUsd = 0;
+    let url =
+      "https://api.dexscreener.com/latest/dex/tokens/" + MineEmpireAddress;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        priceUsd = data["pairs"][0]["priceUsd"];
+        setGemPrice(priceUsd);
+      });
+    url =
+      "https://api.ftmscan.com/api?module=account&action=tokenbalance&contractaddress=" +
+      MineEmpireAddress +
+      "&address=" +
+      MineEmpireVestingWallet +
+      "&tag=latest&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data["result"]) {
+          lockedGem = lockedGem + +ethers.utils.formatEther(data["result"]);
+        }
+      });
+    setGemCirculatingSupply(10000 - lockedGem);
+    url =
+      "https://api.ftmscan.com/api?module=account&action=tokenbalance&contractaddress=" +
+      MineEmpireAddress +
+      "&address=" +
+      GemBeetsVault +
+      "&tag=latest&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data["result"]) {
+          const gemInPool = +ethers.utils.formatEther(data["result"]);
+          setTotalGemLiquidity(gemInPool * priceUsd * 1.25);
         }
       });
   }
 
   useEffect(() => {
     getCosmicCashPrice();
+    getGemPrice();
     // eslint-disable-next-line
   }, []);
 
@@ -161,15 +206,24 @@ const DashboardBody = () => {
           <CardDescription>
             <CardFeature>
               <SmallText>Price:</SmallText>
-              <SmallTextDollar>$0.00</SmallTextDollar>
+              <SmallTextDollar>${gemPrice}</SmallTextDollar>
             </CardFeature>
             <TokenInfoCardStats>
               <h3 id="description">Circulating Supply</h3>
-              <h3 id="stat">0</h3>
+              <h3 id="stat">
+                {Math.ceil(gemCirculatingSupply).toLocaleString("en-US")}
+              </h3>
               <h3 id="description">Market Cap</h3>
-              <h3 id="stat">$0</h3>
+              <h3 id="stat">
+                $
+                {Math.floor(gemCirculatingSupply * gemPrice).toLocaleString(
+                  "en-US"
+                )}
+              </h3>
               <h3 id="description">Total Liquidity</h3>
-              <h3 id="stat">$0</h3>
+              <h3 id="stat">
+                ${Math.floor(totalGemLiquidity).toLocaleString("en-US")}
+              </h3>
             </TokenInfoCardStats>
           </CardDescription>
           <ButtonContainer>
