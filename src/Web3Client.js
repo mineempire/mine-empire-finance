@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import {
+  CobaltAddress,
   converterAddress,
   cosmicCashAddress,
   dailyEnergyAddress,
@@ -7,7 +8,9 @@ import {
   gadesAddress,
   ironAddress,
   mineEmpireDrillAddress,
+  OberonAddress,
 } from "./contracts/Addresses";
+import { CobaltABI } from "./contracts/Cobalt";
 import { converterABI } from "./contracts/Converter";
 import { cosmicCashABI } from "./contracts/CosmicCash";
 import { dailyEnergyABI } from "./contracts/DailyEnergy";
@@ -15,6 +18,7 @@ import { energyABI } from "./contracts/Energy";
 import { gadesABI } from "./contracts/Gades";
 import { ironABI } from "./contracts/Iron";
 import { mineEmpireDrillABI } from "./contracts/MineEmpireDrill";
+import { OberonABI } from "./contracts/Oberon";
 
 export let accountAddress = "";
 
@@ -136,6 +140,18 @@ export const getGadesContract = () => {
   var web3 = new Web3(window.ethereum);
   const gadesContract = new web3.eth.Contract(gadesABI, gadesAddress);
   return gadesContract;
+};
+
+export const getCobaltContract = () => {
+  var web3 = new Web3(window.ethereum);
+  const contract = new web3.eth.Contract(CobaltABI, CobaltAddress);
+  return contract;
+};
+
+export const getOberonContract = () => {
+  var web3 = new Web3(window.ethereum);
+  const contract = new web3.eth.Contract(OberonABI, OberonAddress);
+  return contract;
 };
 
 export function sleep(ms) {
