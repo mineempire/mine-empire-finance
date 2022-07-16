@@ -112,11 +112,11 @@ const CosmosBody = () => {
   });
 
   useEffect(() => {
-    const timeDiff = 1657987200 - Math.floor(Date.now() / 1000);
+    const timeDiff = 1658073600 - Math.floor(Date.now() / 1000);
     setLaunchTime(timeDiff);
     const intervalId = setInterval(() => {
       if (launchTime >= 0) {
-        const timeDiff = 1657987200 - Math.floor(Date.now() / 1000);
+        const timeDiff = 1658073600 - Math.floor(Date.now() / 1000);
         setLaunchTime(timeDiff);
       }
     }, 1000);

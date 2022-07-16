@@ -6,7 +6,7 @@ export const mineEmpireDrillAddress =
 export const ironAddress = "0x9fC56042d03C9f16f98e81853C75B0E0E7443eb0";
 export const gadesAddress = "0x7bB9B5a6d1aB6004D95B9f87601DEBC3cd8Cd747";
 export const CobaltAddress = "0xbE4F995ae21fa1b15A3Ad2B78A604327009d88BD";
-export const OberonAddress = "0xa60c67b8B70d1A102970052e2d19f60A0A617d2b";
+export const OberonAddress = "";
 export const converterAddress = "0x471C40E7cFA048D23bD2a96141da84afF59fF1e7";
 
 export const MineEmpireAddress = "0x68EFc4716507709691d5e7AD9906a44FaBCdb1CA";
