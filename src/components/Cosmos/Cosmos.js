@@ -17,13 +17,18 @@ import {
 
 import { Button, ButtonContainer } from "../../globalStyles";
 import { useEffect, useState } from "react";
-import { getGadesContract, isConnected } from "../../Web3Client";
+import {
+  getGadesContract,
+  getOberonContract,
+  isConnected,
+} from "../../Web3Client";
 import { injected } from "../../connectors";
 import { useWeb3React } from "@web3-react/core";
 import { AsteroidDrillPower } from "../../stats/DrillStats";
 import { ethers } from "ethers";
 import { GadesCapacity } from "../../stats/GadesStats";
 import { cosmicCashAddress } from "../../contracts/Addresses";
+import { OberonCapacity } from "../../stats/OberonStats";
 
 const CosmosBody = () => {
   const [connected, setConnected] = useState(false);
@@ -34,8 +39,15 @@ const CosmosBody = () => {
   const [gadesCapacity, setGadesCapacity] = useState(0);
   const [cosmicCashPrice, setCosmicCashPrice] = useState(0);
   const [launchTime, setLaunchTime] = useState(0);
+  const [cobaltProduction, setCobaltProduction] = useState(0);
+  const [cscProductionOberon, setCscProductionOberon] = useState(0);
+  const [oberonLevel, setOberonLevel] = useState(0);
+  const [oberonCapacity, setOberonCapacity] = useState(0);
+  const [CobaltReadyToCollect, setCobaltReadyToCollect] = useState(0);
   const { activate } = useWeb3React();
+
   const gadesContract = getGadesContract();
+  const oberonContract = getOberonContract();
 
   async function getStakedStats() {
     const addr = await injected.getAccount();
@@ -45,6 +57,18 @@ const CosmosBody = () => {
       .then((result) => {
         const amt = Math.floor(ethers.utils.formatEther(result));
         setIronReadyToCollect(amt);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  async function getOberonStakedStats() {
+    const addr = await injected.getAccount();
+    await oberonContract.methods
+      .getAccumulatedCobalt(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(ethers.utils.formatEther(result));
+        setCobaltReadyToCollect(amt);
       })
       .catch((err) => console.log(err));
   }
@@ -99,10 +123,50 @@ const CosmosBody = () => {
     if (checkStaked) await getStakedStats();
   }
 
+  async function getOberonStats() {
+    const addr = await injected.getAccount();
+    let baseProduction = 0;
+    let checkStaked = true;
+    await oberonContract.methods
+      .getBaseProduction()
+      .call()
+      .then((result) => {
+        baseProduction = +ethers.utils.formatEther(result);
+      });
+    await oberonContract.methods
+      .stakes(addr)
+      .call()
+      .then((stake) => {
+        const drillId = stake[0];
+        if (drillId === "0") {
+          checkStaked = false;
+        } else {
+          const level = +stake["drill"]["level"];
+          const mult = AsteroidDrillPower[level];
+          const prodPerDay = Math.floor(
+            (baseProduction * 60 * 60 * 24 * mult) / 100
+          );
+          setCobaltProduction(prodPerDay);
+          setCscProductionOberon(
+            Math.floor((cobaltProduction / 2798) * 1000000) / 1000000
+          );
+        }
+      });
+    await oberonContract.methods
+      .userLevel(addr)
+      .call()
+      .then((result) => {
+        setOberonLevel(+result + 1);
+        setOberonCapacity(OberonCapacity[+result]);
+      });
+    if (checkStaked) await getOberonStakedStats();
+  }
+
   async function updateState() {
     if (await isConnected()) {
       setConnected(true);
       await getGadesStats();
+      await getOberonStats();
     }
     getCosmicCashPrice();
   }
@@ -123,19 +187,6 @@ const CosmosBody = () => {
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function secondsToHms(d) {
-    d = Number(d);
-    const day = Math.floor(d / 86400);
-    const h = Math.floor((d % 86400) / 3600);
-    const m = Math.floor((d % 3600) / 60);
-    const s = Math.floor((d % 3600) % 60);
-    const dDisplay = day > 0 ? day + "d " : "";
-    const hDisplay = h > 0 ? h + "h " : "";
-    const mDisplay = m > 0 ? m + "m " : "";
-    const sDisplay = s > 0 ? s + "s " : "";
-    return dDisplay + hDisplay + mDisplay + sDisplay;
-  }
 
   return (
     <>
@@ -218,22 +269,32 @@ const CosmosBody = () => {
               </PlanetCardProductionInfo>
               <CardStats>
                 <h3 id="description">Your Production</h3>
-                <h3 id="stat">0 Cobalt / Day</h3>
+                <h3 id="stat">{cobaltProduction} Cobalt / Day</h3>
                 <h3 id="description">Max Production</h3>
                 <h3 id="stat">29.8k Cobalt / Day</h3>
                 <h3 id="description">Your USD Equiv</h3>
-                <h3 id="stat">$0 / Day</h3>
+                <h3 id="stat">
+                  $
+                  {Math.floor(cscProductionOberon * cosmicCashPrice * 100) /
+                    100}{" "}
+                  / Day
+                </h3>
                 <h3 id="description">Max USD Equiv</h3>
-                <h3 id="stat">$10.12 / Day</h3>
+                <h3 id="stat">
+                  ${Math.floor(8.8 * cosmicCashPrice * 100) / 100} / Day
+                </h3>
                 <h3 id="description">Capacity Level</h3>
-                <h3 id="stat">1</h3>
+                <h3 id="stat">{oberonLevel}</h3>
                 <h3 id="description">Ready to Collect</h3>
-                <h3 id="stat">0 / 2505</h3>
+                <h3 id="stat">
+                  {CobaltReadyToCollect} / {oberonCapacity}
+                </h3>
               </CardStats>
               <ButtonContainer>
                 {connected ? (
-                  // <Link to="oberon">
-                  <Button disable={true}>{secondsToHms(launchTime)}</Button>
+                  <Link to="oberon">
+                    <Button>View</Button>
+                  </Link>
                 ) : (
                   <Button onClick={() => activate(injected)}>Connect</Button>
                 )}

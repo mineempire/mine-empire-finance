@@ -337,6 +337,7 @@ const OberonBody = () => {
   async function handleApproveCosmicCash() {
     if (disableButtons) return;
     setDisableButtons(true);
+    setDisableApproveCSC(true);
     const addr = await injected.getAccount();
     await cosmicCashContract.methods
       .approve(OberonAddress, "1000000000000000000000")
@@ -345,7 +346,9 @@ const OberonBody = () => {
       .catch((err) => console.log(err));
     await updateState();
     setDisableButtons(false);
+    setDisableApproveCSC(false);
   }
+
   async function handleApproveDrills() {
     if (disableButtons) return;
     setDisableButtons(true);

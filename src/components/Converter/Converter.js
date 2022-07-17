@@ -85,8 +85,10 @@ const ConverterBody = () => {
         const amount = ethers.utils.formatEther(result);
         if (+amount < 10000000) {
           setApprovedIron(false);
+          if (selectedResource === "iron") setSelectedApproved(false);
         } else {
           setApprovedIron(true);
+          if (selectedResource === "iron") setSelectedApproved(true);
         }
       });
   }
@@ -148,8 +150,8 @@ const ConverterBody = () => {
   }
 
   useEffect(() => {
-    updateState();
     checkConnection();
+    updateState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
