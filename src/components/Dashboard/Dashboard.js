@@ -227,7 +227,13 @@ const DashboardBody = () => {
             </TokenInfoCardStats>
           </CardDescription>
           <ButtonContainer>
-            <Button>Coming Soon</Button>
+            <a
+              href="https://beets.fi/#/trade?outputCurrency=0x68EFc4716507709691d5e7AD9906a44FaBCdb1CA"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button>Get GEM</Button>
+            </a>
           </ButtonContainer>
         </TokenInfoCard>
         <TokenInfoCard>

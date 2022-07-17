@@ -90,6 +90,7 @@ export const PlanetBodyContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  position: relative;
 
   @media screen and (max-width: 960px) {
     flex-direction: column;
@@ -213,4 +214,42 @@ export const SelectDrillMenuItem = styled.div`
     background-color: rgba(255, 255, 255, 0.2);
     cursor: pointer;
   }
+`;
+
+export const UnlockBodyBg = styled.div`
+  position: absolute;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: ${({ unlocked }) => (unlocked ? 0 : 1)};
+  visibility: ${({ unlocked }) => (unlocked ? "hidden" : "visible")};
+  transition: visibility 0s, opacity 0.5s;
+  z-index: 1;
+
+  h3 {
+    color: #df4242;
+    font-size: 1.1rem;
+  }
+`;
+
+export const EnergyOrCosmicCashContainer = styled.div`
+  display: flex;
+  width: 100%;
+  @media screen and (max-width: 960px) {
+    flex-direction: column;
+  }
+`;
+
+export const ApproveAndUseContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 4rem 4rem 2rem 4rem;
+  align-items: center;
 `;

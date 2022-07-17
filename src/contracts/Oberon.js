@@ -41,6 +41,32 @@ export const OberonABI = [
   },
   {
     inputs: [],
+    name: "CSC_UNLOCK_PRICE",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "ENERGY_UNLOCK_PRICE",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "GENESIS_TIME",
     outputs: [
       {
@@ -100,6 +126,19 @@ export const OberonABI = [
   {
     inputs: [],
     name: "cosmicCash",
+    outputs: [
+      {
+        internalType: "contract ERC20",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "energy",
     outputs: [
       {
         internalType: "contract ERC20",
@@ -191,6 +230,25 @@ export const OberonABI = [
         internalType: "struct MineEmpireDrill.Drill",
         name: "drill",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "unlocked",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "view",
@@ -331,6 +389,19 @@ export const OberonABI = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "contract ERC20",
+        name: "_energy",
+        type: "address",
+      },
+    ],
+    name: "updateEnergy",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "getCurrentPeriod",
     outputs: [
@@ -373,6 +444,19 @@ export const OberonABI = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bool",
+        name: "useCSC",
+        type: "bool",
+      },
+    ],
+    name: "unlock",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {

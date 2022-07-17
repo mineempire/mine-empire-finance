@@ -16,11 +16,13 @@ import {
   Space,
   ButtonContainer,
   ButtonGray,
+  BasicButton,
 } from "../../globalStyles";
 import {
   getCosmicCashContract,
   getOberonContract,
   getMineEmpireDrillContract,
+  getEnergyContract,
 } from "../../Web3Client";
 import DrillSelectorMenu from "../Planet/DrillSelectorMenu";
 import {
@@ -36,6 +38,9 @@ import {
   SelectDrillModal,
   SelectDrillModalBg,
   PlanetButtonContainer,
+  UnlockBodyBg,
+  ApproveAndUseContainer,
+  EnergyOrCosmicCashContainer,
 } from "../Planet/PlanetStyles";
 import { OberonCapacity, OberonUpgradeCost } from "../../stats/OberonStats";
 import { AsteroidDrillPower } from "../../stats/DrillStats";
@@ -43,6 +48,9 @@ import { AsteroidDrillPower } from "../../stats/DrillStats";
 const OberonBody = () => {
   const [disableButtons, setDisableButtons] = useState(false);
   const [cosmicCashBalance, setCosmicCashBalance] = useState(0);
+  const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
+  const [energyBalance, setEnergyBalance] = useState(0);
+  const [energyApproved, setEnergyApproved] = useState(false);
   const [showSelect, setShowSelect] = useState(false);
   const [capacity, setCapacity] = useState(0);
   const [miningStatus, setMiningStatus] = useState("Idle");
@@ -55,18 +63,34 @@ const OberonBody = () => {
   const [capacityLevel, setCapacityLevel] = useState(0);
   const [drillSelected, setDrillSelected] = useState(0);
   const [baseProduction, setBaseProduction] = useState(0);
-  const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
   const [nextLevelCapacity, setNextLevelCapacity] = useState(0);
   const [upgradeCost, setUpgradeCost] = useState(0);
   const [drillsApproved, setDrillsApproved] = useState(false);
   const [drillPower, setDrillPower] = useState(0);
+  const [unlocked, setUnlocked] = useState(false);
+  const [disableApproveCSC, setDisableApproveCSC] = useState(false);
+  const [disableApproveEnergy, setDisableApproveEnergy] = useState(false);
+  const [disableUnlockWithCSC, setDisableUnlockWithCSC] = useState(false);
+  const [disableUnlockWithEnergy, setDisableUnlockWithEnergy] = useState(false);
 
   const oberonContract = getOberonContract();
   const mineEmpireDrillContract = getMineEmpireDrillContract();
   const cosmicCashContract = getCosmicCashContract();
+  const energyContract = getEnergyContract();
 
   async function selectDrill(drillId) {
     setDrillSelected(drillId);
+  }
+
+  async function checkUnlocked() {
+    const addr = await injected.getAccount();
+    await oberonContract.methods
+      .unlocked(addr)
+      .call()
+      .then((result) => {
+        setUnlocked(result);
+      })
+      .catch((err) => console.log(err));
   }
 
   async function getCollectedCobalt() {
@@ -163,6 +187,47 @@ const OberonBody = () => {
       });
   }
 
+  async function getCosmicCashApproved() {
+    const addr = await injected.getAccount();
+    await cosmicCashContract.methods
+      .allowance(addr, OberonAddress)
+      .call()
+      .then((result) => {
+        const amt = ethers.utils.formatEther(result).substring(0, 7);
+        if (+amt < 25) {
+          setCosmicCashApproved(false);
+        } else {
+          setCosmicCashApproved(true);
+        }
+      });
+  }
+
+  async function getEnergyBalance() {
+    const addr = await injected.getAccount();
+    await energyContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amt = ethers.utils.formatEther(result).substring(0, 7);
+        setEnergyBalance(amt);
+      });
+  }
+
+  async function getEnergyApproved() {
+    const addr = await injected.getAccount();
+    await energyContract.methods
+      .allowance(addr, OberonAddress)
+      .call()
+      .then((result) => {
+        const amt = ethers.utils.formatEther(result).substring(0, 7);
+        if (+amt < 25) {
+          setEnergyApproved(false);
+        } else {
+          setEnergyApproved(true);
+        }
+      });
+  }
+
   async function getOberonMetadata() {
     const addr = await injected.getAccount();
     let lv = 0;
@@ -182,17 +247,7 @@ const OberonBody = () => {
         setBaseProduction(amt);
       })
       .catch((err) => console.log(err));
-    await cosmicCashContract.methods
-      .allowance(addr, OberonAddress)
-      .call()
-      .then((result) => {
-        const amt = ethers.utils.formatEther(result).substring(0, 7);
-        if (+amt < 25) {
-          setCosmicCashApproved(false);
-        } else {
-          setCosmicCashApproved(true);
-        }
-      });
+
     setCapacity(OberonCapacity[lv - 1]);
     setNextLevelCapacity(OberonCapacity[lv]);
     setUpgradeCost(OberonUpgradeCost[lv]);
@@ -210,10 +265,14 @@ const OberonBody = () => {
   }
 
   async function updateState() {
+    await checkUnlocked();
     await getCollectedCobalt();
     await getStakeInfo();
     await getOwnedDrills();
     await getCosmicCashBalance();
+    await getCosmicCashApproved();
+    await getEnergyBalance();
+    await getEnergyApproved();
     await getOberonMetadata();
     await getDrillMetadata();
   }
@@ -236,8 +295,7 @@ const OberonBody = () => {
       .send({ from: addr })
       .then()
       .catch((err) => console.log(err));
-    await getStakeInfo();
-    await getOberonMetadata();
+    await updateState();
     setDisableButtons(false);
   }
   async function handleCollectCobalt() {
@@ -297,8 +355,50 @@ const OberonBody = () => {
       .send({ from: addr })
       .then()
       .catch((err) => console.log(err));
-    await getOberonMetadata();
+    await updateState();
     setDisableButtons(false);
+  }
+
+  async function handleApproveEnergy() {
+    if (disableApproveEnergy || energyApproved) return;
+    setDisableApproveEnergy(true);
+    const addr = await injected.getAccount();
+    await energyContract.methods
+      .approve(OberonAddress, "1000000000000000000000")
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+    await updateState();
+    setDisableApproveEnergy(false);
+  }
+
+  async function handleUnlockWithEnergy() {
+    if (disableUnlockWithEnergy || !energyApproved) return;
+    setDisableUnlockWithEnergy(true);
+    setDisableUnlockWithCSC(true);
+    const addr = await injected.getAccount();
+    await oberonContract.methods
+      .unlock(false)
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+    setDisableUnlockWithEnergy(false);
+    setDisableUnlockWithCSC(false);
+    await updateState();
+  }
+  async function handleUnlockWithCSC() {
+    if (disableUnlockWithCSC || !cosmicCashApproved) return;
+    setDisableUnlockWithEnergy(true);
+    setDisableUnlockWithCSC(true);
+    const addr = await injected.getAccount();
+    await oberonContract.methods
+      .unlock(true)
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+    setDisableUnlockWithEnergy(false);
+    setDisableUnlockWithCSC(false);
+    await updateState();
   }
 
   // website
@@ -318,12 +418,12 @@ const OberonBody = () => {
           <TitleContainer>
             <h1>Oberon</h1>
             <h3>
-              Oberon is a cobalt rich asteroid. Cobalt has a more favorable
-              conversion rate compared to iron.
+              Oberon is a cobalt rich asteroid. Cobalt has a better conversion
+              rate compared to iron.
             </h3>
             <h3>
-              Pay a one time unlock fee of 250 Energy OR 25 Cosmic Cash to start
-              earning Cobalt!
+              Pay a one time unlock fee of 250 Energy OR 25 Cosmic Cash and
+              start collecting cobalt!
             </h3>
           </TitleContainer>
         </Container>
@@ -342,6 +442,64 @@ const OberonBody = () => {
               </SelectDrillModal>
             </SelectDrillModalBg>
             <PlanetBodyContainer>
+              <UnlockBodyBg unlocked={unlocked}>
+                <h3>Unlock Oberon with 250 Energy or 25 Cosmic Cash</h3>
+                <EnergyOrCosmicCashContainer>
+                  <ApproveAndUseContainer>
+                    <ButtonContainer>
+                      <Button
+                        disable={energyApproved || disableApproveEnergy}
+                        onClick={handleApproveEnergy}
+                      >
+                        Approve Energy
+                      </Button>
+                    </ButtonContainer>
+                    <ButtonContainer>
+                      <Button
+                        disable={
+                          !energyApproved ||
+                          disableUnlockWithEnergy ||
+                          energyBalance < 250
+                        }
+                        onClick={handleUnlockWithEnergy}
+                      >
+                        Unlock with 250 Energy
+                      </Button>
+                    </ButtonContainer>
+                  </ApproveAndUseContainer>
+                  <ApproveAndUseContainer>
+                    <ButtonContainer>
+                      <Button
+                        disable={cosmicCashApproved || disableApproveCSC}
+                        onClick={handleApproveCosmicCash}
+                      >
+                        Approve CSC
+                      </Button>
+                    </ButtonContainer>
+                    <ButtonContainer>
+                      <Button
+                        disable={
+                          !cosmicCashApproved ||
+                          disableUnlockWithCSC ||
+                          cosmicCashBalance < 25
+                        }
+                        onClick={handleUnlockWithCSC}
+                      >
+                        Unlock with 25 CSC
+                      </Button>
+                    </ButtonContainer>
+                  </ApproveAndUseContainer>
+                </EnergyOrCosmicCashContainer>
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://beets.fi/#/trade?outputCurrency=0x84f8d24231dfbbfae7f39415cd09c8f467729fc8"
+                >
+                  <ButtonContainer>
+                    <BasicButton>Get Cosmic Cash</BasicButton>
+                  </ButtonContainer>
+                </a>
+              </UnlockBodyBg>
               <PlanetBody>
                 <StakeContainer>
                   <PlanetTitleContainer>
