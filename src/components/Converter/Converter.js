@@ -31,6 +31,7 @@ import {
 } from "./ConverterStyles";
 import { useEffect, useState } from "react";
 import {
+  getCobaltContract,
   getConverterContract,
   getCosmicCashContract,
   getIronContract,
@@ -39,7 +40,11 @@ import {
 import { useWeb3React } from "@web3-react/core";
 import { injected } from "../../connectors";
 import { ethers } from "ethers";
-import { converterAddress, ironAddress } from "../../contracts/Addresses";
+import {
+  CobaltAddress,
+  converterAddress,
+  ironAddress,
+} from "../../contracts/Addresses";
 
 const ConverterBody = () => {
   const [connected, setConnected] = useState(true);
@@ -50,16 +55,19 @@ const ConverterBody = () => {
   const [inputQuantity, setInputQuantity] = useState();
   const [ouputQuantity, setOutputQuantity] = useState(0);
   const [ironQuantity, setIronQuantity] = useState(0);
+  const [cobaltQuantity, setCobaltQuantity] = useState(0);
   const [conversionRate, setConversionRate] = useState(13809);
-  const [cobaltQuantity] = useState(0);
   const [silverQuantity] = useState(0);
   const [bismuthQuantity] = useState(0);
   const [rubyQuantity] = useState(0);
   const [approvedIron, setApprovedIron] = useState(false);
+  const [approvedCobalt, setApprovedCobalt] = useState(false);
+  const [selectedApproved, setSelectedApproved] = useState(false);
   const { activate } = useWeb3React();
   const [disableButtons, setDisableButtons] = useState(false);
 
   const ironContract = getIronContract();
+  const cobaltContract = getCobaltContract();
   const cscContract = getCosmicCashContract();
   const converterContract = getConverterContract();
 
@@ -68,7 +76,7 @@ const ConverterBody = () => {
     setConnected(connected);
   }
 
-  async function getApproved() {
+  async function getApprovedIron() {
     const addr = await injected.getAccount();
     await ironContract.methods
       .allowance(addr, converterAddress)
@@ -83,6 +91,37 @@ const ConverterBody = () => {
       });
   }
 
+  async function getApprovedCobalt() {
+    const addr = await injected.getAccount();
+    await cobaltContract.methods
+      .allowance(addr, converterAddress)
+      .call()
+      .then((result) => {
+        const amount = ethers.utils.formatEther(result);
+        if (+amount < 10000000) {
+          setApprovedCobalt(false);
+        } else {
+          setApprovedCobalt(true);
+        }
+      });
+  }
+
+  async function getCobaltBalance() {
+    const addr = await injected.getAccount();
+    await cobaltContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(+ethers.utils.formatEther(result));
+        setCobaltQuantity(amt);
+      });
+  }
+
+  async function getApproves() {
+    await getApprovedIron();
+    await getApprovedCobalt();
+  }
+
   async function getBalances() {
     const addr = await injected.getAccount();
     await ironContract.methods
@@ -93,7 +132,6 @@ const ConverterBody = () => {
         setIronQuantity(amt);
         setSelectedQuantity(amt);
       });
-    await getApproved();
     await cscContract.methods
       .balanceOf(addr)
       .call()
@@ -101,11 +139,17 @@ const ConverterBody = () => {
         const amt = Math.floor(+ethers.utils.formatEther(result) * 100) / 100;
         setCosmicCashQuantity(amt);
       });
+    await getCobaltBalance();
+  }
+
+  async function updateState() {
+    await getApproves();
+    await getBalances();
   }
 
   useEffect(() => {
+    updateState();
     checkConnection();
-    getBalances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -122,9 +166,12 @@ const ConverterBody = () => {
       setSelectedResource("iron");
       setSelectedQuantity(ironQuantity);
       setConversionRate(13809);
+      setSelectedApproved(approvedIron);
     } else if (id === 1) {
       setSelectedResource("cobalt");
       setSelectedQuantity(cobaltQuantity);
+      setConversionRate(2798);
+      setSelectedApproved(approvedCobalt);
     } else if (id === 2) {
       setSelectedResource("silver");
       setSelectedQuantity(silverQuantity);
@@ -154,25 +201,40 @@ const ConverterBody = () => {
     if (disableButtons) return;
     setDisableButtons(true);
     const addr = await injected.getAccount();
-    await ironContract.methods
-      .approve(converterAddress, "1000000000000000000000000000")
-      .send({ from: addr })
-      .then()
-      .catch((err) => console.log(err));
-    await getApproved();
+    if (selectedResource === "iron") {
+      await ironContract.methods
+        .approve(converterAddress, "1000000000000000000000000000")
+        .send({ from: addr })
+        .then()
+        .catch((err) => console.log(err));
+    } else if (selectedResource === "cobalt") {
+      await cobaltContract.methods
+        .approve(converterAddress, "1000000000000000000000000000")
+        .send({ from: addr })
+        .then()
+        .catch((err) => console.log(err));
+    }
+    await updateState();
     setDisableButtons(false);
   }
 
   async function handleConvert() {
-    if (selectedResource !== "iron") return;
     const addr = await injected.getAccount();
-    console.log(inputQuantity);
-    await converterContract.methods
-      .convert(ironAddress, inputQuantity + "000000000000000000")
-      .send({ from: addr })
-      .then()
-      .catch((err) => console.log(err));
-    getBalances();
+    if (selectedResource === "iron") {
+      await converterContract.methods
+        .convert(ironAddress, inputQuantity + "000000000000000000")
+        .send({ from: addr })
+        .then()
+        .catch((err) => console.log(err));
+    } else if (selectedResource === "cobalt") {
+      await converterContract.methods
+        .convert(CobaltAddress, inputQuantity + "000000000000000000")
+        .send({ from: addr })
+        .then()
+        .catch((err) => console.log(err));
+    }
+    await updateState();
+    setDisableButtons(false);
   }
 
   function capitalize(word) {
@@ -301,7 +363,7 @@ const ConverterBody = () => {
                 <ConvertButtonContainer>
                   <ButtonContainer>
                     {connected ? (
-                      approvedIron ? (
+                      selectedApproved ? (
                         <Button
                           onClick={handleConvert}
                           disable={
