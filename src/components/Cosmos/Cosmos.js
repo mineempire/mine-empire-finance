@@ -281,7 +281,7 @@ const CosmosBody = () => {
                 </h3>
                 <h3 id="description">Max USD Equiv</h3>
                 <h3 id="stat">
-                  ${Math.floor(8.8 * cosmicCashPrice * 100) / 100} / Day
+                  ${Math.floor(10.648 * cosmicCashPrice * 100) / 100} / Day
                 </h3>
                 <h3 id="description">Capacity Level</h3>
                 <h3 id="stat">{oberonLevel}</h3>
