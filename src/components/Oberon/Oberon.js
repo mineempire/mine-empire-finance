@@ -121,12 +121,14 @@ const OberonBody = () => {
           setDrillStaked(false);
           setDrillId(0);
           setDrillLevel(0);
+          setDrillPower(AsteroidDrillPower[0]);
           setMiningStatus("Idle");
         } else {
           setDrillSelected(true);
           setDrillStaked(true);
           setDrillId(stake["drill"]["drillId"]);
           setDrillLevel(+stake["drill"]["level"] + 1);
+          setDrillPower(AsteroidDrillPower[+stake["drill"]["level"]]);
           setMiningStatus("Mining");
         }
       })
@@ -260,10 +262,6 @@ const OberonBody = () => {
       .catch((err) => console.log(err));
   }
 
-  function getDrillMetadata() {
-    setDrillPower(AsteroidDrillPower[drillLevel]);
-  }
-
   async function updateState() {
     await checkUnlocked();
     await getCollectedCobalt();
@@ -274,7 +272,6 @@ const OberonBody = () => {
     await getEnergyBalance();
     await getEnergyApproved();
     await getOberonMetadata();
-    await getDrillMetadata();
   }
 
   useEffect(() => {
