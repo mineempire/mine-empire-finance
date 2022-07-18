@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  getCobaltContract,
   getCosmicCashContract,
   getDailyEnergyContract,
   getEnergyContract,
@@ -43,12 +44,14 @@ const Navbar = () => {
   const [energyBal, setEnergyBal] = useState(0);
   const [cscBal, setCscBal] = useState(0);
   const [ironBal, setIronBal] = useState(0);
+  const [cobaltBal, setCobaltBal] = useState(0);
   const dailyEnergyContract = getDailyEnergyContract();
   const [correctNetwork, setCorrectNetwork] = useState(true);
 
   const energyContract = getEnergyContract();
   const cscContract = getCosmicCashContract();
   const ironContract = getIronContract();
+  const cobaltContract = getCobaltContract();
 
   const { activate } = useWeb3React();
 
@@ -75,6 +78,13 @@ const Navbar = () => {
       .then((result) => {
         const amt = Math.floor(+ethers.utils.formatEther(result));
         setIronBal(amt);
+      });
+    await cobaltContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(+ethers.utils.formatEther(result));
+        setCobaltBal(amt);
       });
   }
 
@@ -221,7 +231,7 @@ const Navbar = () => {
                         </BalanceItem>
                         <BalanceItem>
                           <img src="../../assets/cobalt.png" alt="" />
-                          <p>0 COBALT</p>
+                          <p>{cobaltBal} COBALT</p>
                         </BalanceItem>
                         <BalanceItem>
                           <img src="../../assets/silver.png" alt="" />
