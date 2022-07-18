@@ -21,10 +21,15 @@ export const DashboardContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   @media screen and (max-width: 1210px) {
     flex-direction: column;
     width: 100%;
   }
+`;
+
+export const TokenInfoCardContainer = styled.div`
+  display: flex;
 `;
 
 export const TokenInfoCard = styled.div`

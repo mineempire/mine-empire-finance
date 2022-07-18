@@ -14,6 +14,7 @@ import {
   Line,
   ButtonContainer,
   TitleContainer,
+  BasicButton,
 } from "../../globalStyles";
 import {
   DashboardSection,
@@ -26,6 +27,7 @@ import {
   SmallTextDollar,
   TokenInfoCardStats,
   DashboardContainer,
+  TokenInfoCardContainer,
 } from "./DashboardStyles";
 
 const DashboardBody = () => {
@@ -75,12 +77,13 @@ const DashboardBody = () => {
   }
 
   async function getCosmicCashPrice() {
+    let priceUsd = 0;
     let url =
       "https://api.dexscreener.com/latest/dex/tokens/" + cosmicCashAddress;
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        const priceUsd = data["pairs"][0]["priceUsd"];
+        priceUsd = data["pairs"][0]["priceUsd"];
         setCosmicCashPrice(priceUsd);
       });
     let lockedCsc = 0;
@@ -122,7 +125,7 @@ const DashboardBody = () => {
       .then((data) => {
         if (data["result"]) {
           const cscInPool = +ethers.utils.formatEther(data["result"]);
-          setTotalCosmicCashLiquidity(cscInPool * 2);
+          setTotalCosmicCashLiquidity(cscInPool * 2 * priceUsd);
         }
       });
   }
@@ -171,6 +174,11 @@ const DashboardBody = () => {
   useEffect(() => {
     getCosmicCashPrice();
     getGemPrice();
+    const intervalId = setInterval(() => {
+      getCosmicCashPrice();
+      getGemPrice();
+    }, 5000);
+    return () => clearInterval(intervalId);
     // eslint-disable-next-line
   }, []);
 
@@ -184,110 +192,120 @@ const DashboardBody = () => {
         </TitleContainer>
       </Container>
       <DashboardContainer>
-        <TokenInfoCard>
-          <TokenInfoCardImgContainer>
-            <img src="../../assets/gem-256x256.png" alt="" />
-          </TokenInfoCardImgContainer>
-          <TokenInfoTitleContainer>
+        <TokenInfoCardContainer>
+          <TokenInfoCard>
+            <TokenInfoCardImgContainer>
+              <img src="../../assets/gem-256x256.png" alt="" />
+            </TokenInfoCardImgContainer>
             <TokenInfoTitleContainer>
-              <h1>GEM</h1>
-              <h3>Mine Empire</h3>
+              <TokenInfoTitleContainer>
+                <h1>GEM</h1>
+                <h3>Mine Empire</h3>
+              </TokenInfoTitleContainer>
+              <TokenInfoTitleContainer>
+                <img src="../../assets/coinmarketcap-icon.png" alt="" />
+                <img src="../../assets/coingecko-icon.png" alt="" />
+                <CardFeature onClick={handleAddGEMToMM}>
+                  <img src="../../assets/svg/plus.svg" alt="" />
+                  <img src="../../assets/metamask-icon.png" alt="" />
+                </CardFeature>
+              </TokenInfoTitleContainer>
             </TokenInfoTitleContainer>
-            <TokenInfoTitleContainer>
-              <img src="../../assets/coinmarketcap-icon.png" alt="" />
-              <img src="../../assets/coingecko-icon.png" alt="" />
-              <CardFeature onClick={handleAddGEMToMM}>
-                <img src="../../assets/svg/plus.svg" alt="" />
-                <img src="../../assets/metamask-icon.png" alt="" />
+            <Line width="360px" />
+            <CardDescription>
+              <CardFeature>
+                <SmallText>Price:</SmallText>
+                <SmallTextDollar>${gemPrice}</SmallTextDollar>
               </CardFeature>
-            </TokenInfoTitleContainer>
-          </TokenInfoTitleContainer>
-          <Line width="360px" />
-          <CardDescription>
-            <CardFeature>
-              <SmallText>Price:</SmallText>
-              <SmallTextDollar>${gemPrice}</SmallTextDollar>
-            </CardFeature>
-            <TokenInfoCardStats>
-              <h3 id="description">Circulating Supply</h3>
-              <h3 id="stat">
-                {Math.ceil(gemCirculatingSupply).toLocaleString("en-US")}
-              </h3>
-              <h3 id="description">Market Cap</h3>
-              <h3 id="stat">
-                $
-                {Math.floor(gemCirculatingSupply * gemPrice).toLocaleString(
-                  "en-US"
-                )}
-              </h3>
-              <h3 id="description">Total Liquidity</h3>
-              <h3 id="stat">
-                ${Math.floor(totalGemLiquidity).toLocaleString("en-US")}
-              </h3>
-            </TokenInfoCardStats>
-          </CardDescription>
-          <ButtonContainer>
-            <a
-              href="https://beets.fi/#/trade?outputCurrency=0x68EFc4716507709691d5e7AD9906a44FaBCdb1CA"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Button>Get GEM</Button>
-            </a>
-          </ButtonContainer>
-        </TokenInfoCard>
-        <TokenInfoCard>
-          <TokenInfoCardImgContainer>
-            <img src="../../assets/csc-icon.png" alt="" />
-          </TokenInfoCardImgContainer>
-          <TokenInfoTitleContainer>
+              <TokenInfoCardStats>
+                <h3 id="description">Circulating Supply</h3>
+                <h3 id="stat">
+                  {Math.ceil(gemCirculatingSupply).toLocaleString("en-US")}
+                </h3>
+                <h3 id="description">Market Cap</h3>
+                <h3 id="stat">
+                  $
+                  {Math.floor(gemCirculatingSupply * gemPrice).toLocaleString(
+                    "en-US"
+                  )}
+                </h3>
+                <h3 id="description">Total Liquidity</h3>
+                <h3 id="stat">
+                  ${Math.floor(totalGemLiquidity).toLocaleString("en-US")}
+                </h3>
+              </TokenInfoCardStats>
+            </CardDescription>
+            <ButtonContainer>
+              <a
+                href="https://beets.fi/#/trade?outputCurrency=0x68EFc4716507709691d5e7AD9906a44FaBCdb1CA"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button>Get GEM</Button>
+              </a>
+            </ButtonContainer>
+          </TokenInfoCard>
+          <TokenInfoCard>
+            <TokenInfoCardImgContainer>
+              <img src="../../assets/csc-icon.png" alt="" />
+            </TokenInfoCardImgContainer>
             <TokenInfoTitleContainer>
-              <h1>CSC</h1>
-              <h3>Cosmic Cash</h3>
+              <TokenInfoTitleContainer>
+                <h1>CSC</h1>
+                <h3>Cosmic Cash</h3>
+              </TokenInfoTitleContainer>
+              <TokenInfoTitleContainer>
+                <img src="../../assets/coinmarketcap-icon.png" alt="" />
+                <img src="../../assets/coingecko-icon.png" alt="" />
+                <CardFeature onClick={handleAddCSCToMM}>
+                  <img src="../../assets/svg/plus.svg" alt="" />
+                  <img src="../../assets/metamask-icon.png" alt="" />
+                </CardFeature>
+              </TokenInfoTitleContainer>
             </TokenInfoTitleContainer>
-            <TokenInfoTitleContainer>
-              <img src="../../assets/coinmarketcap-icon.png" alt="" />
-              <img src="../../assets/coingecko-icon.png" alt="" />
-              <CardFeature onClick={handleAddCSCToMM}>
-                <img src="../../assets/svg/plus.svg" alt="" />
-                <img src="../../assets/metamask-icon.png" alt="" />
+            <Line width="360px" />
+            <CardDescription>
+              <CardFeature>
+                <SmallText>Price:</SmallText>
+                <SmallTextDollar>${cosmicCashPrice}</SmallTextDollar>
               </CardFeature>
-            </TokenInfoTitleContainer>
-          </TokenInfoTitleContainer>
-          <Line width="360px" />
-          <CardDescription>
-            <CardFeature>
-              <SmallText>Price:</SmallText>
-              <SmallTextDollar>${cosmicCashPrice}</SmallTextDollar>
-            </CardFeature>
-            <TokenInfoCardStats>
-              <h3 id="description">Circulating Supply</h3>
-              <h3 id="stat">
-                {Math.ceil(circulatingSupply).toLocaleString("en-US")}
-              </h3>
-              <h3 id="description">Market Cap</h3>
-              <h3 id="stat">
-                $
-                {Math.floor(circulatingSupply * cosmicCashPrice).toLocaleString(
-                  "en-US"
-                )}
-              </h3>
-              <h3 id="description">Total Liquidity</h3>
-              <h3 id="stat">
-                ${Math.floor(totalCosmicCashLiquidity).toLocaleString("en-US")}
-              </h3>
-            </TokenInfoCardStats>
-          </CardDescription>
-          <ButtonContainer>
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href="https://beets.fi/#/trade?outputCurrency=0x84f8d24231dfbbfae7f39415cd09c8f467729fc8"
-            >
-              <Button>Get CSC</Button>
-            </a>
-          </ButtonContainer>
-        </TokenInfoCard>
+              <TokenInfoCardStats>
+                <h3 id="description">Circulating Supply</h3>
+                <h3 id="stat">
+                  {Math.ceil(circulatingSupply).toLocaleString("en-US")}
+                </h3>
+                <h3 id="description">Market Cap</h3>
+                <h3 id="stat">
+                  $
+                  {Math.floor(
+                    circulatingSupply * cosmicCashPrice
+                  ).toLocaleString("en-US")}
+                </h3>
+                <h3 id="description">Total Liquidity</h3>
+                <h3 id="stat">
+                  $
+                  {Math.floor(totalCosmicCashLiquidity).toLocaleString("en-US")}
+                </h3>
+              </TokenInfoCardStats>
+            </CardDescription>
+            <ButtonContainer>
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href="https://beets.fi/#/trade?outputCurrency=0x84f8d24231dfbbfae7f39415cd09c8f467729fc8"
+              >
+                <Button>Get CSC</Button>
+              </a>
+            </ButtonContainer>
+          </TokenInfoCard>
+        </TokenInfoCardContainer>
+        <a
+          href="https://discord.gg/mineempire"
+          rel="noreferrer"
+          target="_blank"
+        >
+          <BasicButton>Request OTC Trade</BasicButton>
+        </a>
       </DashboardContainer>
     </DashboardSection>
   );
