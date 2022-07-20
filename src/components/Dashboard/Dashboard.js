@@ -50,6 +50,7 @@ import {
   ResourceItem,
   ResourceIncomeTable,
   ResourceItemPair,
+  IncomeLine,
 } from "./DashboardStyles";
 
 const DashboardBody = () => {
@@ -60,11 +61,12 @@ const DashboardBody = () => {
   const [gemCirculatingSupply, setGemCirculatingSupply] = useState(0);
   const [totalGemLiquidity, setTotalGemLiquidity] = useState(0);
   const [stakedAmount, setStakedAmount] = useState(0);
-  const [treasuryValue, setTreasuryValue] = useState(0);
   const [gadesProduction, setGadesProduction] = useState(0);
   const [gadesEarnings, setGadesEarnigns] = useState(0);
   const [oberonProduction, setOberonProduction] = useState(0);
   const [oberonEarnings, setOberonEarnings] = useState(0);
+  const [cscInWallet, setCscInWallet] = useState(0);
+  const [gemInWallet, setGemInWallet] = useState(0);
 
   const gadesContract = getGadesContract();
   const oberonContract = getOberonContract();
@@ -108,7 +110,6 @@ const DashboardBody = () => {
   }
 
   async function getCosmicCashPrice() {
-    if (cosmicCashPrice != 0) return;
     let priceUsd = 0;
     let url =
       "https://api.dexscreener.com/latest/dex/tokens/" + cosmicCashAddress;
@@ -166,7 +167,6 @@ const DashboardBody = () => {
   }
 
   async function getGemPrice() {
-    if (gemPrice != 0) return;
     let lockedGem = 0;
     let priceUsd = 0;
     let url =
@@ -222,7 +222,6 @@ const DashboardBody = () => {
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (!isNaN(data["result"])) {
           amt = +data["result"];
         }
@@ -245,8 +244,6 @@ const DashboardBody = () => {
   }
 
   async function getTreasuryValue() {
-    if (treasuryValue != 0) return;
-    if (cosmicCashPrice === 0) return;
     let cscInWallet = 0;
     let gemInWallet = 0;
     let url =
@@ -277,12 +274,8 @@ const DashboardBody = () => {
           gemInWallet = +ethers.utils.formatEther(data["result"]);
         }
       });
-    const totalTreasury =
-      cscInWallet * cosmicCashPrice +
-      gemInWallet * gemPrice +
-      totalCosmicCashLiquidity +
-      totalGemLiquidity;
-    setTreasuryValue(totalTreasury);
+    setCscInWallet(cscInWallet);
+    setGemInWallet(gemInWallet);
   }
 
   async function getGadesProduction() {
@@ -344,8 +337,8 @@ const DashboardBody = () => {
   async function updateState() {
     await getCosmicCashPrice();
     await getGemPrice();
-    await getStakedAmount();
     await getTreasuryValue();
+    await getStakedAmount();
     await getGadesProduction();
     await getOberonProduction();
   }
@@ -375,17 +368,25 @@ const DashboardBody = () => {
           </DataDiv>
           <DataDiv>
             <h3>Total Treasury Value</h3>
-            <h1>${Math.ceil(treasuryValue).toLocaleString("en-US")}</h1>
+            <h1>
+              $
+              {Math.ceil(
+                cscInWallet * cosmicCashPrice +
+                  gemInWallet * gemPrice +
+                  totalCosmicCashLiquidity +
+                  totalGemLiquidity
+              ).toLocaleString("en-US")}
+            </h1>
           </DataDiv>
         </TokenInfoCardContainer>
         <IncomeContainer>
           <h1>My Total Income</h1>
-          <Line width="760px" />
+          <IncomeLine />
           <ResourceIncomeTable>
             <ResourceItem>
               <img src="../../assets/iron.png" alt="" />
               <p>
-                {gadesProduction} Iron ≈ ${gadesEarnings} / day
+                {gadesProduction} Iron ≈ ${gadesEarnings} daily
               </p>
               <Link to="cosmos/gades">
                 <BasicButton>View</BasicButton>
@@ -394,36 +395,36 @@ const DashboardBody = () => {
             <ResourceItem>
               <img src="../../assets/cobalt.png" alt="" />
               <p>
-                {oberonProduction} Cobalt ≈ ${oberonEarnings} / day
+                {oberonProduction} Cobalt ≈ ${oberonEarnings} daily
               </p>
               <Link to="cosmos/oberon">
                 <BasicButton>View</BasicButton>
               </Link>
             </ResourceItem>
           </ResourceIncomeTable>
-          <Line width="760px" />
+          <IncomeLine />
           <IncomeTable>
             <IncomeItem>
               <p>
-                ${Math.floor(gadesEarnings + oberonEarnings * 100) / 100} / Day
+                ${Math.floor(gadesEarnings + oberonEarnings * 100) / 100} Daily
               </p>
             </IncomeItem>
             <IncomeItem>
               <p>
-                ${Math.floor(gadesEarnings + oberonEarnings * 7 * 100) / 100} /
-                Week
+                ${Math.floor(gadesEarnings + oberonEarnings * 7 * 100) / 100}{" "}
+                Weekly
               </p>
             </IncomeItem>
             <IncomeItem>
               <p>
-                ${Math.floor(gadesEarnings + oberonEarnings * 30 * 100) / 100} /
-                Month
+                ${Math.floor(gadesEarnings + oberonEarnings * 30 * 100) / 100}{" "}
+                Monthly
               </p>
             </IncomeItem>
             <IncomeItem>
               <p>
                 ${Math.floor(gadesEarnings + oberonEarnings * 365 * 100) / 100}{" "}
-                / Year
+                Yearly
               </p>
             </IncomeItem>
           </IncomeTable>

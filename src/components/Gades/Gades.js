@@ -260,8 +260,6 @@ const GadesBody = () => {
       .collectIron()
       .send({
         from: selectedAddress,
-        maxFeePerGas: 0x1,
-        maxPriorityFeePerGas: 0x1,
       })
       .then((result) => {})
       .catch((err) => console.log(err));

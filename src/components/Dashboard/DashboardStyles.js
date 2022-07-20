@@ -30,6 +30,11 @@ export const DashboardContainer = styled.div`
 
 export const TokenInfoCardContainer = styled.div`
   display: flex;
+  align-items: center;
+  @media screen and (max-width: 960px) {
+    width: 100%;
+    flex-direction: column;
+  }
 `;
 
 export const TokenInfoCard = styled.div`
@@ -202,6 +207,10 @@ export const IncomeContainer = styled.div`
     color: #fff;
     padding: 1rem 0;
   }
+
+  @media screen and (max-width: 960px) {
+    width: 360px;
+  }
 `;
 
 export const IncomeTable = styled.div`
@@ -222,14 +231,26 @@ export const ResourceIncomeTable = styled.div`
   p {
     padding: 1rem;
   }
+
+  @media screen and (max-width: 960px) {
+    flex-direction: column;
+  }
 `;
 
 export const IncomeItem = styled.div`
   display: flex;
+  text-align: center;
   p {
     font-weight: 600;
     font-size: 1.2rem;
     color: #fff;
+  }
+
+  @media screen and (max-width: 960px) {
+    p {
+      font-weight: 400;
+      font-size: 1rem;
+    }
   }
 `;
 
@@ -239,6 +260,7 @@ export const ResourceItem = styled.div`
   width: 370px;
   justify-content: space-between;
   padding: 0 10px;
+  text-align: center;
   p {
     color: #fff;
   }
@@ -247,5 +269,27 @@ export const ResourceItem = styled.div`
   }
   button {
     height: 2.5rem;
+  }
+
+  @media screen and (max-width: 960px) {
+    width: 360px;
+  }
+`;
+
+export const IncomeLine = styled.div`
+  width: 760px;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    #df4242,
+    #9929c6,
+    #feffb8,
+    #9929c6,
+    #df4242,
+    #9929c6
+  );
+
+  @media screen and (max-width: 960px) {
+    width: 360px;
   }
 `;
