@@ -170,7 +170,7 @@ export const DataDiv = styled.div`
   margin: 15px;
 
   h1 {
-    font-size: 26px;
+    font-size: 2rem;
     color: #fff;
     font-style: normal;
     font-weight: 700;
@@ -178,10 +178,74 @@ export const DataDiv = styled.div`
   }
 
   h3 {
-    font-size: 24px;
+    font-size: 1rem;
     color: #949494;
     font-style: normal;
     font-weight: 400;
     margin: 0;
+  }
+`;
+
+export const IncomeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 760px;
+  border-radius: 15px;
+  align-items: center;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(153, 41, 198, 0.58) 0%,
+    rgb(70.13, 60.78, 60.78) 95.57%
+  );
+
+  h1 {
+    color: #fff;
+    padding: 1rem 0;
+  }
+`;
+
+export const IncomeTable = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  p {
+    padding: 1rem;
+  }
+`;
+
+export const ResourceIncomeTable = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  margin: 10px 0;
+  flex-wrap: wrap;
+  p {
+    padding: 1rem;
+  }
+`;
+
+export const IncomeItem = styled.div`
+  display: flex;
+  p {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #fff;
+  }
+`;
+
+export const ResourceItem = styled.div`
+  display: flex;
+  align-items: center;
+  width: 370px;
+  justify-content: space-between;
+  padding: 0 10px;
+  p {
+    color: #fff;
+  }
+  img {
+    width: 50px;
+  }
+  button {
+    height: 2.5rem;
   }
 `;

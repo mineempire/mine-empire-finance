@@ -258,7 +258,11 @@ const GadesBody = () => {
     selectedAddress = await injected.getAccount();
     await gadesContract.methods
       .collectIron()
-      .send({ from: selectedAddress })
+      .send({
+        from: selectedAddress,
+        maxFeePerGas: 0x1,
+        maxPriorityFeePerGas: 0x1,
+      })
       .then((result) => {})
       .catch((err) => console.log(err));
     await getCollectedIron();

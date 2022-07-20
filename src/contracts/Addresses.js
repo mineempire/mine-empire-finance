@@ -29,5 +29,9 @@ export const drillMetadataIPFS =
 export const drillMetadataIPFSUrl =
   "https://ipfs.io/ipfs/QmQf5PixuZzJE47Qanot99QMrkRPkGHCjoonDDoXennCJV?filename=drill-metadata.json";
 
+export const FTMScanAPI1 = "SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
+export const FTMScanAPI2 = "E8I9B3XMUBIYEMWQEQQVXB1JBQG218K6QY";
+export const FTMScanAPI3 = "1NRUDCXUF7V8768THXI9R38YYMMWKMQC9F";
+
 // ["30","60","100","150","210","285","375","480","600","740","900","1080","1280","1500","1750","2030","2340","2700","3110","3570"]
 // ["0","30","39","48","56","69","81","92","103","118","131","144","156","167","185","202","217","245","271","294"]

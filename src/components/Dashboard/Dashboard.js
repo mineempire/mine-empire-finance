@@ -1,12 +1,21 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { injected } from "../../connectors";
 import {
   BEETS_VAULT,
   converterAddress,
   cosmicCashAddress,
+  FTMScanAPI1,
+  FTMScanAPI2,
+  FTMScanAPI3,
+  gadesAddress,
   GemBeetsVault,
   MineEmpireAddress,
+  mineEmpireDrillAddress,
   MineEmpireVestingWallet,
+  OberonAddress,
+  TreasuryAddress,
 } from "../../contracts/Addresses";
 import {
   Container,
@@ -16,6 +25,12 @@ import {
   TitleContainer,
   BasicButton,
 } from "../../globalStyles";
+import { AsteroidDrillPower } from "../../stats/DrillStats";
+import {
+  getGadesContract,
+  getOberonContract,
+  isConnected,
+} from "../../Web3Client";
 import {
   DashboardSection,
   TokenInfoCard,
@@ -28,6 +43,13 @@ import {
   TokenInfoCardStats,
   DashboardContainer,
   TokenInfoCardContainer,
+  IncomeContainer,
+  IncomeTable,
+  IncomeItem,
+  DataDiv,
+  ResourceItem,
+  ResourceIncomeTable,
+  ResourceItemPair,
 } from "./DashboardStyles";
 
 const DashboardBody = () => {
@@ -37,6 +59,15 @@ const DashboardBody = () => {
   const [gemPrice, setGemPrice] = useState(0);
   const [gemCirculatingSupply, setGemCirculatingSupply] = useState(0);
   const [totalGemLiquidity, setTotalGemLiquidity] = useState(0);
+  const [stakedAmount, setStakedAmount] = useState(0);
+  const [treasuryValue, setTreasuryValue] = useState(0);
+  const [gadesProduction, setGadesProduction] = useState(0);
+  const [gadesEarnings, setGadesEarnigns] = useState(0);
+  const [oberonProduction, setOberonProduction] = useState(0);
+  const [oberonEarnings, setOberonEarnings] = useState(0);
+
+  const gadesContract = getGadesContract();
+  const oberonContract = getOberonContract();
 
   async function handleAddCSCToMM() {
     try {
@@ -77,6 +108,7 @@ const DashboardBody = () => {
   }
 
   async function getCosmicCashPrice() {
+    if (cosmicCashPrice != 0) return;
     let priceUsd = 0;
     let url =
       "https://api.dexscreener.com/latest/dex/tokens/" + cosmicCashAddress;
@@ -92,7 +124,8 @@ const DashboardBody = () => {
       cosmicCashAddress +
       "&address=" +
       converterAddress +
-      "&tag=latest&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
+      "&tag=latest&apikey=" +
+      FTMScanAPI1;
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -105,7 +138,8 @@ const DashboardBody = () => {
       cosmicCashAddress +
       "&address=" +
       "0x000000000000000000000000000000000000dEaD" +
-      "&tag=latest&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
+      "&tag=latest&apikey=" +
+      FTMScanAPI2;
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -119,7 +153,8 @@ const DashboardBody = () => {
       cosmicCashAddress +
       "&address=" +
       BEETS_VAULT +
-      "&tag=latest&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
+      "&tag=latest&apikey=" +
+      FTMScanAPI3;
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -131,6 +166,7 @@ const DashboardBody = () => {
   }
 
   async function getGemPrice() {
+    if (gemPrice != 0) return;
     let lockedGem = 0;
     let priceUsd = 0;
     let url =
@@ -146,11 +182,12 @@ const DashboardBody = () => {
       MineEmpireAddress +
       "&address=" +
       MineEmpireVestingWallet +
-      "&tag=latest&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
+      "&tag=latest&apikey=" +
+      FTMScanAPI1;
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        if (data["result"]) {
+        if (!isNaN(data["result"])) {
           lockedGem = lockedGem + +ethers.utils.formatEther(data["result"]);
         }
       });
@@ -160,7 +197,8 @@ const DashboardBody = () => {
       MineEmpireAddress +
       "&address=" +
       GemBeetsVault +
-      "&tag=latest&apikey=SJDG322KQRHG7MHWPVY9T4EMWEW4361ZGT";
+      "&tag=latest&apikey=" +
+      FTMScanAPI2;
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -171,12 +209,151 @@ const DashboardBody = () => {
       });
   }
 
+  async function getStakedAmount() {
+    if (stakedAmount != 0) return;
+    let amt = 0;
+    let url =
+      "https://api.ftmscan.com/api?module=account&action=tokenbalance&contractaddress=" +
+      mineEmpireDrillAddress +
+      "&address=" +
+      gadesAddress +
+      "&tag=latest&apikey=" +
+      FTMScanAPI3;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (!isNaN(data["result"])) {
+          amt = +data["result"];
+        }
+      });
+    url =
+      "https://api.ftmscan.com/api?module=account&action=tokenbalance&contractaddress=" +
+      mineEmpireDrillAddress +
+      "&address=" +
+      OberonAddress +
+      "&tag=latest&apikey=" +
+      FTMScanAPI1;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        if (!isNaN(data["result"])) {
+          amt = amt + +data["result"];
+        }
+      });
+    setStakedAmount(amt);
+  }
+
+  async function getTreasuryValue() {
+    if (treasuryValue != 0) return;
+    if (cosmicCashPrice === 0) return;
+    let cscInWallet = 0;
+    let gemInWallet = 0;
+    let url =
+      "https://api.ftmscan.com/api?module=account&action=tokenbalance&contractaddress=" +
+      cosmicCashAddress +
+      "&address=" +
+      TreasuryAddress +
+      "&tag=latest&apikey=" +
+      FTMScanAPI2;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        if (!isNaN(data["result"])) {
+          cscInWallet = +ethers.utils.formatEther(data["result"]);
+        }
+      });
+    url =
+      "https://api.ftmscan.com/api?module=account&action=tokenbalance&contractaddress=" +
+      MineEmpireAddress +
+      "&address=" +
+      TreasuryAddress +
+      "&tag=latest&apikey=" +
+      FTMScanAPI3;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        if (!isNaN(data["result"])) {
+          gemInWallet = +ethers.utils.formatEther(data["result"]);
+        }
+      });
+    const totalTreasury =
+      cscInWallet * cosmicCashPrice +
+      gemInWallet * gemPrice +
+      totalCosmicCashLiquidity +
+      totalGemLiquidity;
+    setTreasuryValue(totalTreasury);
+  }
+
+  async function getGadesProduction() {
+    if (!isConnected()) return;
+    let baseProduction = 0;
+    await gadesContract.methods
+      .getBaseProduction()
+      .call()
+      .then((result) => {
+        baseProduction = +ethers.utils.formatEther(result);
+      })
+      .catch((err) => console.log(err));
+    const addr = await injected.getAccount();
+    await gadesContract.methods
+      .stakes(addr)
+      .call()
+      .then((stake) => {
+        const drillId = stake[0];
+        if (drillId === "0") return;
+        const level = +stake["drill"]["level"];
+        const mult = AsteroidDrillPower[level];
+        const prodPerDay = Math.floor(
+          (baseProduction * 60 * 60 * 24 * mult) / 100
+        );
+        const prodPerDayUsd = Math.floor((prodPerDay / 13809) * 1000) / 1000;
+        setGadesProduction(prodPerDay);
+        setGadesEarnigns(prodPerDayUsd);
+      });
+  }
+
+  async function getOberonProduction() {
+    if (!isConnected()) return;
+    let baseProduction = 0;
+    await oberonContract.methods
+      .getBaseProduction()
+      .call()
+      .then((result) => {
+        baseProduction = +ethers.utils.formatEther(result);
+      })
+      .catch((err) => console.log(err));
+    const addr = await injected.getAccount();
+    await oberonContract.methods
+      .stakes(addr)
+      .call()
+      .then((stake) => {
+        const drillId = stake[0];
+        if (drillId === "0") return;
+        const level = +stake["drill"]["level"];
+        const mult = AsteroidDrillPower[level];
+        const prodPerDay = Math.floor(
+          (baseProduction * 60 * 60 * 24 * mult) / 100
+        );
+        const prodPerDayUsd = Math.floor((prodPerDay / 2798) * 1000) / 1000;
+        setOberonProduction(prodPerDay);
+        setOberonEarnings(prodPerDayUsd);
+      });
+  }
+
+  async function updateState() {
+    await getCosmicCashPrice();
+    await getGemPrice();
+    await getStakedAmount();
+    await getTreasuryValue();
+    await getGadesProduction();
+    await getOberonProduction();
+  }
+
   useEffect(() => {
-    getCosmicCashPrice();
-    getGemPrice();
+    updateState();
     const intervalId = setInterval(() => {
-      getCosmicCashPrice();
-      getGemPrice();
+      updateState();
     }, 5000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line
@@ -188,10 +365,69 @@ const DashboardBody = () => {
         <TitleContainer>
           <h1>Mine Empire</h1>
           <h3>The first emissionless, idle game built for passive income.</h3>
-          <h3>Mint Asteroid Drills in the Market and earn up to 263% APR!</h3>
         </TitleContainer>
       </Container>
       <DashboardContainer>
+        <TokenInfoCardContainer>
+          <DataDiv>
+            <h3>Daily Active Miners</h3>
+            <h1>{stakedAmount}</h1>
+          </DataDiv>
+          <DataDiv>
+            <h3>Total Treasury Value</h3>
+            <h1>${Math.ceil(treasuryValue).toLocaleString("en-US")}</h1>
+          </DataDiv>
+        </TokenInfoCardContainer>
+        <IncomeContainer>
+          <h1>My Total Income</h1>
+          <Line width="760px" />
+          <ResourceIncomeTable>
+            <ResourceItem>
+              <img src="../../assets/iron.png" alt="" />
+              <p>
+                {gadesProduction} Iron ≈ ${gadesEarnings} / day
+              </p>
+              <Link to="cosmos/gades">
+                <BasicButton>View</BasicButton>
+              </Link>
+            </ResourceItem>
+            <ResourceItem>
+              <img src="../../assets/cobalt.png" alt="" />
+              <p>
+                {oberonProduction} Cobalt ≈ ${oberonEarnings} / day
+              </p>
+              <Link to="cosmos/oberon">
+                <BasicButton>View</BasicButton>
+              </Link>
+            </ResourceItem>
+          </ResourceIncomeTable>
+          <Line width="760px" />
+          <IncomeTable>
+            <IncomeItem>
+              <p>
+                ${Math.floor(gadesEarnings + oberonEarnings * 100) / 100} / Day
+              </p>
+            </IncomeItem>
+            <IncomeItem>
+              <p>
+                ${Math.floor(gadesEarnings + oberonEarnings * 7 * 100) / 100} /
+                Week
+              </p>
+            </IncomeItem>
+            <IncomeItem>
+              <p>
+                ${Math.floor(gadesEarnings + oberonEarnings * 30 * 100) / 100} /
+                Month
+              </p>
+            </IncomeItem>
+            <IncomeItem>
+              <p>
+                ${Math.floor(gadesEarnings + oberonEarnings * 365 * 100) / 100}{" "}
+                / Year
+              </p>
+            </IncomeItem>
+          </IncomeTable>
+        </IncomeContainer>
         <TokenInfoCardContainer>
           <TokenInfoCard>
             <TokenInfoCardImgContainer>
