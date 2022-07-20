@@ -363,11 +363,10 @@ const DashboardBody = () => {
       <DashboardContainer>
         <TokenInfoCardContainer>
           <DataDiv>
-            <h3>Daily Active Miners</h3>
             <h1>{stakedAmount}</h1>
+            <h3>Daily Active Miners</h3>
           </DataDiv>
           <DataDiv>
-            <h3>Total Treasury Value</h3>
             <h1>
               $
               {Math.ceil(
@@ -377,6 +376,7 @@ const DashboardBody = () => {
                   totalGemLiquidity
               ).toLocaleString("en-US")}
             </h1>
+            <h3>Total Treasury Value</h3>
           </DataDiv>
         </TokenInfoCardContainer>
         <IncomeContainer>
