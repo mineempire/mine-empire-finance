@@ -49,7 +49,6 @@ import {
   DataDiv,
   ResourceItem,
   ResourceIncomeTable,
-  ResourceItemPair,
   IncomeLine,
 } from "./DashboardStyles";
 
@@ -210,7 +209,6 @@ const DashboardBody = () => {
   }
 
   async function getStakedAmount() {
-    if (stakedAmount != 0) return;
     let amt = 0;
     let url =
       "https://api.ftmscan.com/api?module=account&action=tokenbalance&contractaddress=" +
