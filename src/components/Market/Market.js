@@ -776,7 +776,7 @@ const MarketBody = () => {
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Minted / Max</h3>
-                    <h3 id="stat">{alt3MintedQuantity}/100</h3>
+                    <h3 id="stat">39/100</h3>
                   </NFTCardStatsRow>
                 </NFTCardStats>
                 <ButtonContainer>
@@ -797,12 +797,15 @@ const MarketBody = () => {
                               ) : (
                                 <>
                                   {energyBalance >= 150 ? (
-                                    <Button
-                                      onClick={() => handleAltMint(3)}
-                                      disable={disableButtons}
+                                    <a
+                                      href="https://discord.gg/mineempire"
+                                      rel="noreferrer"
+                                      target="_blank"
                                     >
-                                      Mint Drill
-                                    </Button>
+                                      <Button disable={disableButtons}>
+                                        Request Drill
+                                      </Button>
+                                    </a>
                                   ) : (
                                     <Button disable={true}>
                                       Not Enough Energy
@@ -834,6 +837,22 @@ const MarketBody = () => {
               </NFTCard>
             </MarketContainer>
           </BodyContainer>
+        </Container>
+        <Container>
+          <TitleContainer>
+            <h3>
+              We want to prevent multi address users from taking all of the free
+              drills.
+            </h3>
+            <h3>
+              Clicking on the "Request Drill" button (if available) will take
+              you to our discord. Open a ticket for a swift drill delivery.
+            </h3>
+            <h3>
+              Only open a ticket if you meet the energy requirements and the
+              drill quantity is available.
+            </h3>
+          </TitleContainer>
         </Container>
       </Section>
     </>
