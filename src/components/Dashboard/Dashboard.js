@@ -384,7 +384,9 @@ const DashboardBody = () => {
             <ResourceItem>
               <img src="../../assets/iron.png" alt="" />
               <p>
-                {gadesProduction} Iron ≈ ${gadesEarnings} daily
+                {gadesProduction} Iron ≈ $
+                {Math.floor(gadesEarnings * cosmicCashPrice * 1000) / 1000}{" "}
+                daily
               </p>
               <Link to="cosmos/gades">
                 <BasicButton>View</BasicButton>
@@ -393,7 +395,9 @@ const DashboardBody = () => {
             <ResourceItem>
               <img src="../../assets/cobalt.png" alt="" />
               <p>
-                {oberonProduction} Cobalt ≈ ${oberonEarnings} daily
+                {oberonProduction} Cobalt ≈ $
+                {Math.floor(oberonEarnings * cosmicCashPrice * 1000) / 1000}{" "}
+                daily
               </p>
               <Link to="cosmos/oberon">
                 <BasicButton>View</BasicButton>
@@ -404,24 +408,37 @@ const DashboardBody = () => {
           <IncomeTable>
             <IncomeItem>
               <p>
-                ${Math.floor(gadesEarnings + oberonEarnings * 100) / 100} Daily
+                $
+                {Math.floor(
+                  (gadesEarnings + oberonEarnings) * cosmicCashPrice * 100
+                ) / 100}{" "}
+                Daily
               </p>
             </IncomeItem>
             <IncomeItem>
               <p>
-                ${Math.floor(gadesEarnings + oberonEarnings * 7 * 100) / 100}{" "}
+                $
+                {Math.floor(
+                  (gadesEarnings + oberonEarnings) * cosmicCashPrice * 7 * 100
+                ) / 100}{" "}
                 Weekly
               </p>
             </IncomeItem>
             <IncomeItem>
               <p>
-                ${Math.floor(gadesEarnings + oberonEarnings * 30 * 100) / 100}{" "}
+                $
+                {Math.floor(
+                  (gadesEarnings + oberonEarnings) * cosmicCashPrice * 30 * 100
+                ) / 100}{" "}
                 Monthly
               </p>
             </IncomeItem>
             <IncomeItem>
               <p>
-                ${Math.floor(gadesEarnings + oberonEarnings * 365 * 100) / 100}{" "}
+                $
+                {Math.floor(
+                  (gadesEarnings + oberonEarnings) * cosmicCashPrice * 365 * 100
+                ) / 100}{" "}
                 Yearly
               </p>
             </IncomeItem>
