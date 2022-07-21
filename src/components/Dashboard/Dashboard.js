@@ -30,6 +30,7 @@ import {
   getGadesContract,
   getOberonContract,
   isConnected,
+  sleep,
 } from "../../Web3Client";
 import {
   DashboardSection,
@@ -334,10 +335,15 @@ const DashboardBody = () => {
 
   async function updateState() {
     await getCosmicCashPrice();
+    await sleep(500);
     await getGemPrice();
+    await sleep(500);
     await getTreasuryValue();
+    await sleep(500);
     await getStakedAmount();
+    await sleep(500);
     await getGadesProduction();
+    await sleep(500);
     await getOberonProduction();
   }
 
@@ -345,7 +351,7 @@ const DashboardBody = () => {
     updateState();
     const intervalId = setInterval(() => {
       updateState();
-    }, 5000);
+    }, 10000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line
   }, []);
