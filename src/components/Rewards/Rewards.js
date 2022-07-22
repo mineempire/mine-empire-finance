@@ -27,7 +27,7 @@ const RewardsBody = () => {
 
   const handleCheckRewards = async () => {
     const addr = await injected.getAccount();
-    for (let i = 2; i <= 5; i++) {
+    for (let i = 0; i <= 5; i++) {
       await mineEmpireDrillContract.methods
         .freeMints(addr, 1, i)
         .call()
