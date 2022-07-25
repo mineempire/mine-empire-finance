@@ -776,7 +776,7 @@ const MarketBody = () => {
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Minted / Max</h3>
-                    <h3 id="stat">66/100</h3>
+                    <h3 id="stat">92/100</h3>
                   </NFTCardStatsRow>
                 </NFTCardStats>
                 <ButtonContainer>
