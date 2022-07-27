@@ -302,6 +302,46 @@ const CosmosBody = () => {
             </PlanetCard>
             <PlanetCard>
               <PlanetCardImgContainer>
+                <img src="../../assets/cybele.png" alt="" />
+              </PlanetCardImgContainer>
+              <PlanetCardTitleContainer>
+                <h1>Cybele</h1>
+                <h3>Asteroid</h3>
+                <h3>Produces Silver</h3>
+              </PlanetCardTitleContainer>
+              <Line width="360px" />
+              <PlanetCardProductionInfo>
+                <img src="../../assets/silver.png" alt="" />
+                <h3 id="production">Production:</h3>
+                <h3 id="amount">700 / Day</h3>
+              </PlanetCardProductionInfo>
+              <CardStats>
+                <h3 id="description">Your Production</h3>
+                <h3 id="stat">0 Silver / Day</h3>
+                <h3 id="description">Max Production</h3>
+                <h3 id="stat">24.99k Silver / Day</h3>
+                <h3 id="description">Your USD Equiv</h3>
+                <h3 id="stat">0 / Day</h3>
+                <h3 id="description">Max USD Equiv</h3>
+                <h3 id="stat">
+                  ${Math.floor(12.038 * cosmicCashPrice * 100) / 100} / Day
+                </h3>
+                <h3 id="description">Capacity Level</h3>
+                <h3 id="stat">1</h3>
+                <h3 id="description">Ready to Collect</h3>
+                <h3 id="stat">0 / 2133</h3>
+              </CardStats>
+              <ButtonContainer>
+                {connected ? (
+                  // <Link to="canopsysprime">
+                  <Button>Coming Soon</Button>
+                ) : (
+                  <Button onClick={() => activate(injected)}>Connect</Button>
+                )}
+              </ButtonContainer>
+            </PlanetCard>
+            <PlanetCard>
+              <PlanetCardImgContainer>
                 <img src="../../assets/canopsys.png" alt="" />
               </PlanetCardImgContainer>
               <PlanetCardTitleContainer>
