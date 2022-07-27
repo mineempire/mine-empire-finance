@@ -304,7 +304,7 @@ const MarketBody = () => {
                                 <>
                                   {cosmicCashBalance >= 40 ? (
                                     <Button
-                                      onClick={() => handleAltMint(4)}
+                                      onClick={() => handleAltMint(7)}
                                       disable={disableButtons}
                                     >
                                       Mint Drill
