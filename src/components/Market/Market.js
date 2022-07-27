@@ -35,10 +35,10 @@ const MarketBody = () => {
   const [connected, setConnected] = useState(false);
   const [alt1MintedQuantity, setAlt1MintedQuantity] = useState(0);
   const [alt2MintedQuantity, setAlt2MintedQuantity] = useState(0);
-  const [alt3MintedQuantity, setAlt3MintedQuantity] = useState(0);
   const [alt4MintedQuantity, setAlt4MintedQuantity] = useState(0);
   const [alt5MintedQuantity, setAlt5MintedQuantity] = useState(0);
   const [alt6MintedQuantity, setAlt6MintedQuantity] = useState(0);
+  const [alt7MintedQuantity, setAlt7MintedQuantity] = useState(0);
   const [launchTime, setLaunchTime] = useState(0);
   const [energyApproved, setEnergyApproved] = useState(false);
   const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
@@ -55,17 +55,17 @@ const MarketBody = () => {
 
   async function updateMintedQuantities() {
     selectedAddress = await injected.getAccount();
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= 7; i++) {
       await mineEmpireDrillContract.methods
         .alternativeMints(i)
         .call()
         .then((altMintDetails) => {
           if (i === 1) setAlt1MintedQuantity(altMintDetails.minted);
           if (i === 2) setAlt2MintedQuantity(altMintDetails.minted);
-          if (i === 3) setAlt3MintedQuantity(altMintDetails.minted);
           if (i === 4) setAlt4MintedQuantity(altMintDetails.minted);
           if (i === 5) setAlt5MintedQuantity(altMintDetails.minted);
           if (i === 6) setAlt6MintedQuantity(altMintDetails.minted);
+          if (i === 7) setAlt7MintedQuantity(altMintDetails.minted);
         })
         .catch((err) => console.log(err));
     }
@@ -241,6 +241,110 @@ const MarketBody = () => {
               <NFTCard>
                 <NFTCardHeader>
                   <img
+                    src="../../assets/asteroid-drill-levels/level-2-level.png"
+                    alt=""
+                  />
+                  <h1>Asteroid Drill</h1>
+                  <img
+                    src="../../assets/asteroid-drill-levels/level-2-power.png"
+                    alt=""
+                  />
+                </NFTCardHeader>
+                <img
+                  id="drill-image"
+                  src="../../assets/asteroid-drill-v1.png"
+                  alt=""
+                />
+                <Line width="320px" />
+                <NFTCardStats>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Price</h3>
+                    <NFTCardStatsRowWithImg>
+                      <h3 id="stat">40 CSC</h3>
+                      <img src="../../assets/csc-icon.png" alt="" />
+                    </NFTCardStatsRowWithImg>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Speciality</h3>
+                    <h3 id="stat">Asteroid</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">APR / Max</h3>
+                    <h3 id="stat">225% / 272%</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Level / Max</h3>
+                    <h3 id="stat">3 / 20</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Power / Max</h3>
+                    <h3 id="stat">x1.00 / 35.70</h3>
+                  </NFTCardStatsRow>
+                  <NFTCardStatsRow>
+                    <h3 id="description">Minted / Max</h3>
+                    <h3 id="stat">{alt7MintedQuantity}/100</h3>
+                  </NFTCardStatsRow>
+                </NFTCardStats>
+                <ButtonContainer>
+                  {connected ? (
+                    <>
+                      {launchTime > 0 ? (
+                        <>
+                          <Button disable={true}>
+                            {secondsToHms(launchTime)}
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          {cosmicCashApproved ? (
+                            <>
+                              {alt7MintedQuantity === "100" ? (
+                                <ButtonGray>Minted Out</ButtonGray>
+                              ) : (
+                                <>
+                                  {cosmicCashBalance >= 40 ? (
+                                    <Button
+                                      onClick={() => handleAltMint(4)}
+                                      disable={disableButtons}
+                                    >
+                                      Mint Drill
+                                    </Button>
+                                  ) : (
+                                    <a
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      href="https://beets.fi/#/trade?outputCurrency=0x84f8d24231dfbbfae7f39415cd09c8f467729fc8"
+                                    >
+                                      <Button>Get Cosmic Cash</Button>
+                                    </a>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <Button
+                              onClick={handleCosmicCashApprove}
+                              disable={disableButtons}
+                            >
+                              Approve CSC
+                            </Button>
+                          )}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <Button
+                      onClick={() => activate(injected)}
+                      disable={disableButtons}
+                    >
+                      Connect
+                    </Button>
+                  )}
+                </ButtonContainer>
+              </NFTCard>
+              <NFTCard>
+                <NFTCardHeader>
+                  <img
                     src="../../assets/asteroid-drill-levels/level-5-level.png"
                     alt=""
                   />
@@ -282,7 +386,7 @@ const MarketBody = () => {
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Minted / Max</h3>
-                    <h3 id="stat">{alt4MintedQuantity}/200</h3>
+                    <h3 id="stat">{alt4MintedQuantity}/100</h3>
                   </NFTCardStatsRow>
                 </NFTCardStats>
                 <ButtonContainer>
@@ -298,7 +402,7 @@ const MarketBody = () => {
                         <>
                           {cosmicCashApproved ? (
                             <>
-                              {alt4MintedQuantity === "200" ? (
+                              {alt4MintedQuantity === "100" ? (
                                 <ButtonGray>Minted Out</ButtonGray>
                               ) : (
                                 <>
@@ -310,7 +414,13 @@ const MarketBody = () => {
                                       Mint Drill
                                     </Button>
                                   ) : (
-                                    <Button>Get Cosmic Cash</Button>
+                                    <a
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      href="https://beets.fi/#/trade?outputCurrency=0x84f8d24231dfbbfae7f39415cd09c8f467729fc8"
+                                    >
+                                      <Button>Get Cosmic Cash</Button>
+                                    </a>
                                   )}
                                 </>
                               )}
@@ -408,7 +518,13 @@ const MarketBody = () => {
                                       Mint Drill
                                     </Button>
                                   ) : (
-                                    <Button>Get Cosmic Cash</Button>
+                                    <a
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      href="https://beets.fi/#/trade?outputCurrency=0x84f8d24231dfbbfae7f39415cd09c8f467729fc8"
+                                    >
+                                      <Button>Get Cosmic Cash</Button>
+                                    </a>
                                   )}
                                 </>
                               )}
@@ -506,7 +622,13 @@ const MarketBody = () => {
                                       Mint Drill
                                     </Button>
                                   ) : (
-                                    <Button>Get Cosmic Cash</Button>
+                                    <a
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      href="https://beets.fi/#/trade?outputCurrency=0x84f8d24231dfbbfae7f39415cd09c8f467729fc8"
+                                    >
+                                      <Button>Get Cosmic Cash</Button>
+                                    </a>
                                   )}
                                 </>
                               )}
@@ -792,27 +914,7 @@ const MarketBody = () => {
                         <>
                           {energyApproved ? (
                             <>
-                              {alt3MintedQuantity === "100" ? (
-                                <ButtonGray>Minted Out</ButtonGray>
-                              ) : (
-                                <>
-                                  {energyBalance >= 150 ? (
-                                    <a
-                                      href="https://discord.gg/mineempire"
-                                      rel="noreferrer"
-                                      target="_blank"
-                                    >
-                                      <Button disable={disableButtons}>
-                                        Request Drill
-                                      </Button>
-                                    </a>
-                                  ) : (
-                                    <Button disable={true}>
-                                      Not Enough Energy
-                                    </Button>
-                                  )}
-                                </>
-                              )}
+                              <ButtonGray>Minted Out</ButtonGray>
                             </>
                           ) : (
                             <Button

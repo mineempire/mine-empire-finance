@@ -38,7 +38,7 @@ function App() {
                   symbol: "FTM",
                 },
                 rpcUrls: ["https://rpc.fantom.network/"],
-                blockExplorerUrls: ["https://api.ftmscan.com/"],
+                blockExplorerUrls: ["https://ftmscan.com/"],
               },
             ],
           });
