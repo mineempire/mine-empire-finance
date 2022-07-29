@@ -1,13 +1,7 @@
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useState } from "react";
 import { injected } from "../../connectors";
-import { Link } from "react-router-dom";
-import {
-  drillMetadataIPFSUrl,
-  gadesAddress,
-  gadesMetadataIPFSUrl,
-  mineEmpireDrillAddress,
-} from "../../contracts/Addresses";
 import {
   Container,
   TitleContainer,
@@ -18,13 +12,20 @@ import {
   Space,
   ButtonContainer,
   ButtonGray,
+  BasicButton,
 } from "../../globalStyles";
 import {
-  getCosmicCashContract,
-  getGadesContract,
+  getCybeleContract,
   getMineEmpireDrillContract,
+  getCosmicCashContract,
 } from "../../Web3Client";
-import DrillSelectorMenu from "../Planet/DrillSelectorMenu";
+import { AsteroidDrillPower } from "../../stats/DrillStats";
+import { CybeleCapacity, CybeleUpgradeCost } from "../../stats/CybeleStats";
+import {
+  CybeleAddress,
+  mineEmpireDrillAddress,
+} from "../../contracts/Addresses";
+
 import {
   DescriptionContainer,
   DescriptionRow,
@@ -39,58 +40,53 @@ import {
   SelectDrillModalBg,
   PlanetButtonContainer,
 } from "../Planet/PlanetStyles";
+import DrillSelectorMenu from "../Planet/DrillSelectorMenu";
+import { RightFlexDiv } from "../Market/MarketStyles";
 
-const GadesBody = () => {
-  let selectedAddress = "";
-  const [cosmicCashBalance, setCosmicCashBalance] = useState(0);
-  const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
-  const [upgradeCost, setUpgradeCost] = useState(0);
-  const [drillPower, setDrillPower] = useState(0);
-  const [capacityLevel, setCapacityLevel] = useState(0);
+const CybeleBody = () => {
+  const [disableButtons, setDisableButtons] = useState(false);
   const [capacity, setCapacity] = useState(0);
-  const [baseProduction, setBaseProduction] = useState(0);
-  const [nextLevelCapacity, setNextLevelCapacity] = useState(0);
   const [miningStatus, setMiningStatus] = useState("Idle");
-  const [ownedDrills, setOwnedDrills] = useState([]);
-  const [drillsLoaded, setDrillsLoaded] = useState(false);
+  const [collected, setCollected] = useState(0);
   const [drillStaked, setDrillStaked] = useState(0);
-  const [drillSelected, setDrillSelected] = useState(0);
-  const [showSelect, setShowSelect] = useState(false);
-  const [drillsApproved, setDrillsApproved] = useState(false);
-  const [disableGadesButtons, setDisableGadesButtons] = useState(false);
-
   const [drillId, setDrillId] = useState(0);
   const [drillLevel, setDrillLevel] = useState(0);
-  const [collected, setCollected] = useState(0);
+  const [drillPower, setDrillPower] = useState(0);
+  const [drillSelected, setDrillSelected] = useState(0);
+  const [ownedDrills, setOwnedDrills] = useState([]);
+  const [drillsLoaded, setDrillsLoaded] = useState(false);
+  const [cosmicCashBalance, setCosmicCashBalance] = useState(0);
+  const [cosmicCashApproved, setCosmicCashApproved] = useState(false);
+  const [capacityLevel, setCapacityLevel] = useState(0);
+  const [baseProduction, setBaseProduction] = useState(0);
+  const [nextLevelCapacity, setNextLevelCapacity] = useState(0);
+  const [upgradeCost, setUpgradeCost] = useState(0);
+  const [drillsApproved, setDrillsApproved] = useState(false);
+  const [showSelect, setShowSelect] = useState(false);
 
-  const gadesContract = getGadesContract();
+  const cybeleContract = getCybeleContract();
   const mineEmpireDrillContract = getMineEmpireDrillContract();
   const cosmicCashContract = getCosmicCashContract();
 
-  async function selectDrill(drillId) {
-    setDrillSelected(drillId);
-  }
-
-  async function getCollectedIron() {
-    selectedAddress = await injected.getAccount();
-    await gadesContract.methods
-      .getAccumulatedIron(selectedAddress)
+  async function getCollectedSilver() {
+    const addr = await injected.getAccount();
+    await cybeleContract.methods
+      .getAccumulatedSilver(addr)
       .call()
       .then((result) => {
         const amt = Math.floor(+ethers.utils.formatEther(result));
-        if (amt === capacity && amt > 0) {
+        if (amt > 0 && amt === capacity) {
           setMiningStatus("At Capacity");
         }
         setCollected(amt);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   }
 
   async function getStakeInfo() {
-    await gadesContract.methods
-      .getStake(selectedAddress)
+    const addr = await injected.getAccount();
+    await cybeleContract.methods
+      .stakes(addr)
       .call()
       .then((stake) => {
         const drillId = stake[0];
@@ -98,14 +94,15 @@ const GadesBody = () => {
           setDrillStaked(false);
           setDrillId(0);
           setDrillLevel(0);
+          setDrillPower(AsteroidDrillPower[0]);
           setMiningStatus("Idle");
         } else {
           setDrillSelected(true);
           setDrillStaked(true);
           setDrillId(stake["drill"]["drillId"]);
           setDrillLevel(+stake["drill"]["level"] + 1);
+          setDrillPower(AsteroidDrillPower[+stake["drill"]["level"]]);
           setMiningStatus("Mining");
-          getCollectedIron();
         }
       })
       .catch((err) => {
@@ -141,11 +138,13 @@ const GadesBody = () => {
         .getDrill(key)
         .call()
         .then((drill) => {
-          fetchedDrills.push({
-            drillId: key,
-            drillType: drill["drillType"],
-            level: drill["level"],
-          });
+          if (drill["level"] >= 2) {
+            fetchedDrills.push({
+              drillId: key,
+              drillType: drill["drillType"],
+              level: drill["level"],
+            });
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -165,19 +164,33 @@ const GadesBody = () => {
       });
   }
 
-  // TODO
-  async function getGadesMetadata() {
-    selectedAddress = await injected.getAccount();
+  async function getCosmicCashApproved() {
+    const addr = await injected.getAccount();
+    await cosmicCashContract.methods
+      .allowance(addr, CybeleAddress)
+      .call()
+      .then((result) => {
+        const amt = ethers.utils.formatEther(result).substring(0, 7);
+        if (+amt < 25) {
+          setCosmicCashApproved(false);
+        } else {
+          setCosmicCashApproved(true);
+        }
+      });
+  }
+
+  async function getCybeleMetadata() {
+    const addr = await injected.getAccount();
     let lv = 0;
-    await gadesContract.methods
-      .userLevel(selectedAddress)
+    await cybeleContract.methods
+      .userLevel(addr)
       .call()
       .then((result) => {
         lv = +result + 1;
         setCapacityLevel(lv);
       })
       .catch((err) => console.log(err));
-    await gadesContract.methods
+    await cybeleContract.methods
       .getBaseProduction()
       .call()
       .then((result) => {
@@ -185,28 +198,12 @@ const GadesBody = () => {
         setBaseProduction(amt);
       })
       .catch((err) => console.log(err));
-    await cosmicCashContract.methods
-      .allowance(selectedAddress, gadesAddress)
-      .call()
-      .then((result) => {
-        const amount = ethers.utils.formatEther(result).substring(0, 7);
-        if (+amount < 25) {
-          setCosmicCashApproved(false);
-        } else {
-          setCosmicCashApproved(true);
-        }
-      });
-    fetch(gadesMetadataIPFSUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        const levels = data["capacity"];
-        setCapacity(levels[lv - 1]);
-        setNextLevelCapacity(levels[lv]);
-        const upgrades = data["upgrade"];
-        setUpgradeCost(upgrades[lv]);
-      });
+
+    setCapacity(CybeleCapacity[lv - 1]);
+    setNextLevelCapacity(CybeleCapacity[lv]);
+    setUpgradeCost(CybeleUpgradeCost[lv]);
     await mineEmpireDrillContract.methods
-      .isApprovedForAll(selectedAddress, gadesAddress)
+      .isApprovedForAll(addr, CybeleAddress)
       .call()
       .then((result) => {
         setDrillsApproved(result);
@@ -214,132 +211,99 @@ const GadesBody = () => {
       .catch((err) => console.log(err));
   }
 
-  // TODO
-  async function getDrillMetadata() {
-    fetch(drillMetadataIPFSUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        if (drillLevel === 0) return;
-        const power = data["power"];
-        setDrillPower(power[drillLevel - 1]);
-      });
-  }
-
-  useEffect(() => {
-    getDrillMetadata();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [drillLevel]);
-
   async function updateState() {
-    selectedAddress = await injected.getAccount();
+    await getCollectedSilver();
     await getStakeInfo();
     await getOwnedDrills();
-    await getGadesMetadata();
     await getCosmicCashBalance();
-  }
-
-  async function handleStake() {
-    if (disableGadesButtons) return;
-    setDisableGadesButtons(true);
-    selectedAddress = await injected.getAccount();
-    await gadesContract.methods
-      .stake(drillSelected)
-      .send({ from: selectedAddress })
-      .then()
-      .catch((err) => console.log(err));
-    await getStakeInfo();
-    await getGadesMetadata();
-    setDisableGadesButtons(false);
-  }
-
-  async function handleCollectIron() {
-    if (disableGadesButtons) return;
-    setDisableGadesButtons(true);
-    selectedAddress = await injected.getAccount();
-    await gadesContract.methods
-      .collectIron()
-      .send({
-        from: selectedAddress,
-      })
-      .then((result) => {})
-      .catch((err) => console.log(err));
-    await getCollectedIron();
-    await getGadesMetadata();
-    setDisableGadesButtons(false);
-  }
-
-  async function handleUnstakeDrill() {
-    if (disableGadesButtons) return;
-    setDisableGadesButtons(true);
-    selectedAddress = await injected.getAccount();
-    await gadesContract.methods
-      .unstake()
-      .send({ from: selectedAddress })
-      .then((result) => {})
-      .catch((err) => console.log(err));
-    await getStakeInfo();
-    setDrillSelected(0);
-    await getOwnedDrills();
-    await getGadesMetadata();
-    setDisableGadesButtons(false);
-  }
-
-  async function handleUpgrade() {
-    if (disableGadesButtons) return;
-    setDisableGadesButtons(true);
-    selectedAddress = await injected.getAccount();
-    await gadesContract.methods
-      .upgrade()
-      .send({
-        from: selectedAddress,
-      })
-      .then((result) => {
-        getGadesMetadata();
-      })
-      .catch((err) => console.log(err));
-    await getGadesContract();
-    await getCosmicCashBalance();
-    setDisableGadesButtons(false);
-  }
-
-  async function handleApproveCosmicCash() {
-    if (disableGadesButtons) return;
-    setDisableGadesButtons(true);
-    selectedAddress = await injected.getAccount();
-    await cosmicCashContract.methods
-      .approve(gadesAddress, "1000000000000000000000")
-      .send({ from: selectedAddress })
-      .then()
-      .catch((err) => console.log(err));
-    await getGadesMetadata();
-    setDisableGadesButtons(false);
-  }
-
-  async function handleApproveDrills() {
-    if (disableGadesButtons) return;
-    setDisableGadesButtons(true);
-    selectedAddress = await injected.getAccount();
-    await mineEmpireDrillContract.methods
-      .setApprovalForAll(gadesAddress, "true")
-      .send({ from: selectedAddress })
-      .then()
-      .catch((err) => console.log(err));
-    await getGadesMetadata();
-    setDisableGadesButtons(false);
+    await getCosmicCashApproved();
+    await getCybeleMetadata();
   }
 
   useEffect(() => {
     updateState();
     const intervalId = setInterval(() => {
-      if (!disableGadesButtons) updateState();
-    }, 5000);
+      updateState();
+    }, 1000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  async function handleApproveDrills() {
+    if (disableButtons) return;
+    setDisableButtons(true);
+    const addr = await injected.getAccount();
+    await mineEmpireDrillContract.methods
+      .setApprovalForAll(CybeleAddress, "true")
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+    await updateState();
+    setDisableButtons(false);
+  }
+  async function handleStake() {
+    if (disableButtons) return;
+    setDisableButtons(true);
+    const addr = await injected.getAccount();
+    await cybeleContract.methods
+      .stake(drillSelected)
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+    setDisableButtons(false);
+  }
+  async function handleUnstake() {
+    if (disableButtons) return;
+    setDisableButtons(true);
+    const addr = await injected.getAccount();
+    await cybeleContract.methods
+      .unstake()
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+    await updateState();
+    setDrillSelected(0);
+    setDisableButtons(false);
+  }
+  async function handleCollectSilver() {
+    if (disableButtons) return;
+    setDisableButtons(true);
+    const addr = await injected.getAccount();
+    await cybeleContract.methods
+      .collectSilver()
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+    setDisableButtons(false);
+  }
+
+  async function handleApproveCosmicCash() {
+    if (disableButtons) return;
+    setDisableButtons(true);
+    const addr = await injected.getAccount();
+    await cosmicCashContract.methods
+      .approve(CybeleAddress, "1000000000000000000000")
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+    await updateState();
+    setDisableButtons(false);
+  }
+  async function handleUpgrade() {
+    if (disableButtons) return;
+    setDisableButtons(true);
+    const addr = await injected.getAccount();
+    await cybeleContract.methods
+      .upgrade()
+      .send({ from: addr })
+      .then()
+      .catch((err) => console.log(err));
+    setDisableButtons(false);
+  }
+
   // website
   const handleSelectDrill = () => {
-    if (disableGadesButtons) return;
+    if (disableButtons) return;
     setShowSelect(!showSelect);
   };
 
@@ -347,20 +311,33 @@ const GadesBody = () => {
     setShowSelect(false);
   };
 
+  function selectDrill(drillId) {
+    setDrillSelected(drillId);
+  }
+
   return (
     <>
       <Section>
         <Container>
           <TitleContainer>
-            <h1>Gades</h1>
+            <h1>Cybele</h1>
             <h3>
-              Gades is an iron rich asteroid. Stake an asteroid drill to start
-              earning iron.
+              Stake an asteroid drill and earn silver. The hard surface of
+              Cybele requires you to deploy drills level 3 or higher.
             </h3>
             <h3>
-              Buy a drill from the Market. Upgrading the drill allows you to
-              multiply your production!
+              Buy drills in the Market to start earning. Upgrade them in your
+              Inventory to increase your production!
             </h3>
+            <RightFlexDiv>
+              <a
+                href="https://mine-empire.gitbook.io/mine-empire/game/cosmos/cybele"
+                rel="noreferrer"
+                target="_blank"
+              >
+                <BasicButton>Cybele Docs</BasicButton>
+              </a>
+            </RightFlexDiv>
           </TitleContainer>
         </Container>
         <Container>
@@ -381,9 +358,9 @@ const GadesBody = () => {
               <PlanetBody>
                 <StakeContainer>
                   <PlanetTitleContainer>
-                    <img src="../../assets/gades.png" alt="" />
+                    <img src="../../assets/cybele.png" alt="" />
                     <PlanetTitle>
-                      <h1 id="title">Gades</h1>
+                      <h1 id="title">Cybele</h1>
                       <h1 id="description">Asteroid</h1>
                     </PlanetTitle>
                   </PlanetTitleContainer>
@@ -416,16 +393,16 @@ const GadesBody = () => {
                       <>
                         <ButtonContainer>
                           <Button
-                            onClick={handleCollectIron}
-                            disable={disableGadesButtons}
+                            onClick={handleCollectSilver}
+                            disable={disableButtons}
                           >
                             Collect
                           </Button>
                         </ButtonContainer>
                         <ButtonContainer>
                           <Button
-                            onClick={handleUnstakeDrill}
-                            disable={disableGadesButtons}
+                            onClick={handleUnstake}
+                            disable={disableButtons}
                           >
                             Unstake
                           </Button>
@@ -440,7 +417,7 @@ const GadesBody = () => {
                                 <ButtonContainer>
                                   <Button
                                     onClick={handleSelectDrill}
-                                    disable={disableGadesButtons}
+                                    disable={disableButtons}
                                   >
                                     Select Drill
                                   </Button>
@@ -448,7 +425,7 @@ const GadesBody = () => {
                                 <ButtonContainer>
                                   <Button
                                     onClick={handleStake}
-                                    disable={disableGadesButtons}
+                                    disable={disableButtons}
                                   >
                                     Stake #{drillSelected}
                                   </Button>
@@ -459,7 +436,7 @@ const GadesBody = () => {
                                 <ButtonContainer>
                                   <Button
                                     onClick={handleSelectDrill}
-                                    disable={disableGadesButtons}
+                                    disable={disableButtons}
                                   >
                                     Select Drill
                                   </Button>
@@ -472,7 +449,7 @@ const GadesBody = () => {
                             <ButtonContainer>
                               <Button
                                 onClick={handleApproveDrills}
-                                disable={disableGadesButtons}
+                                disable={disableButtons}
                               >
                                 Approve Drill
                               </Button>
@@ -486,7 +463,7 @@ const GadesBody = () => {
               </PlanetBody>
               <DescriptionContainer>
                 <PlanetTitle>
-                  <h1 id="title">Gades Stats</h1>
+                  <h1 id="title">Cybele Stats</h1>
                 </PlanetTitle>
                 <Line width="320px" />
                 <DescriptionRow>
@@ -495,7 +472,7 @@ const GadesBody = () => {
                 </DescriptionRow>
                 <DescriptionRow>
                   <h3 id="description">Production Resource</h3>
-                  <h3 id="value">Iron</h3>
+                  <h3 id="value">Silver</h3>
                 </DescriptionRow>
                 <DescriptionRow>
                   <h3 id="description">Base Production</h3>
@@ -540,7 +517,7 @@ const GadesBody = () => {
                               <ButtonContainer>
                                 <Button
                                   onClick={handleUpgrade}
-                                  disable={disableGadesButtons}
+                                  disable={disableButtons}
                                 >
                                   Upgrade Capacity
                                 </Button>
@@ -549,9 +526,13 @@ const GadesBody = () => {
                           ) : (
                             <>
                               <ButtonContainer>
-                                <Link to="/rewards">
+                                <a
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  href="https://beets.fi/#/trade?outputCurrency=0x84f8d24231dfbbfae7f39415cd09c8f467729fc8"
+                                >
                                   <Button>Get CSC</Button>
-                                </Link>
+                                </a>
                               </ButtonContainer>
                               <ButtonContainer>
                                 <Button disable={true}>Upgrade</Button>
@@ -565,7 +546,7 @@ const GadesBody = () => {
                     <ButtonContainer>
                       <Button
                         onClick={handleApproveCosmicCash}
-                        disable={disableGadesButtons}
+                        disable={disableButtons}
                       >
                         Approve CSC
                       </Button>
@@ -576,14 +557,14 @@ const GadesBody = () => {
             </PlanetBodyContainer>
             <ConverterContainer>
               <ConversionBox>
-                <img src="../../assets/iron60px.png" alt="" />
-                <p>1 = 0.000072416</p>
+                <img src="../../assets/silver.png" alt="" />
+                <p>1 = 0.000481696</p>
                 <img src="../../assets/csc-icon.png" alt="" />
               </ConversionBox>
               <ConversionBox>
                 <img src="../../assets/csc-icon.png" alt="" />
-                <p>1 = 13809</p>
-                <img src="../../assets/iron60px.png" alt="" />
+                <p>1 = 2076</p>
+                <img src="../../assets/silver.png" alt="" />
               </ConversionBox>
             </ConverterContainer>
           </BodyContainer>
@@ -593,4 +574,4 @@ const GadesBody = () => {
   );
 };
 
-export default GadesBody;
+export default CybeleBody;

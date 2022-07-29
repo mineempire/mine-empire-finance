@@ -13,7 +13,7 @@ export const PlanetTitleContainer = styled.div`
   border-radius: 15px;
 
   img {
-    width: 134px;
+    height: 134px;
     padding: 15px;
   }
 `;

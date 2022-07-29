@@ -3,6 +3,7 @@ import {
   CobaltAddress,
   converterAddress,
   cosmicCashAddress,
+  CybeleAddress,
   dailyEnergyAddress,
   energyAddress,
   gadesAddress,
@@ -13,6 +14,7 @@ import {
 import { CobaltABI } from "./contracts/Cobalt";
 import { converterABI } from "./contracts/Converter";
 import { cosmicCashABI } from "./contracts/CosmicCash";
+import { CybeleABI } from "./contracts/Cybele";
 import { dailyEnergyABI } from "./contracts/DailyEnergy";
 import { energyABI } from "./contracts/Energy";
 import { gadesABI } from "./contracts/Gades";
@@ -151,6 +153,12 @@ export const getCobaltContract = () => {
 export const getOberonContract = () => {
   var web3 = new Web3(window.ethereum);
   const contract = new web3.eth.Contract(OberonABI, OberonAddress);
+  return contract;
+};
+
+export const getCybeleContract = () => {
+  var web3 = new Web3(window.ethereum);
+  const contract = new web3.eth.Contract(CybeleABI, CybeleAddress);
   return contract;
 };
 
