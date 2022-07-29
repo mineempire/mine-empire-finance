@@ -27,6 +27,7 @@ import {
 } from "../../globalStyles";
 import { AsteroidDrillPower } from "../../stats/DrillStats";
 import {
+  getCybeleContract,
   getGadesContract,
   getOberonContract,
   isConnected,
@@ -65,11 +66,14 @@ const DashboardBody = () => {
   const [gadesEarnings, setGadesEarnigns] = useState(0);
   const [oberonProduction, setOberonProduction] = useState(0);
   const [oberonEarnings, setOberonEarnings] = useState(0);
+  const [cybeleProduction, setCybeleProduction] = useState(0);
+  const [cybeleEarnings, setCybeleEarnings] = useState(0);
   const [cscInWallet, setCscInWallet] = useState(0);
   const [gemInWallet, setGemInWallet] = useState(0);
 
   const gadesContract = getGadesContract();
   const oberonContract = getOberonContract();
+  const cybeleContract = getCybeleContract();
 
   async function handleAddCSCToMM() {
     try {
@@ -333,6 +337,34 @@ const DashboardBody = () => {
       });
   }
 
+  async function getCybeleProduction() {
+    if (!isConnected()) return;
+    let baseProduction = 0;
+    await cybeleContract.methods
+      .getBaseProduction()
+      .call()
+      .then((result) => {
+        baseProduction = +ethers.utils.formatEther(result);
+      })
+      .catch((err) => console.log(err));
+    const addr = await injected.getAccount();
+    await cybeleContract.methods
+      .stakes(addr)
+      .call()
+      .then((stake) => {
+        const drillId = stake[0];
+        if (drillId === "0") return;
+        const level = +stake["drill"]["level"];
+        const mult = AsteroidDrillPower[level];
+        const prodPerDay = Math.floor(
+          (baseProduction * 60 * 60 * 24 * mult) / 100
+        );
+        const prodPerDayUsd = Math.floor((prodPerDay / 2076) * 1000) / 1000;
+        setCybeleProduction(prodPerDay);
+        setCybeleEarnings(prodPerDayUsd);
+      });
+  }
+
   async function updateState() {
     await getCosmicCashPrice();
     await sleep(500);
@@ -345,6 +377,8 @@ const DashboardBody = () => {
     await getGadesProduction();
     await sleep(500);
     await getOberonProduction();
+    await sleep(500);
+    await getCybeleProduction();
   }
 
   useEffect(() => {
@@ -409,6 +443,17 @@ const DashboardBody = () => {
                 <BasicButton>View</BasicButton>
               </Link>
             </ResourceItem>
+            <ResourceItem>
+              <img src="../../assets/silver.png" alt="" />
+              <p>
+                {cybeleProduction} Silver ≈ $
+                {Math.floor(cybeleEarnings * cosmicCashPrice * 1000) / 1000}{" "}
+                daily
+              </p>
+              <Link to="cosmos">
+                <BasicButton>View</BasicButton>
+              </Link>
+            </ResourceItem>
           </ResourceIncomeTable>
           <IncomeLine />
           <IncomeTable>
@@ -416,7 +461,9 @@ const DashboardBody = () => {
               <p>
                 $
                 {Math.floor(
-                  (gadesEarnings + oberonEarnings) * cosmicCashPrice * 100
+                  (gadesEarnings + oberonEarnings + cybeleEarnings) *
+                    cosmicCashPrice *
+                    100
                 ) / 100}{" "}
                 Daily
               </p>
@@ -425,7 +472,10 @@ const DashboardBody = () => {
               <p>
                 $
                 {Math.floor(
-                  (gadesEarnings + oberonEarnings) * cosmicCashPrice * 7 * 100
+                  (gadesEarnings + oberonEarnings + cybeleEarnings) *
+                    cosmicCashPrice *
+                    7 *
+                    100
                 ) / 100}{" "}
                 Weekly
               </p>
@@ -434,7 +484,10 @@ const DashboardBody = () => {
               <p>
                 $
                 {Math.floor(
-                  (gadesEarnings + oberonEarnings) * cosmicCashPrice * 30 * 100
+                  (gadesEarnings + oberonEarnings + cybeleEarnings) *
+                    cosmicCashPrice *
+                    30 *
+                    100
                 ) / 100}{" "}
                 Monthly
               </p>
@@ -443,7 +496,10 @@ const DashboardBody = () => {
               <p>
                 $
                 {Math.floor(
-                  (gadesEarnings + oberonEarnings) * cosmicCashPrice * 365 * 100
+                  (gadesEarnings + oberonEarnings + cybeleEarnings) *
+                    cosmicCashPrice *
+                    365 *
+                    100
                 ) / 100}{" "}
                 Yearly
               </p>
