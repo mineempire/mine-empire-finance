@@ -18,6 +18,7 @@ import {
 import { Button, ButtonContainer } from "../../globalStyles";
 import { useEffect, useState } from "react";
 import {
+  getCybeleContract,
   getGadesContract,
   getOberonContract,
   isConnected,
@@ -29,6 +30,7 @@ import { ethers } from "ethers";
 import { GadesCapacity } from "../../stats/GadesStats";
 import { cosmicCashAddress } from "../../contracts/Addresses";
 import { OberonCapacity } from "../../stats/OberonStats";
+import { CybeleCapacity } from "../../stats/CybeleStats";
 
 const CosmosBody = () => {
   const [connected, setConnected] = useState(false);
@@ -44,10 +46,16 @@ const CosmosBody = () => {
   const [oberonLevel, setOberonLevel] = useState(0);
   const [oberonCapacity, setOberonCapacity] = useState(0);
   const [CobaltReadyToCollect, setCobaltReadyToCollect] = useState(0);
+  const [cybeleLevel, setCybeleLevel] = useState(0);
+  const [cybeleCapacity, setCybeleCapacity] = useState(0);
+  const [silverReadyToCollect, setSilverReadyToCollect] = useState(0);
+  const [silverProduction, setSilverProduction] = useState(0);
+  const [cscProductionCybele, setCscProductionCybele] = useState(0);
   const { activate } = useWeb3React();
 
   const gadesContract = getGadesContract();
   const oberonContract = getOberonContract();
+  const cybeleContract = getCybeleContract();
 
   async function getStakedStats() {
     const addr = await injected.getAccount();
@@ -69,6 +77,18 @@ const CosmosBody = () => {
       .then((result) => {
         const amt = Math.floor(ethers.utils.formatEther(result));
         setCobaltReadyToCollect(amt);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  async function getCybeleStakedStats() {
+    const addr = await injected.getAccount();
+    await cybeleContract.methods
+      .getAccumulatedSilver(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(ethers.utils.formatEther(result));
+        setSilverReadyToCollect(amt);
       })
       .catch((err) => console.log(err));
   }
@@ -162,11 +182,51 @@ const CosmosBody = () => {
     if (checkStaked) await getOberonStakedStats();
   }
 
+  async function getCybeleStats() {
+    const addr = await injected.getAccount();
+    let baseProduction = 0;
+    let checkStaked = true;
+    await cybeleContract.methods
+      .getBaseProduction()
+      .call()
+      .then((result) => {
+        baseProduction = +ethers.utils.formatEther(result);
+      });
+    await cybeleContract.methods
+      .stakes(addr)
+      .call()
+      .then((stake) => {
+        const drillId = stake[0];
+        if (drillId === "0") {
+          checkStaked = false;
+        } else {
+          const level = +stake["drill"]["level"];
+          const mult = AsteroidDrillPower[level];
+          const prodPerDay = Math.floor(
+            (baseProduction * 60 * 60 * 24 * mult) / 100
+          );
+          setSilverProduction(prodPerDay);
+          setCscProductionCybele(
+            Math.floor((silverProduction / 2076) * 1000000) / 1000000
+          );
+        }
+      });
+    await cybeleContract.methods
+      .userLevel(addr)
+      .call()
+      .then((result) => {
+        setCybeleLevel(+result + 1);
+        setCybeleCapacity(CybeleCapacity[+result]);
+      });
+    if (checkStaked) await getCybeleStakedStats();
+  }
+
   async function updateState() {
     if (await isConnected()) {
       setConnected(true);
       await getGadesStats();
       await getOberonStats();
+      await getCybeleStats();
     }
     getCosmicCashPrice();
   }
@@ -176,11 +236,11 @@ const CosmosBody = () => {
   });
 
   useEffect(() => {
-    const timeDiff = 1658073600 - Math.floor(Date.now() / 1000);
+    const timeDiff = 1659139200 - Math.floor(Date.now() / 1000);
     setLaunchTime(timeDiff);
     const intervalId = setInterval(() => {
       if (launchTime >= 0) {
-        const timeDiff = 1658073600 - Math.floor(Date.now() / 1000);
+        const timeDiff = 1659139200 - Math.floor(Date.now() / 1000);
         setLaunchTime(timeDiff);
       }
     }, 1000);
@@ -313,27 +373,33 @@ const CosmosBody = () => {
               <PlanetCardProductionInfo>
                 <img src="../../assets/silver.png" alt="" />
                 <h3 id="production">Production:</h3>
-                <h3 id="amount">700 / Day</h3>
+                <h3 id="amount">699 / Day</h3>
               </PlanetCardProductionInfo>
               <CardStats>
                 <h3 id="description">Your Production</h3>
-                <h3 id="stat">0 Silver / Day</h3>
+                <h3 id="stat">{silverProduction} Silver / Day</h3>
                 <h3 id="description">Max Production</h3>
                 <h3 id="stat">24.99k Silver / Day</h3>
                 <h3 id="description">Your USD Equiv</h3>
-                <h3 id="stat">0 / Day</h3>
+                <h3 id="stat">
+                  $
+                  {Math.floor(cscProductionCybele * cosmicCashPrice * 100) /
+                    100}{" "}
+                  / Day
+                </h3>
                 <h3 id="description">Max USD Equiv</h3>
                 <h3 id="stat">
                   ${Math.floor(12.038 * cosmicCashPrice * 100) / 100} / Day
                 </h3>
                 <h3 id="description">Capacity Level</h3>
-                <h3 id="stat">1</h3>
+                <h3 id="stat">{cybeleLevel}</h3>
                 <h3 id="description">Ready to Collect</h3>
-                <h3 id="stat">0 / 2133</h3>
+                <h3 id="stat">
+                  {silverReadyToCollect} / {cybeleCapacity}
+                </h3>
               </CardStats>
               <ButtonContainer>
                 {connected ? (
-                  // <Link to="canopsysprime">
                   <Button>Coming Soon</Button>
                 ) : (
                   <Button onClick={() => activate(injected)}>Connect</Button>
