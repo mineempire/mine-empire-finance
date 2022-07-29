@@ -35,6 +35,7 @@ import {
   getConverterContract,
   getCosmicCashContract,
   getIronContract,
+  getSilverContract,
   isConnected,
 } from "../../Web3Client";
 import { useWeb3React } from "@web3-react/core";
@@ -44,6 +45,7 @@ import {
   CobaltAddress,
   converterAddress,
   ironAddress,
+  SilverAddress,
 } from "../../contracts/Addresses";
 
 const ConverterBody = () => {
@@ -56,8 +58,9 @@ const ConverterBody = () => {
   const [ouputQuantity, setOutputQuantity] = useState(0);
   const [ironQuantity, setIronQuantity] = useState(0);
   const [cobaltQuantity, setCobaltQuantity] = useState(0);
+  const [silverQuantity, setSilverQuantity] = useState(0);
+  const [approvedSilver, setApprovedSilver] = useState(false);
   const [conversionRate, setConversionRate] = useState(13809);
-  const [silverQuantity] = useState(0);
   const [bismuthQuantity] = useState(0);
   const [rubyQuantity] = useState(0);
   const [approvedIron, setApprovedIron] = useState(false);
@@ -68,6 +71,7 @@ const ConverterBody = () => {
 
   const ironContract = getIronContract();
   const cobaltContract = getCobaltContract();
+  const silverContract = getSilverContract();
   const cscContract = getCosmicCashContract();
   const converterContract = getConverterContract();
 
@@ -119,9 +123,36 @@ const ConverterBody = () => {
       });
   }
 
+  async function getApprovedSilver() {
+    const addr = await injected.getAccount();
+    await silverContract.methods
+      .allowance(addr, converterAddress)
+      .call()
+      .then((result) => {
+        const amt = ethers.utils.formatEther(result);
+        if (+amt < 10000000) {
+          setApprovedSilver(false);
+        } else {
+          setApprovedSilver(true);
+        }
+      });
+  }
+
+  async function getSilverBalance() {
+    const addr = await injected.getAccount();
+    await silverContract.methods
+      .balanceOf(addr)
+      .call()
+      .then((result) => {
+        const amt = Math.floor(+ethers.utils.formatEther(result));
+        setSilverQuantity(amt);
+      });
+  }
+
   async function getApproves() {
     await getApprovedIron();
     await getApprovedCobalt();
+    await getApprovedSilver();
   }
 
   async function getBalances() {
@@ -132,7 +163,13 @@ const ConverterBody = () => {
       .then((result) => {
         const amt = Math.floor(+ethers.utils.formatEther(result));
         setIronQuantity(amt);
-        setSelectedQuantity(amt);
+        if (selectedResource === "iron") {
+          setSelectedQuantity(amt);
+        } else if (selectedResource === "cobalt") {
+          setSelectedQuantity(amt);
+        } else if (selectedResource === "silver") {
+          setSelectedQuantity(amt);
+        }
       });
     await cscContract.methods
       .balanceOf(addr)
@@ -142,6 +179,7 @@ const ConverterBody = () => {
         setCosmicCashQuantity(amt);
       });
     await getCobaltBalance();
+    await getSilverBalance();
   }
 
   async function updateState() {
@@ -177,6 +215,8 @@ const ConverterBody = () => {
     } else if (id === 2) {
       setSelectedResource("silver");
       setSelectedQuantity(silverQuantity);
+      setConversionRate(2076);
+      setSelectedApproved(approvedSilver);
     } else if (id === 3) {
       setSelectedResource("bismuth");
       setSelectedQuantity(bismuthQuantity);
@@ -215,6 +255,12 @@ const ConverterBody = () => {
         .send({ from: addr })
         .then()
         .catch((err) => console.log(err));
+    } else if (selectedResource === "silver") {
+      await silverContract.methods
+        .approve(converterAddress, "1000000000000000000000000000")
+        .send({ from: addr })
+        .then()
+        .catch((err) => console.log(err));
     }
     await updateState();
     setDisableButtons(false);
@@ -231,6 +277,12 @@ const ConverterBody = () => {
     } else if (selectedResource === "cobalt") {
       await converterContract.methods
         .convert(CobaltAddress, inputQuantity + "000000000000000000")
+        .send({ from: addr })
+        .then()
+        .catch((err) => console.log(err));
+    } else if (selectedResource === "silver") {
+      await converterContract.methods
+        .convert(SilverAddress, inputQuantity + "000000000000000000")
         .send({ from: addr })
         .then()
         .catch((err) => console.log(err));

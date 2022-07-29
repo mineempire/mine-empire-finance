@@ -10,6 +10,7 @@ import {
   ironAddress,
   mineEmpireDrillAddress,
   OberonAddress,
+  SilverAddress,
 } from "./contracts/Addresses";
 import { CobaltABI } from "./contracts/Cobalt";
 import { converterABI } from "./contracts/Converter";
@@ -21,6 +22,7 @@ import { gadesABI } from "./contracts/Gades";
 import { ironABI } from "./contracts/Iron";
 import { mineEmpireDrillABI } from "./contracts/MineEmpireDrill";
 import { OberonABI } from "./contracts/Oberon";
+import { SilverABI } from "./contracts/Silver";
 
 export let accountAddress = "";
 
@@ -159,6 +161,12 @@ export const getOberonContract = () => {
 export const getCybeleContract = () => {
   var web3 = new Web3(window.ethereum);
   const contract = new web3.eth.Contract(CybeleABI, CybeleAddress);
+  return contract;
+};
+
+export const getSilverContract = () => {
+  var web3 = new Web3(window.ethereum);
+  const contract = new web3.eth.Contract(SilverABI, SilverAddress);
   return contract;
 };
 
