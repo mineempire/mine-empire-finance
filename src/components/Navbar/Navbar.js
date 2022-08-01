@@ -35,6 +35,7 @@ import { Button } from "../../globalStyles.js";
 import { useWeb3React } from "@web3-react/core";
 import { injected } from "../../connectors";
 import { ethers } from "ethers";
+import { cosmicCashAddress } from "../../contracts/Addresses.js";
 
 const Navbar = () => {
   // web3
@@ -49,6 +50,7 @@ const Navbar = () => {
   const [silverBal, setSilverBal] = useState(0);
   const dailyEnergyContract = getDailyEnergyContract();
   const [correctNetwork, setCorrectNetwork] = useState(true);
+  const [cosmicCashPrice, setCosmicCashPrice] = useState(0);
 
   const energyContract = getEnergyContract();
   const cscContract = getCosmicCashContract();
@@ -57,6 +59,18 @@ const Navbar = () => {
   const silverContract = getSilverContract();
 
   const { activate } = useWeb3React();
+
+  async function getCosmicCashPrice() {
+    const url =
+      "https://api.dexscreener.com/latest/dex/tokens/" + cosmicCashAddress;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data["pairs"][0]["priceUsd"]);
+        setCosmicCashPrice(data["pairs"][0]["priceUsd"]);
+      })
+      .catch((err) => console.log(err));
+  }
 
   async function getBalances() {
     if (!(await isConnected())) return;
@@ -134,16 +148,19 @@ const Navbar = () => {
     setCorrectNetwork(network);
   }
 
+  async function updateState() {
+    await checkNetwork();
+    await checkConnected();
+    await updateClaimableEnergy();
+    await getBalances();
+    await getCosmicCashPrice();
+  }
+
   useEffect(() => {
-    checkNetwork();
-    checkConnected();
-    updateClaimableEnergy();
-    getBalances();
+    updateState();
+
     const intervalId = setInterval(() => {
-      checkNetwork();
-      checkConnected();
-      updateClaimableEnergy();
-      getBalances();
+      updateState();
     }, 5000);
 
     return () => clearInterval(intervalId);
@@ -229,31 +246,52 @@ const Navbar = () => {
                         </AddressBox>
                         <BalanceItem>
                           <img src="../../assets/energy.png" alt="" />
-                          <p> {energyBal} ENERGY</p>
+                          <p> {energyBal} </p>
                         </BalanceItem>
                         <BalanceItem>
                           <img src="../../assets/csc-icon.png" alt="" />
-                          <p>{cscBal} CSC</p>
+                          <p>
+                            {cscBal} ($
+                            {Math.ceil(cscBal * cosmicCashPrice * 100) / 100})
+                          </p>
                         </BalanceItem>
                         <BalanceItem>
                           <img src="../../assets/iron.png" alt="" />
-                          <p>{ironBal} IRON</p>
+                          <p>
+                            {ironBal} ($
+                            {Math.ceil(
+                              (ironBal / 13809) * cosmicCashPrice * 100
+                            ) / 100}
+                            )
+                          </p>
                         </BalanceItem>
                         <BalanceItem>
                           <img src="../../assets/cobalt.png" alt="" />
-                          <p>{cobaltBal} COBALT</p>
+                          <p>
+                            {cobaltBal} ($
+                            {Math.ceil(
+                              (cobaltBal / 2798) * cosmicCashPrice * 100
+                            ) / 100}
+                            )
+                          </p>
                         </BalanceItem>
                         <BalanceItem>
                           <img src="../../assets/silver.png" alt="" />
-                          <p>{silverBal} SILVER</p>
+                          <p>
+                            {silverBal} ($
+                            {Math.ceil(
+                              (silverBal / 2076) * cosmicCashPrice * 100
+                            ) / 100}
+                            )
+                          </p>
                         </BalanceItem>
                         <BalanceItem>
                           <img src="../../assets/bismuth.png" alt="" />
-                          <p>0 BISMUTH</p>
+                          <p>0 ($0)</p>
                         </BalanceItem>
                         <BalanceItem>
                           <img src="../../assets/ruby.png" alt="" />
-                          <p>0 RUBY</p>
+                          <p>0 ($0)</p>
                         </BalanceItem>
                       </BalancesMenu>
                     </>

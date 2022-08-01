@@ -224,6 +224,10 @@ const MarketBody = () => {
               Upgrade your drills to to increase your mining power. Mining Power
               multiplies the base production of any asteroid or planet.
             </h3>
+            <h3>
+              ROI calculations assume the drills are staked at the highest
+              yielding asteroid.
+            </h3>
             <RightFlexDiv>
               <a
                 href="https://paintswap.finance/marketplace/collections/0x51bc1283a760ef2528b57210af73330af71f052b"
@@ -269,8 +273,8 @@ const MarketBody = () => {
                     <h3 id="stat">Asteroid</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
-                    <h3 id="description">APR / Max</h3>
-                    <h3 id="stat">225% / 272%</h3>
+                    <h3 id="description">ROI</h3>
+                    <h3 id="stat">308%</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>
@@ -373,8 +377,8 @@ const MarketBody = () => {
                     <h3 id="stat">Asteroid</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
-                    <h3 id="description">APR / Max</h3>
-                    <h3 id="stat">218% / 263%</h3>
+                    <h3 id="description">ROI</h3>
+                    <h3 id="stat">302%</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>
@@ -477,8 +481,8 @@ const MarketBody = () => {
                     <h3 id="stat">Asteroid</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
-                    <h3 id="description">APR / Max</h3>
-                    <h3 id="stat">184% / 223%</h3>
+                    <h3 id="description">ROI</h3>
+                    <h3 id="stat">255%</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>
@@ -581,8 +585,8 @@ const MarketBody = () => {
                     <h3 id="stat">Asteroid</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
-                    <h3 id="description">APR / Max</h3>
-                    <h3 id="stat">164% / 199%</h3>
+                    <h3 id="description">ROI</h3>
+                    <h3 id="stat">228%</h3>
                   </NFTCardStatsRow>
                   <NFTCardStatsRow>
                     <h3 id="description">Level / Max</h3>
