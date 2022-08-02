@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { Container } from "../../globalStyles";
-import { Link } from "react-router-dom";
 
 export const Nav = styled.nav`
   background: transparent;
@@ -24,22 +23,8 @@ export const NavbarContainer = styled(Container)`
   ${Container}
 `;
 
-export const NavLogo = styled(Link)`
-  color: #fff;
-  justify-self: flex-start;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 20rem;
+export const LogoContainer = styled.div`
   display: flex;
-  align-items: center;
-  z-index: 50;
-  width: 4rem;
-  width: ${({ connected }) =>
-    connected === "true" ? "100%" : "20%"} !important;
-
-  @media screen and (max-width: 960px) {
-    width: 2rem;
-  }
 `;
 
 export const NavIcon = styled.img`
@@ -114,18 +99,6 @@ export const NavLinks = styled.span`
   }
 `;
 
-export const NavBtnLink = styled(Link)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  padding: 8px 16px;
-  height: 100%;
-  width: 100%;
-  border: none;
-  outline: none;
-`;
-
 export const ConnectWallet = styled.div`
   display: flex;
   width: 22rem;
@@ -156,50 +129,8 @@ export const Connected = styled.div`
   }
 `;
 
-export const ClaimButtonContainer = styled.div`
-  display: flex;
-  margin-right: 15px;
-`;
-
 export const SingleButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 10%;
-`;
-
-export const BalancesMenu = styled.div`
-  display: flex;
-  visibility: ${({ dropdown }) => (dropdown ? "visible" : "hidden")};
-  opacity: ${({ dropdown }) => (dropdown ? 1 : 0)};
-  flex-direction: column;
-  color: #fff;
-  border-radius: 15px;
-  background: #463d3d;
-  width: 93%;
-  align-items: center;
-  transition visibility 0s, opacity 0.5s;
-`;
-
-export const BalanceItem = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: flex-start;
-
-  p {
-    font-weight: 200;
-    font-size: 1rem;
-  }
-
-  img {
-    height: 40px;
-    margin: 0.6rem;
-  }
-`;
-
-export const AddressBox = styled.div`
-  p {
-    font-size: 1rem;
-    padding-top: 0.5rem;
-  }
 `;

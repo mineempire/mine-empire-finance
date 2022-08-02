@@ -1,13 +1,12 @@
 import { Container, Section, TitleContainer } from "../../globalStyles";
 
-const RefineryBody = () => {
+const FarmsBody = () => {
   return (
     <>
       <Section>
         <Container>
           <TitleContainer>
-            <h1>Refine Resources</h1>
-            <h3>Coming soon!</h3>
+            <h1>Mine Empire Farms</h1>
           </TitleContainer>
         </Container>
       </Section>
@@ -15,4 +14,4 @@ const RefineryBody = () => {
   );
 };
 
-export default RefineryBody;
+export default FarmsBody;
