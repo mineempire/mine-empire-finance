@@ -2,14 +2,13 @@ import styled, { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
 }
 body {
-
-    background: #111827;
+  background: linear-gradient(248.73deg, #2a0538 -0.93%, #371a5e 53.74%, #111827 100%);
 }
 `;
 
@@ -71,9 +70,10 @@ export const BasicButton = styled.button`
   cursor: ${({ disable }) => (disable ? "" : "pointer")};
   font-weight: 500;
   padding: 10px;
+  margin: 0 10px;
   font-size: 1rem;
   color: #fff;
-  background: #1f0302;
+  background: #111827;
   transition: 0.3s;
   opacity: 1;
   &:hover {
