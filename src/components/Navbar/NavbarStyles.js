@@ -18,6 +18,7 @@ export const Nav = styled.nav`
 
 export const NavbarContainer = styled(Container)`
   display: flex;
+  align-items: center;
   justify-content: space-between;
   height: 80px;
   ${Container}
@@ -25,6 +26,7 @@ export const NavbarContainer = styled(Container)`
 
 export const LogoContainer = styled.div`
   display: flex;
+  width: 100px;
 `;
 
 export const NavIcon = styled.img`
@@ -49,7 +51,6 @@ export const NavMenu = styled.ul`
   list-style: none;
   justify-content: center;
   text-align: center;
-  width: 100%;
   @media screen and (max-width: 960px) {
     flex-direction: column;
     width: 100%;
@@ -105,6 +106,7 @@ export const ConnectWallet = styled.div`
   align-items: center;
   flex-direction: column;
   justify-content: flex-start;
+  width: 100px;
 `;
 
 export const Connected = styled.div`

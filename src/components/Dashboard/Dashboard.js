@@ -189,8 +189,8 @@ const DashboardBody = () => {
     <DashboardSection>
       <Container>
         <TitleContainer>
-          <h1>Mine Empire</h1>
-          <h3>The first emissionless, idle game built for passive income.</h3>
+          <h1>Mine Empire Finance</h1>
+          <h3>Emissionless</h3>
         </TitleContainer>
       </Container>
       <DashboardContainer>

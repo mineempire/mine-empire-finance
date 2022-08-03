@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import {
   BasicButton,
   ButtonContainer,
@@ -17,6 +18,10 @@ import {
 } from "./FarmsStyles";
 
 const FarmsBody = () => {
+  const ftmProvider = new ethers.providers.JsonRpcProvider(
+    process.env.FANTOM_PROVIDER
+  );
+  ftmProvider.send("");
   return (
     <>
       <Section>
@@ -37,7 +42,7 @@ const FarmsBody = () => {
               <FarmBodyContainer>
                 <FarmBodyRow>
                   <h3>TVL</h3>
-                  <h3>$1000</h3>
+                  <h3>$81,332</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Type</h3>
@@ -45,7 +50,7 @@ const FarmsBody = () => {
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>APR</h3>
-                  <h3>64%</h3>
+                  <h3>59%</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Reward Token</h3>
@@ -55,11 +60,11 @@ const FarmsBody = () => {
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Your LP</h3>
-                  <h3>$1000</h3>
+                  <h3>$0</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Rewards</h3>
-                  <h3>$5</h3>
+                  <h3>$0</h3>
                 </FarmBodyRow>
               </FarmBodyContainer>
               <Line width="316px" />
@@ -79,7 +84,7 @@ const FarmsBody = () => {
               <FarmBodyContainer>
                 <FarmBodyRow>
                   <h3>TVL</h3>
-                  <h3>$1000</h3>
+                  <h3>$32,336</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Type</h3>
@@ -87,7 +92,7 @@ const FarmsBody = () => {
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>APY</h3>
-                  <h3>132%</h3>
+                  <h3>124%</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Reward Token</h3>
@@ -97,11 +102,11 @@ const FarmsBody = () => {
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Your LP</h3>
-                  <h3>$1000</h3>
+                  <h3>$0</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Rewards</h3>
-                  <h3>$5</h3>
+                  <h3>$0</h3>
                 </FarmBodyRow>
               </FarmBodyContainer>
               <Line width="316px" />
@@ -111,7 +116,7 @@ const FarmsBody = () => {
             </FarmContainer>
             <FarmContainer border="#8247E5">
               <FarmHeaderContainer>
-                <h1>GEM/USD+</h1>
+                <h1>GEM/USD</h1>
                 <FarmExchangeAndNetworkContainer>
                   <img src="../../assets/exchanges/penrose.svg" />
                   <img src="../../assets/networks/polygon.png" />
@@ -121,15 +126,15 @@ const FarmsBody = () => {
               <FarmBodyContainer>
                 <FarmBodyRow>
                   <h3>TVL</h3>
-                  <h3>$1000</h3>
+                  <h3>$0</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Type</h3>
-                  <h3>Vault</h3>
+                  <h3>Farm</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>APY</h3>
-                  <h3>132%</h3>
+                  <h3>0%</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Reward Tokens</h3>
@@ -140,11 +145,11 @@ const FarmsBody = () => {
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Your LP</h3>
-                  <h3>$1000</h3>
+                  <h3>$0</h3>
                 </FarmBodyRow>
                 <FarmBodyRow>
                   <h3>Rewards</h3>
-                  <h3>$5</h3>
+                  <h3>$0</h3>
                 </FarmBodyRow>
               </FarmBodyContainer>
               <Line width="316px" />
