@@ -83,6 +83,10 @@ export const BasicButton = styled.button`
     transition: 0s;
     transform: scale(${({ disable }) => (disable ? "1" : "0.995")});
   }
+  a {
+    color: white;
+    text-decoration: none;
+  }
 `;
 
 export const ButtonGray = styled.button`

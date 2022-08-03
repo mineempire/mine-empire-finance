@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const FarmsContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
 export const FarmContainer = styled.div`
@@ -37,6 +39,12 @@ export const FarmBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px 0;
+  a {
+    width: 100%;
+  }
+  button {
+    width: 93%;
+  }
 `;
 
 export const FarmBodyRow = styled.div`

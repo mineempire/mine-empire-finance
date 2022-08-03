@@ -37,6 +37,22 @@ export const TokenInfoCardContainer = styled.div`
   }
 `;
 
+export const TokenInfoCardContainerFooter = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
+  margin-bottom: 50px;
+  width: 780px;
+  justify-content: space-evenly;
+  @media screen and (max-width: 960px) {
+    width: 100%;
+    flex-direction: column;
+    button {
+      margin: 10px 0;
+    }
+  }
+`;
+
 export const TokenInfoCard = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -188,6 +204,25 @@ export const DataDiv = styled.div`
     font-style: normal;
     font-weight: 400;
     margin: 0;
+  }
+  img {
+    width: 15px;
+  }
+`;
+
+export const DataDivTitle = styled.div`
+  display: flex;
+
+  h3 {
+    font-size: 1rem;
+    color: #949494;
+    font-style: normal;
+    font-weight: 400;
+    margin: 0;
+  }
+  img {
+    width: 20px;
+    margin: 0 5px;
   }
 `;
 

@@ -45,9 +45,6 @@ function Footer() {
           <img src="../../assets/gitbook.png" alt="" />
         </FooterSocialIcon>
       </FooterContainerFlex>
-      <FooterNotes>
-        <p>Powered by FtmScan.com APIs</p>
-      </FooterNotes>
     </FooterWrapper>
   );
 }

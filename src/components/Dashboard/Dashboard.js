@@ -17,6 +17,7 @@ import {
   Line,
   ButtonContainer,
   TitleContainer,
+  BasicButton,
 } from "../../globalStyles";
 import { sleep } from "../../Web3Client";
 import {
@@ -32,6 +33,8 @@ import {
   DashboardContainer,
   TokenInfoCardContainer,
   DataDiv,
+  DataDivTitle,
+  TokenInfoCardContainerFooter,
 } from "./DashboardStyles";
 
 const DashboardBody = () => {
@@ -196,6 +199,41 @@ const DashboardBody = () => {
       <DashboardContainer>
         <TokenInfoCardContainer>
           <DataDiv>
+            <h1>${gemPrice.toLocaleString("en-US")}</h1>
+            <DataDivTitle>
+              <h3>GEM price</h3>
+              <img src="../../assets/exchanges/beets.png" alt="" />
+              <img src="../../assets/networks/fantom.png" alt="" />
+            </DataDivTitle>
+          </DataDiv>
+          <DataDiv>
+            <h1>$0</h1>
+            <DataDivTitle>
+              <h3>GEM price</h3>
+              <img src="../../assets/exchanges/dystopia.png" alt="" />
+              <img src="../../assets/networks/polygon.png" alt="" />
+            </DataDivTitle>
+          </DataDiv>
+        </TokenInfoCardContainer>
+        <TokenInfoCardContainer>
+          <DataDiv>
+            <h1 id="stat">
+              {Math.ceil(gemCirculatingSupply).toLocaleString("en-US")}
+            </h1>
+            <h3 id="description">GEM Circulating Supply</h3>
+          </DataDiv>
+          <DataDiv>
+            <h1 id="stat">
+              $
+              {Math.floor(gemCirculatingSupply * gemPrice).toLocaleString(
+                "en-US"
+              )}
+            </h1>
+            <h3 id="description">Market Cap</h3>
+          </DataDiv>
+        </TokenInfoCardContainer>
+        <TokenInfoCardContainer>
+          <DataDiv>
             <h1>
               $
               {Math.ceil(
@@ -207,62 +245,22 @@ const DashboardBody = () => {
             </h1>
             <h3>Total Treasury Value</h3>
           </DataDiv>
+          <DataDiv>
+            <h1>
+              $
+              {Math.ceil(
+                gemInWallet * gemPrice +
+                  totalCosmicCashLiquidity +
+                  totalGemLiquidity
+              ).toLocaleString("en-US")}
+            </h1>
+            <h3>Total Protocol Owned Liquidity</h3>
+          </DataDiv>
         </TokenInfoCardContainer>
-
-        <TokenInfoCardContainer>
-          <TokenInfoCard>
-            <TokenInfoCardImgContainer>
-              <img src="../../assets/gem-256x256.png" alt="" />
-            </TokenInfoCardImgContainer>
-            <TokenInfoTitleContainer>
-              <TokenInfoTitleContainer>
-                <h1>GEM</h1>
-                <h3>Mine Empire</h3>
-              </TokenInfoTitleContainer>
-              <TokenInfoTitleContainer>
-                <img src="../../assets/coinmarketcap-icon.png" alt="" />
-                <img src="../../assets/coingecko-icon.png" alt="" />
-                <CardFeature onClick={handleAddGEMToMM}>
-                  <img src="../../assets/svg/plus.svg" alt="" />
-                  <img src="../../assets/metamask-icon.png" alt="" />
-                </CardFeature>
-              </TokenInfoTitleContainer>
-            </TokenInfoTitleContainer>
-            <Line width="360px" />
-            <CardDescription>
-              <CardFeature>
-                <SmallText>Price:</SmallText>
-                <SmallTextDollar>${gemPrice}</SmallTextDollar>
-              </CardFeature>
-              <TokenInfoCardStats>
-                <h3 id="description">Circulating Supply</h3>
-                <h3 id="stat">
-                  {Math.ceil(gemCirculatingSupply).toLocaleString("en-US")}
-                </h3>
-                <h3 id="description">Market Cap</h3>
-                <h3 id="stat">
-                  $
-                  {Math.floor(gemCirculatingSupply * gemPrice).toLocaleString(
-                    "en-US"
-                  )}
-                </h3>
-                <h3 id="description">Total Liquidity</h3>
-                <h3 id="stat">
-                  ${Math.floor(totalGemLiquidity).toLocaleString("en-US")}
-                </h3>
-              </TokenInfoCardStats>
-            </CardDescription>
-            <ButtonContainer>
-              <a
-                href="https://beets.fi/#/trade?outputCurrency=0x68EFc4716507709691d5e7AD9906a44FaBCdb1CA"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Button>Get GEM</Button>
-              </a>
-            </ButtonContainer>
-          </TokenInfoCard>
-        </TokenInfoCardContainer>
+        <TokenInfoCardContainerFooter>
+          <BasicButton>Trade On Fantom</BasicButton>
+          <BasicButton>Trade On Polygon</BasicButton>
+        </TokenInfoCardContainerFooter>
       </DashboardContainer>
     </DashboardSection>
   );
