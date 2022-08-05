@@ -188,7 +188,7 @@ const FarmsBody = () => {
                 </a>
               </FarmBodyContainer>
             </FarmContainer>
-            <FarmContainer border="#8247E5">
+            {/* <FarmContainer border="#8247E5">
               <FarmHeaderContainer>
                 <h1>GEM/USDC (Soon™)</h1>
                 <FarmExchangeAndNetworkContainer>
@@ -217,20 +217,12 @@ const FarmsBody = () => {
                     <img src="../../assets/exchanges/penrose.svg" alt="" />
                   </FarmBodyRowRewardTokenContainer>
                 </FarmBodyRow>
-                {/* <FarmBodyRow>
-                  <h3>Your LP</h3>
-                  <h3>$0</h3>
-                </FarmBodyRow>
-                <FarmBodyRow>
-                  <h3>Rewards</h3>
-                  <h3>$0</h3>
-                </FarmBodyRow> */}
               </FarmBodyContainer>
               <Line width="316px" />
               <FarmBodyContainer>
                 <BasicButton>View</BasicButton>
               </FarmBodyContainer>
-            </FarmContainer>
+            </FarmContainer> */}
           </FarmsContainer>
         </Container>
       </Section>
