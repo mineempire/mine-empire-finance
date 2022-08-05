@@ -1,5 +1,4 @@
 const webpack = require("webpack");
-const Dotenv = require("dotenv-webpack");
 
 module.exports = function override(config) {
   const fallback = config.resolve.fallback || {};
@@ -18,7 +17,6 @@ module.exports = function override(config) {
       process: "process/browser",
       Buffer: ["buffer", "Buffer"],
     }),
-    new Dotenv(),
   ]);
   config.ignoreWarnings = [/Failed to parse source map/];
   return config;

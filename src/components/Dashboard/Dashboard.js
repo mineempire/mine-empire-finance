@@ -11,25 +11,10 @@ import {
   MineEmpireVestingWallet,
   TreasuryAddress,
 } from "../../contracts/Addresses";
-import {
-  Container,
-  Button,
-  Line,
-  ButtonContainer,
-  TitleContainer,
-  BasicButton,
-} from "../../globalStyles";
+import { Container, TitleContainer, BasicButton } from "../../globalStyles";
 import { sleep } from "../../Web3Client";
 import {
   DashboardSection,
-  TokenInfoCard,
-  TokenInfoCardImgContainer,
-  TokenInfoTitleContainer,
-  CardFeature,
-  CardDescription,
-  SmallText,
-  SmallTextDollar,
-  TokenInfoCardStats,
   DashboardContainer,
   TokenInfoCardContainer,
   DataDiv,
@@ -45,24 +30,18 @@ const DashboardBody = () => {
   const [totalGemLiquidity, setTotalGemLiquidity] = useState(0);
   const [cscInWallet, setCscInWallet] = useState(0);
   const [gemInWallet, setGemInWallet] = useState(0);
+  const [beetsPrice, setBeetsPrice] = useState(0);
 
-  async function handleAddGEMToMM() {
-    try {
-      await window.ethereum.request({
-        method: "wallet_watchAsset",
-        params: {
-          type: "ERC20",
-          options: {
-            address: MineEmpireAddress,
-            symbol: "GEM",
-            decimals: 18,
-            image: "https://app.mineempire.io/assets/gem-256x256.png",
-          },
-        },
+  async function getBeetsPrice() {
+    let priceUsd = 0;
+    const beetsAddr = "0xF24Bcf4d1e507740041C9cFd2DddB29585aDCe1e";
+    let url = "https://api.dexscreener.com/latest/dex/tokens/" + beetsAddr;
+    await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        priceUsd = data["pairs"][0]["priceUsd"];
+        setBeetsPrice(priceUsd);
       });
-    } catch (error) {
-      console.log(error);
-    }
   }
 
   async function getCosmicCashPrice() {
@@ -177,6 +156,7 @@ const DashboardBody = () => {
     await sleep(500);
     await getTreasuryValue();
     await sleep(500);
+    await getBeetsPrice();
   }
 
   useEffect(() => {
@@ -193,7 +173,7 @@ const DashboardBody = () => {
       <Container>
         <TitleContainer>
           <h1>Mine Empire Finance</h1>
-          <h3>Emissionless</h3>
+          <h3>Bribe, Buyback, repeat.</h3>
         </TitleContainer>
       </Container>
       <DashboardContainer>
@@ -207,11 +187,14 @@ const DashboardBody = () => {
             </DataDivTitle>
           </DataDiv>
           <DataDiv>
-            <h1>$0</h1>
+            <h1>
+              $
+              {(Math.ceil(1153 * beetsPrice * 100) / 100).toLocaleString(
+                "en-US"
+              )}
+            </h1>
             <DataDivTitle>
-              <h3>GEM price</h3>
-              <img src="../../assets/exchanges/dystopia.png" alt="" />
-              <img src="../../assets/networks/polygon.png" alt="" />
+              <h3>GEM Daily Buyback</h3>
             </DataDivTitle>
           </DataDiv>
         </TokenInfoCardContainer>
@@ -259,7 +242,6 @@ const DashboardBody = () => {
         </TokenInfoCardContainer>
         <TokenInfoCardContainerFooter>
           <BasicButton>Trade On Fantom</BasicButton>
-          <BasicButton>Trade On Polygon</BasicButton>
         </TokenInfoCardContainerFooter>
       </DashboardContainer>
     </DashboardSection>

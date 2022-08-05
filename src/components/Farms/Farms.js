@@ -190,7 +190,7 @@ const FarmsBody = () => {
             </FarmContainer>
             <FarmContainer border="#8247E5">
               <FarmHeaderContainer>
-                <h1>GEM/USDC</h1>
+                <h1>GEM/USDC (Soon™)</h1>
                 <FarmExchangeAndNetworkContainer>
                   <img src="../../assets/exchanges/penrose.svg" alt="" />
                   <img src="../../assets/networks/polygon.png" alt="" />

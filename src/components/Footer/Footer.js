@@ -6,7 +6,6 @@ import {
   FooterSocialIcon,
   FooterWrapper,
   FooterContainerFlex,
-  FooterNotes,
 } from "./FooterStyles";
 
 function Footer() {
