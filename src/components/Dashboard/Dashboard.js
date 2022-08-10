@@ -189,7 +189,7 @@ const DashboardBody = () => {
           <DataDiv>
             <h1>
               $
-              {(Math.ceil(1153 * beetsPrice * 100) / 100).toLocaleString(
+              {(Math.ceil(1627 * beetsPrice * 100) / 100).toLocaleString(
                 "en-US"
               )}
             </h1>
